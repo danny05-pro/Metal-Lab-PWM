@@ -52,7 +52,7 @@ import {
     IonLabel,
     IonInput,
     IonText,
-    IonInputPasswordToggle // <--- Inserito nel componente!
+    IonInputPasswordToggle
   ]
 })
 export class LoginPage {
@@ -62,7 +62,6 @@ export class LoginPage {
   password = '';
   returnUrl = '/home';
   
-  // Variabile vuota in partenza, così il messaggio d'errore è nascosto
   erroreLogin = ''; 
 
   constructor(
@@ -99,7 +98,7 @@ export class LoginPage {
 
         sessionStorage.setItem('token', response.token);
         sessionStorage.setItem('utenteLoggato', 'true');
-        sessionStorage.setItem('ruoloUtente', response.utente.ruolo);
+        sessionStorage.setItem('ruoloUtente', response.user.ruolo);
 
         this.router.navigate([this.returnUrl]);
       },

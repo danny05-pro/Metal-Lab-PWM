@@ -257,3 +257,8 @@ ion-header, ion-toolbar {
       }
     }
   }
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
