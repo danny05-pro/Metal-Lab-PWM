@@ -141,6 +141,15 @@
         </ion-text>
       }
 
+      @if (erroreRegistrazione) {
+        <ion-text color="danger">
+          <p style="text-align: center; margin-bottom: 16px; font-weight: 600;">
+            <ion-icon name="alert-circle-outline" style="vertical-align: middle; margin-right: 4px;"></ion-icon>
+            {{ erroreRegistrazione }}
+          </p>
+        </ion-text>
+      }
+
      <ion-button
           expand="block"
           class="btn-glass-auth"

@@ -13,6 +13,13 @@ function passwordValida(password) {
   return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/.test(password);
 }
 
+function emailConsentita(email) {
+  const emailLower = email.toLowerCase();
+  return (
+    !emailLower.includes('admin') &&
+    !emailLower.includes('dipendente')
+  );
+}
 
 exports.register = async (req, res) => {
   try {

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 import {
   IonHeader,
@@ -20,10 +21,7 @@ import {
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-
-import {
-  arrowBackOutline
-} from 'ionicons/icons';
+import { arrowBackOutline, alertCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-register',
@@ -57,9 +55,12 @@ export class RegisterPage {
   email = '';
   password = '';
 
-  constructor(private router: Router) {
+  erroreRegistrazione = '';
+
+  constructor(private router: Router, private http: HttpClient) {
     addIcons({
-      arrowBackOutline
+      arrowBackOutline,
+      alertCircleOutline
     });
   }
 
@@ -109,24 +110,42 @@ export class RegisterPage {
     );
   }
 
-  registrati() {
+ registrati() {
     if (!this.registrazioneValida) {
       return;
     }
 
-    sessionStorage.setItem(
-      'utenteLoggato',
-      'true'
-    );
+    this.erroreRegistrazione = '';
 
-    sessionStorage.setItem(
-      'ruoloUtente',
-      'cliente'
-    );
+    // Prepara il pacchetto dati
+    const payload = {
+      nome: this.nome,
+      cognome: this.cognome,
+      telefono: this.telefono,
+      email: this.email,
+      password: this.password
+    };
 
-    this.router.navigate([
-      '/home'
-    ]);
+    // Chiama l'API
+    this.http.post('http://localhost:3000/api/auth/register', payload).subscribe({
+      next: (response: any) => {
+        console.log('Registrato con successo:', response);
+        
+        // Nel tuo authController.js la registrazione non restituisce un token automatico.
+        // Di conseguenza, la prassi standard è reindirizzare l'utente al Login!
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error(err);
+        // Cattura gli errori inviati dal backend (es. status 409 o 400)
+        if (err.status === 409) {
+          this.erroreRegistrazione = 'Questa email è già registrata. Vai al login.';
+        } else if (err.error && err.error.message) {
+          this.erroreRegistrazione = err.error.message;
+        } else {
+          this.erroreRegistrazione = 'Errore di connessione al server.';
+        }
+      }
+    });
   }
-
 }
