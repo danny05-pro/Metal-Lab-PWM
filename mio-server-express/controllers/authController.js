@@ -1,51 +1,166 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
 
-// Questa è la chiave per firmare i token. (In produzione andrà in un file .env)
-const SECRET_KEY = 'chiave_segreta_metal_lab_2026'; 
+const User = require('../models/userModel');
 
-exports.login = (req, res) => {
-    const { email, password } = req.body;
+const SECRET = 'metal-lab-secret-key';
 
-    if (!email || !password) {
-        return res.status(400).json({ message: 'Email e password sono obbligatori.' });
+function emailValida(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function passwordValida(password) {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/.test(password);
+}
+
+
+exports.register = async (req, res) => {
+  try {
+    const {
+      nome,
+      cognome,
+      telefono,
+      email,
+      password
+    } = req.body;
+
+    if (!nome || !cognome || !telefono || !email || !password) {
+      return res.status(400).json({
+        message: 'Tutti i campi sono obbligatori'
+      });
     }
 
-    // 1. Cerca l'utente nel Database
-    User.getUserByEmail(email, (err, user) => {
-        if (err) {
-            return res.status(500).json({ message: 'Errore del server.' });
-        }
-        if (!user) {
-            return res.status(401).json({ message: 'Credenziali non valide.' });
-        }
+    if (!emailValida(email)) {
+      return res.status(400).json({
+        message: 'Email non valida'
+      });
+    }
 
-        // 2. Confronta la password in chiaro con l'hash salvato nel db
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) return res.status(500).json({ message: 'Errore durante la verifica.' });
-            
-            if (!isMatch) {
-                return res.status(401).json({ message: 'Credenziali non valide.' });
-            }
+    if (!emailConsentita(email)) {
+      return res.status(400).json({
+        message: 'Email non consentita'
+      });
+    }
 
-            // 3. Password corretta! Generiamo il Token JWT
-            const token = jwt.sign(
-                { id: user.id, ruolo: user.ruolo, nome: user.nome }, 
-                SECRET_KEY, 
-                { expiresIn: '8h' } // Il token scade dopo 8 ore
-            );
+    if (!passwordValida(password)) {
+      return res.status(400).json({
+        message: 'La password deve contenere almeno una maiuscola, una minuscola, un numero, un carattere speciale e 6 caratteri totali'
+      });
+    }
 
-            // 4. Rispondiamo ad Angular con il token e i dati essenziali
-            res.status(200).json({
-                message: 'Login effettuato con successo',
-                token: token,
-                utente: {
-                    nome: user.nome,
-                    cognome: user.cognome,
-                    ruolo: user.ruolo
-                }
-            });
-        });
+    const utenteEsistente = await User.findByEmail(email);
+
+    if (utenteEsistente) {
+      return res.status(409).json({
+        message: 'Email già registrata'
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const nuovoUtente = await User.create({
+      nome,
+      cognome,
+      telefono,
+      email,
+      password: passwordHash,
+      ruolo: 'cliente'
     });
+
+    return res.status(201).json({
+      message: 'Registrazione completata',
+      user: nuovoUtente
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Errore durante la registrazione',
+      error: error.message
+    });
+  }
+};
+
+exports.login = async (req, res) => {
+  try {
+    const {
+      email,
+      password
+    } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: 'Email e password sono obbligatorie'
+      });
+    }
+
+    const user = await User.findByEmail(email);
+
+    if (!user) {
+      return res.status(401).json({
+        message: 'Credenziali non valide'
+      });
+    }
+
+    const passwordCorretta = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!passwordCorretta) {
+      return res.status(401).json({
+        message: 'Credenziali non valide'
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        ruolo: user.ruolo
+      },
+      SECRET,
+      {
+        expiresIn: '1h'
+      }
+    );
+
+    return res.json({
+      message: 'Login effettuato',
+      token,
+      user: {
+        id: user.id,
+        nome: user.nome,
+        cognome: user.cognome,
+        telefono: user.telefono,
+        email: user.email,
+        ruolo: user.ruolo
+      }
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Errore durante il login',
+      error: error.message
+    });
+  }
+};
+
+exports.profile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'Utente non trovato'
+      });
+    }
+
+    return res.json(user);
+
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Errore durante il recupero profilo',
+      error: error.message
+    });
+  }
 };

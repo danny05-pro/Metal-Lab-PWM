@@ -101,15 +101,14 @@
    @if (
   email.trim() !== '' &&
   (
-    !emailValida(email) ||
-    !emailConsentita(email)
+    !emailValida(email) 
   )
 ) {
 
         <ion-text color="danger">
 
         <p>
-  Email non valida oppure non consentita.
+  Email non valida.
        </p>
 
         </ion-text>

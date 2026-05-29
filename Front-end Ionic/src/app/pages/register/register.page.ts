@@ -78,13 +78,7 @@ export class RegisterPage {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
-  emailConsentita(email: string): boolean {
-    const emailLower = email.toLowerCase();
-    return (
-      !emailLower.includes('admin') &&
-      !emailLower.includes('dipendente')
-    );
-  }
+
 
   telefonoValido(telefono: string): boolean {
     const soloCifre = telefono.replace(/\D/g, '');
@@ -110,7 +104,6 @@ export class RegisterPage {
       this.nome.trim() !== '' &&
       this.cognome.trim() !== '' &&
       this.emailValida(this.email) &&
-      this.emailConsentita(this.email) &&
       this.telefonoValido(this.telefono) &&
       this.passwordValida // <--- Niente più parentesi qui, usiamo il getter!
     );
