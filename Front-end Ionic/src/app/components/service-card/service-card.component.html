@@ -1,0 +1,42 @@
+<ion-card class="catalog-card">
+
+  <img [src]="servizio.immagine" [alt]="servizio.nome">
+
+  <ion-card-header>
+    <ion-card-subtitle>
+      {{ servizio.categoria }}
+    </ion-card-subtitle>
+
+    <ion-card-title>
+      {{ servizio.nome }}
+    </ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <p>
+      {{ servizio.descrizione }}
+    </p>
+
+    <div class="card-info">
+      <ion-badge color="success">
+        {{ servizio.stato }}
+      </ion-badge>
+    </div>
+
+    <ion-button
+      expand="block"
+      fill="outline"
+      color="warning"
+      (click)="onTogglePreferito(servizio)">
+
+      <ion-icon
+        slot="start"
+        [name]="servizio.preferito ? 'heart' : 'heart-outline'">
+      </ion-icon>
+
+      {{ servizio.preferito ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti' }}
+
+    </ion-button>
+  </ion-card-content>
+
+</ion-card>

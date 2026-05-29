@@ -1,0 +1,169 @@
+ion-content {
+  --background: #0b0f14;
+}
+
+.register-header {
+  padding: 48px 22px 20px;
+  text-align: center;
+  color: white;
+}
+
+.register-header h1 {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.register-header p {
+  max-width: 720px;
+  margin: 16px auto 0;
+  color: #b7c0cc;
+  line-height: 1.6;
+}
+
+.register-card {
+  max-width: 620px;
+  margin: 24px auto 70px;
+  --background: #151b23;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+ion-item {
+  --background: transparent;
+  --color: white;
+  --border-color: rgba(255, 255, 255, 0.12);
+  margin-bottom: 16px;
+
+  --ion-color-primary: #f5a623 !important;
+  --highlight-color-focused: #f5a623 !important;
+}
+
+ion-label {
+  color: #f5a623 !important;
+  font-weight: 700;
+}
+
+ion-input {
+  --color: white;
+  --placeholder-color: #8f9aaa;
+}
+
+ion-text p {
+  margin: -8px 0 14px 16px;
+  font-size: 0.9rem;
+}
+
+ion-button {
+  margin-top: 18px;
+}
+
+.login-link {
+  margin-top: 24px;
+  text-align: center;
+  color: #b7c0cc;
+}
+
+.login-link a {
+  color: #f5a623;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .register-card {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+}
+
+.btn-glass-auth {
+  margin-top: 32px;
+  height: 52px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Colori Ambra Translucidi */
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px);
+  }
+}
+
+.login-link {
+  text-align: center;
+  color: #b7c0cc;
+  font-size: 0.95rem;
+  margin-top: 24px;
+  margin-bottom: 8px;
+
+  a {
+    color: #f5a623;
+    text-decoration: none;
+    font-weight: 800;
+    margin-left: 6px;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+}
+
+ion-input-password-toggle {
+  color: #8f9aaa !important;
+  --icon-color: #8f9aaa !important;
+}
+
+.login-link {
+  text-align: center;
+  color: #b7c0cc;
+  font-size: 0.95rem;
+  margin-top: 24px;
+  margin-bottom: 8px;
+
+  a {
+    color: #f5a623;
+    text-decoration: none;
+    font-weight: 800;
+    margin-left: 6px;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+}
+
+ion-input-password-toggle {
+  color: #8f9aaa !important;
+  --icon-color: #8f9aaa !important;
+}
+
+/* Quando l'input della password è attivo, l'occhio diventa ambra */
+ion-input.has-focus ion-input-password-toggle {
+  color: #f5a623 !important;
+  --icon-color: #f5a623 !important;
+}

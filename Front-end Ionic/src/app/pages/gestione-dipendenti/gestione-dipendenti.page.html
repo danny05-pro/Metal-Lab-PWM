@@ -1,0 +1,164 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-admin">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+      <ion-title>
+        Dashboard Admin
+      </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <section class="dashboard-header">
+    <h1>Gestione Dipendenti</h1>
+    <p>Aggiungi, modifica o rimuovi gli account del personale operativo.</p>
+    
+    <div class="admin-actions">
+      <ion-button (click)="apriModaleCrea()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Nuovo Dipendente
+      </ion-button>
+    </div>
+  </section>
+
+  <ion-grid class="details-row">
+    <ion-row>
+      @for (dipendente of dipendenti; track dipendente.id) {
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="detail-section-card">
+            <ion-card-header>
+              <div class="item-header">
+                <ion-card-title>
+                  <ion-icon name="person-outline" style="margin-right: 8px; color: #f5a623;"></ion-icon>
+                  {{ dipendente.nome }} {{ dipendente.cognome }}
+                </ion-card-title>
+                <ion-chip [color]="dipendente.stato === 'Attivo' ? 'success' : 'medium'">
+                  {{ dipendente.stato }}
+                </ion-chip>
+              </div>
+            </ion-card-header>
+            
+            <ion-card-content>
+              <p class="dipendente-email">{{ dipendente.email }}</p>
+              
+              <div class="item-actions">
+                <ion-button fill="clear" color="light" size="small" (click)="apriModaleModifica(dipendente)">
+                  <ion-icon slot="start" name="create-outline"></ion-icon>
+                  Modifica
+                </ion-button>
+                <ion-button
+  fill="clear"
+  color="danger"
+  size="small"
+  (click)="confermaEliminazioneDipendente(dipendente)">
+
+  <ion-icon slot="start" name="trash-outline"></ion-icon>
+  Elimina
+
+</ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      } @empty {
+        <ion-col size="12">
+          <div class="empty-section" style="text-align: center;">Nessun dipendente registrato nel sistema.</div>
+        </ion-col>
+      }
+    </ion-row>
+  </ion-grid>
+
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar color="dark">
+          <ion-title>{{ modalMode === 'crea' ? 'Nuovo Account' : 'Modifica Account' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="chiudiModale()">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="modal-content-dark">
+        <div class="modal-form-container">
+      <div class="form-field">
+
+  <label>
+    Nome
+  </label>
+
+  <div class="input-shell">
+
+    <ion-input
+      [(ngModel)]="formDipendente.nome"
+      placeholder="Inserisci il nome">
+    </ion-input>
+
+  </div>
+
+</div>
+
+<div class="form-field">
+
+  <label>
+    Cognome
+  </label>
+
+  <div class="input-shell">
+
+    <ion-input
+      [(ngModel)]="formDipendente.cognome"
+      placeholder="Inserisci il cognome">
+    </ion-input>
+
+  </div>
+
+</div>
+
+<div class="form-field">
+
+  <label>
+    Email
+  </label>
+
+  <div class="input-shell">
+
+    <ion-input
+      type="email"
+      [(ngModel)]="formDipendente.email"
+      placeholder="email@metallab.it">
+    </ion-input>
+
+  </div>
+
+</div>
+
+<div class="form-field">
+  <label>
+    {{ modalMode === 'crea' ? 'Password' : 'Nuova Password (opzionale)' }}
+  </label>
+  <div class="input-shell">
+    <ion-input
+      type="password"
+      [(ngModel)]="formDipendente.password"
+      [placeholder]="modalMode === 'crea' ? 'Imposta una password' : 'Lascia vuoto per non cambiarla'">
+    </ion-input>
+  </div>
+</div>
+        
+
+          <ion-button expand="block" class="modal-save-btn" [disabled]="!formDipendenteValido" (click)="salvaDipendente()">
+            <ion-icon slot="start" name="save-outline"></ion-icon>
+            {{ modalMode === 'crea' ? 'Crea Account' : 'Salva Modifiche' }}
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>

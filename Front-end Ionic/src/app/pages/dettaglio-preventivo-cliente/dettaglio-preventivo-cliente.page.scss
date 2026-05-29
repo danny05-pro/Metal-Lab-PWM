@@ -1,0 +1,156 @@
+ion-content {
+  --background: #0b0f14;
+}
+
+.detail-header {
+  padding: 42px 22px 20px;
+  text-align: center;
+  color: white;
+}
+
+.detail-header h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.detail-header p {
+  color: #b7c0cc;
+  margin-top: 12px;
+}
+
+.detail-card {
+  max-width: 850px;
+  margin: 20px auto;
+  --background: #151b23;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+ion-card-title {
+  color: #f5a623;
+  font-weight: 800;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row span {
+  color: #b7c0cc;
+}
+
+.info-row strong {
+  color: white;
+  text-align: right;
+}
+
+.description-box {
+  margin-bottom: 18px;
+}
+
+.description-box h3 {
+  color: white;
+  margin-bottom: 8px;
+}
+
+.description-box p,
+.response-text {
+  color: #b7c0cc;
+  line-height: 1.6;
+}
+
+ion-chip {
+  background: rgba(245,166,35,0.12);
+  color: #f5a623;
+  font-weight: 700;
+}
+
+.price-box {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(245,166,35,0.12);
+  color: #f5a623;
+  font-weight: 700;
+  text-align: center;
+}
+
+.price-box.empty {
+  color: #b7c0cc;
+}
+
+.actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Stile base (struttura a pillola ed effetto blur) */
+.btn-glass-accept, 
+.btn-glass-reject {
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.2s ease;
+}
+
+/* Bottone ACCETTA (Giallo Ambra) */
+.btn-glass-accept {
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px) translateZ(0);
+  }
+}
+
+/* Bottone RIFIUTA (Rosso Trasparente) */
+.btn-glass-reject {
+  --background: rgba(235, 68, 90, 0.08); 
+  --color: #eb445a; 
+  --border-color: rgba(235, 68, 90, 0.15);
+
+  &:hover {
+    --background: #eb445a;
+    --border-color: #eb445a;
+    --color: #ffffff;
+    transform: translateY(-2px) translateZ(0);
+  }
+}
+
+/* Affianca i bottoni sugli schermi più grandi */
+@media (min-width: 700px) {
+  .actions {
+    flex-direction: row; 
+  }
+  .btn-glass-accept, 
+  .btn-glass-reject {
+    flex: 1; 
+  }
+}

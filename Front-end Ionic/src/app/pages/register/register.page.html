@@ -1,0 +1,162 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark"> 
+    
+    <ion-buttons slot="start">
+      <ion-button routerLink="/login">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      Login
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <section class="register-header">
+
+    <h1>
+      Crea il tuo account
+    </h1>
+
+    <p>
+      Registrati per richiedere preventivi,
+      interventi e monitorare i tuoi ordini.
+    </p>
+
+  </section>
+
+  <ion-card class="register-card">
+
+    <ion-card-content>
+
+      <ion-item>
+
+        <ion-label position="stacked">
+          Nome
+        </ion-label>
+
+        <ion-input
+          [(ngModel)]="nome">
+        </ion-input>
+
+      </ion-item>
+
+      <ion-item>
+
+        <ion-label position="stacked">
+          Cognome
+        </ion-label>
+
+        <ion-input
+          [(ngModel)]="cognome">
+        </ion-input>
+
+      </ion-item>
+
+     <ion-item>
+        <ion-label position="stacked">
+          Telefono
+        </ion-label>
+
+        <ion-input
+          type="tel"
+          inputmode="numeric"
+          [(ngModel)]="telefono"
+          (ionInput)="filtraNumeri($event)">
+        </ion-input>
+      </ion-item>
+
+      @if (
+        telefono.trim() !== '' &&
+        !telefonoValido(telefono)
+      ) {
+
+        <ion-text color="danger">
+
+          <p>
+            Inserisci un numero valido.
+          </p>
+
+        </ion-text>
+
+      }
+
+      <ion-item>
+
+        <ion-label position="stacked">
+          Email
+        </ion-label>
+
+        <ion-input
+          type="email"
+          [(ngModel)]="email">
+        </ion-input>
+
+      </ion-item>
+
+   @if (
+  email.trim() !== '' &&
+  (
+    !emailValida(email) ||
+    !emailConsentita(email)
+  )
+) {
+
+        <ion-text color="danger">
+
+        <p>
+  Email non valida oppure non consentita.
+       </p>
+
+        </ion-text>
+
+      }
+
+      <ion-item>
+        <ion-label position="stacked">
+          Password
+        </ion-label>
+
+        <ion-input
+          type="password"
+          [(ngModel)]="password">
+          
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+
+        </ion-input>
+      </ion-item>
+
+      @if (
+        password.trim() !== '' && 
+        !passwordValida
+      ) {
+        <ion-text color="danger">
+          <p>
+            La password deve contenere almeno: una maiuscola, una minuscola,
+            un numero, un carattere speciale e 6 caratteri totali.
+          </p>
+        </ion-text>
+      }
+
+     <ion-button
+          expand="block"
+          class="btn-glass-auth"
+          [disabled]="!registrazioneValida"
+          (click)="registrati()">
+          Registrati
+        </ion-button>
+
+        <p class="login-link">
+          Hai già un account?
+          <a routerLink="/login">Accedi</a>
+        </p>
+
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>

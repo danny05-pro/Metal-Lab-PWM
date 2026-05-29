@@ -1,0 +1,124 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark"> 
+    
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-cliente">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      Area Personale
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <section class="quote-header">
+    <h1>Configura il tuo preventivo</h1>
+    <p>
+      Descrivi la lavorazione desiderata, seleziona un servizio e inserisci i
+      parametri tecnici necessari.
+    </p>
+  </section>
+
+  <ion-card class="quote-card">
+    <ion-card-content>
+
+      <ion-item>
+        <ion-label position="stacked">Descrizione richiesta</ion-label>
+        <ion-textarea
+          placeholder="Descrivi la lavorazione o l’intervento richiesto"
+          [(ngModel)]="descrizione">
+        </ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Servizio richiesto</ion-label>
+        <ion-select
+          placeholder="Seleziona un servizio"
+          [(ngModel)]="servizio">
+
+          <ion-select-option value="carpenteria">
+            Carpenteria metallica
+          </ion-select-option>
+
+          <ion-select-option value="manutenzione">
+            Manutenzione industriale
+          </ion-select-option>
+
+          <ion-select-option value="lavorazioni">
+            Lavorazioni meccaniche
+          </ion-select-option>
+
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Materiale</ion-label>
+        <ion-input
+          placeholder="Es. ferro, inox, acciaio zincato"
+          [(ngModel)]="materiale">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Dimensioni</ion-label>
+        <ion-input
+          placeholder="Es. 120x80x4 cm"
+          [(ngModel)]="dimensioni">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Finitura</ion-label>
+        <ion-input
+          placeholder="Es. verniciatura, zincatura, satinatura"
+          [(ngModel)]="finitura">
+        </ion-input>
+      </ion-item>
+
+      <div class="file-box">
+        <ion-icon name="document-attach-outline"></ion-icon>
+
+        <div>
+          <h3>Allegato tecnico</h3>
+          <p>
+            Carica disegni tecnici, schemi o modelli CAD.
+          </p>
+
+          <input
+            type="file"
+            (change)="selezionaFile($event)">
+        </div>
+      </div>
+
+      @if (allegatoNome) {
+        <p class="file-name">
+          File selezionato: {{ allegatoNome }}
+        </p>
+      }
+
+     <ion-button
+  expand="block"
+  color="warning"
+  size="large"
+  [disabled]="!formValido"
+  (click)="inviaPreventivo()">
+
+  Invia richiesta
+
+</ion-button>
+
+      @if (preventivoInviato) {
+        <div class="success-message">
+          Richiesta preventivo inviata correttamente.
+        </div>
+      }
+
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

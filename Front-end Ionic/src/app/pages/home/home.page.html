@@ -1,0 +1,132 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="main-toolbar">
+    <ion-title class="brand">
+      <span class="brand-icon">⚙</span>
+      Metal Lab
+    </ion-title>
+
+    <ion-buttons slot="end">
+      @if (!utenteLoggato()) {
+        <ion-button class="apple-btn-header" routerLink="/login">
+          Login
+        </ion-button>
+      }
+
+      @if (utenteLoggato()) {
+        <ion-button class="apple-btn-header" [routerLink]="dashboardLink">
+           {{ dashboardLabel }}
+        </ion-button>
+
+        <ion-button class="apple-btn-header btn-logout" (click)="logout()">
+          Logout
+        </ion-button>
+      }
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <section class="hero">
+    <div class="hero-container">
+      
+      <div class="hero-content">
+        <p class="eyebrow">Carpenteria metallica • Lavorazioni meccaniche • Manutenzione</p>
+        
+        <h1>
+          Soluzioni metalliche su misura per aziende e privati
+        </h1>
+        
+        <p class="subtitle">
+          Metal Lab digitalizza l’interazione con l’officina: catalogo servizi, richieste di preventivo e gestione degli interventi in un’unica piattaforma.
+        </p>
+        
+        <div class="hero-actions">
+          <ion-button routerLink="/catalogo">
+            Esplora Catalogo
+          </ion-button>
+        </div>
+      </div>
+
+      <div class="hero-services">
+        
+        <div class="service-glass-card">
+          <ion-icon name="document-text-outline"></ion-icon>
+          <div class="glass-info">
+            <h3>Configuratore Preventivi</h3>
+            <p>Richiedi preventivi dettagliati inserendo parametri, materiali e allegando disegni CAD.</p>
+          </div>
+        </div>
+
+        <div class="service-glass-card">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <div class="glass-info">
+            <h3>Pianificazione Interventi</h3>
+            <p>Richiedi manutenzione per i tuoi impianti e monitora la data di programmazione.</p>
+          </div>
+        </div>
+
+        <div class="service-glass-card">
+          <ion-icon name="clipboard-outline"></ion-icon>
+          <div class="glass-info">
+            <h3>Tracciamento Live</h3>
+            <p>Segui le commesse: dalla lavorazione in officina fino alla consegna finale.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="section-title">
+      <p>Competenze</p>
+      <h2>Servizi professionali per il settore industriale</h2>
+    </div>
+
+    <div class="cards-grid">
+      <article class="feature-card">
+        <ion-icon name="hammer-outline"></ion-icon>
+        <h3>Carpenteria metallica</h3>
+        <p>Strutture in ferro, acciaio e inox realizzate su misura.</p>
+      </article>
+
+      <article class="feature-card">
+        <ion-icon name="construct-outline"></ion-icon>
+        <h3>Manutenzione industriale</h3>
+        <p>Interventi programmati o urgenti per impianti e macchinari.</p>
+      </article>
+
+      <article class="feature-card">
+        <ion-icon name="settings-outline"></ion-icon>
+        <h3>Lavorazioni meccaniche</h3>
+        <p>Componenti metallici, staffe, piastre e lavorazioni di precisione.</p>
+      </article>
+    </div>
+  </section>
+
+ 
+  <section class="staff-advantage">
+    <div class="section-title">
+      <p>Tracciabilità e Innovazione</p>
+      <h2>Un'officina digitale e 100% interconnessa</h2>
+    </div>
+
+    <div class="advantage-container">
+      
+      <div class="advantage-card">
+        <ion-icon name="speedometer-outline"></ion-icon>
+        <h3>Ottimizzazione dei Tempi</h3>
+        <p>Il nostro personale operativo gestisce ogni commessa tramite un'area riservata dedicata. Questo elimina i vecchi passaggi cartacei, accelera la produzione e azzera i tempi morti.</p>
+      </div>
+
+      <div class="advantage-card">
+        <ion-icon name="git-pull-request-outline"></ion-icon>
+        <h3>Controllo in Tempo Reale</h3>
+        <p>Dall'assegnazione dell'intervento da parte dell'amministrazione fino alla lavorazione fisica in officina, ogni avanzamento viene tracciato per garantirti la massima precisione e puntualità.</p>
+      </div>
+
+    </div>
+  </section>
+
+</ion-content>

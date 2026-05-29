@@ -1,0 +1,124 @@
+ion-content {
+  --background: #0b0f14;
+}
+
+.detail-header {
+  padding: 42px 22px 20px;
+  text-align: center;
+  color: white;
+}
+
+.detail-header h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.detail-header p {
+  color: #b7c0cc;
+  margin-top: 12px;
+}
+
+.detail-card {
+  max-width: 900px;
+  margin: 22px auto;
+  --background: #151b23;
+
+  border-radius: 22px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  overflow: hidden;
+}
+
+ion-card-title {
+  color: #f5a623;
+  font-weight: 800;
+}
+
+ion-card-header {
+  padding: 24px 24px 8px;
+}
+
+ion-card-content {
+  padding: 8px 24px 24px;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+
+  align-items: center;
+
+  padding: 18px 0;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row span {
+  color: #b7c0cc;
+  font-weight: 700;
+}
+
+.info-row strong {
+  color: white;
+  text-align: right;
+  font-weight: 800;
+  line-height: 1.5;
+}
+.info-row ion-chip {
+  width: fit-content;
+  justify-self: end;
+  margin: 0;
+}
+.note-row {
+  align-items: start;
+}
+
+.description-box {
+  margin-bottom: 18px;
+}
+
+.description-box h3 {
+  color: white;
+  margin-bottom: 8px;
+}
+
+.description-box p {
+  color: #b7c0cc;
+  line-height: 1.6;
+}
+
+ion-chip {
+  background: rgba(245,166,35,0.12);
+  color: #f5a623;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+
+  .detail-card {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: start;
+  }
+
+  .info-row strong {
+    text-align: left;
+  }
+    .info-row ion-chip {
+    justify-self: start;
+  }
+
+}

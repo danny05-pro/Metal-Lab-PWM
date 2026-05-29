@@ -1,0 +1,191 @@
+ion-content {
+  --background: #0b0f14;
+}
+
+.dashboard-header {
+  padding: 32px 22px 16px;
+  text-align: center;
+  color: white;
+}
+
+.dashboard-header h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.dashboard-header p {
+  color: #b7c0cc;
+  margin-top: 8px;
+}
+
+/* Bottone Stile Vetro Apple */
+.admin-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.admin-actions ion-button {
+  width: 260px;
+  height: 48px;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  --background: rgba(255, 255, 255, 0.06);
+  --color: #ffffff;
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --border-color: rgba(255, 255, 255, 0.15);
+  --box-shadow: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.2s ease;
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px) translateZ(0);
+  }
+}
+
+/* Griglia e Card */
+.details-row {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.detail-section-card {
+  --background: #151b23;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 0;
+  height: 100%;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+}
+
+ion-card-title {
+  color: white;
+  font-size: 1.15rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+}
+
+.dipendente-email {
+  color: #b7c0cc;
+  font-size: 0.95rem;
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+.item-actions {
+  display: flex;
+  gap: 8px;
+  ion-button {
+    margin: 0;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    font-weight: 600;
+  }
+}
+
+/* Modale */
+ion-modal.dark-modal {
+  --border-radius: 28px;
+  --background: #0b0f14;
+}
+
+.modal-form-container {
+  padding: 32px 24px; 
+}
+
+.modal-content-dark::part(scroll) {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* Campi di input */
+.form-field {
+  width: 100%;
+  margin-bottom: 22px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 8px;
+  padding-left: 4px;
+  color: #f5a623;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.modal-save-btn {
+  margin-top: 32px;
+  height: 52px; 
+  --background: #f5a623;
+  --color: #0b0f14;
+  --border-radius: 30px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: transform 0.2s ease;
+  &:active { transform: scale(0.97); }
+}
+
+
+.input-shell {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background: #151b23;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  transition: all 0.2s ease;
+
+  /* 💣 LA BOMBA ATOMICA: 
+     Ionic usa il verde per "valido" e il blu per "focus".
+     Sostituiamo le SUE variabili di sistema con il nostro ambra SOLO in questo guscio! */
+  --ion-color-primary: #f5a623 !important; /* Uccide il blu dell'occhio */
+  --ion-color-success: #f5a623 !important; /* Uccide il verde del cursore */
+}
+
+.input-shell:focus-within {
+  border-color: #f5a623;
+  box-shadow: 0 0 0 1px rgba(245, 166, 35, 0.25);
+}
+
+.input-shell ion-input {
+  width: 100%;
+  --background: transparent;
+  --color: #ffffff;
+  --placeholder-color: #8f9aaa;
+  --placeholder-opacity: 0.9;
+  
+  --highlight-height: 0px !important;
+
+  font-size: 1.05rem;
+  min-height: 52px;
+  
+  caret-color: #f5a623 !important;
+}
+
+/* Quando l'input ha il focus, scavalchiamo il blu di default forzando l'ambra */
+ion-input.has-focus ion-input-password-toggle,
+.input-shell:focus-within ion-input-password-toggle {
+  color: #f5a623 !important;
+  --icon-color: #f5a623 !important;
+}

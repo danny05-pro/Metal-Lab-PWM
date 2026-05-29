@@ -1,0 +1,145 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark"> 
+    
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      Home
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <section class="dashboard-header">
+    <h1>Area Operativa</h1>
+    <p>Monitora le tue assegnazioni, il calendario e lo storico degli interventi completati.</p>
+  </section>
+
+  <ion-grid>
+    <ion-row class="summary-row">
+      <ion-col size="4">
+        <div class="summary-card">
+          <span class="summary-value">{{ appuntamentiCalendario.length }}</span>
+          <span class="summary-label">In Programma</span>
+        </div>
+      </ion-col>
+      <ion-col size="4">
+        <div class="summary-card">
+          <span class="summary-value">{{ interventiAttivi.length }}</span>
+          <span class="summary-label">Interventi Attivi</span>
+        </div>
+      </ion-col>
+      <ion-col size="4">
+        <div class="summary-card">
+          <span class="summary-value">{{ storicoInterventi.length }}</span>
+          <span class="summary-label">Storico Completati</span>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="details-row">
+      
+      
+
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header>
+            <ion-card-title>Interventi Attivi</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+          @for (intervento of interventiAttivi; track intervento.id) {
+
+  <div
+    class="dashboard-item clickable"
+    [routerLink]="['/dettaglio-intervento-dipendente', intervento.id]">
+
+    <div class="item-header">
+
+      <h3>
+        {{ intervento.descrizione }}
+      </h3>
+
+      <ion-chip>
+        {{ intervento.stato }}
+      </ion-chip>
+
+    </div>
+
+    <p>
+      Cliente: {{ intervento.cliente }} |
+      Priorità: {{ intervento.priorita }}
+    </p>
+
+    <p>
+      {{ testoPrioritaData(intervento) }}
+    </p>
+
+
+  </div>
+
+} @empty {
+
+  <div class="empty-section">
+    Nessun intervento assegnato.
+  </div>
+
+}
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header>
+            <ion-card-title>Storico Interventi</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            @for (storico of storicoInterventi; track storico.id) {
+              <div class="dashboard-item">
+                <div class="item-header">
+                  <h3>{{ storico.descrizione }}</h3>
+                  <ion-chip class="status-completed">{{ storico.stato }}</ion-chip>
+                </div>
+                <p>Completato in data: {{ storico.dataCompletamento }}</p>
+              </div>
+            } @empty {
+              <div class="empty-section">Nessun intervento nello storico.</div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+<ion-col size="12">
+        <ion-card class="detail-section-card calendar-card">
+          <ion-card-header>
+            <ion-card-title>Calendario Personalizzato</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="timeline">
+              @for (appuntamento of appuntamentiCalendario; track appuntamento.id) {
+                <div class="timeline-item">
+                  <div class="timeline-date">
+                    <strong>{{ appuntamento.dataFormattata }}</strong>
+                  </div>
+                  <div class="timeline-content">
+                    <h3>{{ appuntamento.descrizione }}</h3>
+                    <p>Tipo: {{ appuntamento.tipo }} | Dettaglio: {{ appuntamento.dettaglio }}</p>
+                    <ion-chip [color]="appuntamento.tipo === 'Intervento' ? 'warning' : 'tertiary'">
+                      {{ appuntamento.tipo }}
+                    </ion-chip>
+                  </div>
+                </div>
+              } @empty {
+                <div class="empty-section">Nessun appuntamento in programma.</div>
+              }
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

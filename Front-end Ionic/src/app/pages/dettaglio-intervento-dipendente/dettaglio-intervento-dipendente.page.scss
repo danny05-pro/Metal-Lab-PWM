@@ -1,0 +1,161 @@
+ion-content {
+  --background: #0b0f14;
+}
+
+.detail-header {
+  padding: 42px 22px 20px;
+  text-align: center;
+  color: white;
+}
+
+.detail-header h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.detail-header p {
+  max-width: 760px;
+  margin: 14px auto 0;
+  color: #b7c0cc;
+  line-height: 1.6;
+}
+
+.detail-card {
+  max-width: 900px;
+  margin: 22px auto;
+  --background: #151b23;
+
+  border-radius: 22px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  overflow: hidden;
+}
+
+ion-card-header {
+  padding: 24px 24px 8px;
+}
+
+ion-card-content {
+  padding: 8px 24px 24px;
+}
+
+ion-card-title {
+  color: #f5a623;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+
+  align-items: center;
+
+  padding: 18px 0;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row span {
+  color: #b7c0cc;
+  font-weight: 700;
+}
+
+.info-row strong {
+  color: white;
+  text-align: right;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.info-row ion-chip {
+  width: fit-content;
+  justify-self: end;
+  margin: 0;
+
+  background: rgba(245, 166, 35, 0.12);
+  color: #f5a623;
+  font-weight: 800;
+}
+
+.state-item {
+  --background: transparent;
+  --color: white;
+  --border-color: rgba(255, 255, 255, 0.12);
+
+  margin-bottom: 18px;
+}
+
+.state-item ion-label {
+  color: #f5a623 !important;
+  font-weight: 800;
+}
+
+.state-item ion-select {
+  --color: white;
+  --placeholder-color: #8f9aaa;
+}
+
+/* ==========================================================================
+   Bottoni Gestione Dipendente - Stile Vetro
+   ========================================================================== */
+.btn-glass-update {
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Colori Ambra Translucidi */
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 700px) {
+
+  .detail-card {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: start;
+  }
+
+  .info-row strong {
+    text-align: left;
+  }
+
+  .info-row ion-chip {
+    justify-self: start;
+  }
+
+}

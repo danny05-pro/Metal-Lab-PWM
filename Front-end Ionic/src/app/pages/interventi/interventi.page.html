@@ -1,0 +1,87 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark"> 
+    
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-cliente">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      Area Personale
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <section class="intervention-header">
+    <ion-icon name="construct-outline"></ion-icon>
+
+    <h1>Richiedi il tuo intervento</h1>
+
+    <p>
+      Compila il form per richiedere un intervento di manutenzione o assistenza
+      presso la tua sede.
+    </p>
+  </section>
+
+  <ion-card class="intervention-card">
+    <ion-card-content>
+
+      <ion-item>
+        <ion-label position="stacked">Descrizione problema</ion-label>
+        <ion-textarea
+          placeholder="Descrivi il problema o l’intervento richiesto"
+          [(ngModel)]="descrizione">
+        </ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Luogo intervento</ion-label>
+        <ion-input
+          placeholder="Es. stabilimento, officina, indirizzo"
+          [(ngModel)]="luogo">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Priorità</ion-label>
+        <ion-select
+          placeholder="Seleziona priorità"
+          [(ngModel)]="priorita"
+          [interfaceOptions]="{ cssClass: 'custom-dark-alert' }"> <ion-select-option value="Bassa">Bassa</ion-select-option>
+          <ion-select-option value="Media">Media</ion-select-option>
+          <ion-select-option value="Alta">Alta</ion-select-option>
+
+        </ion-select>
+      </ion-item>
+  
+      <ion-item>
+        <ion-label position="stacked">Data preferita</ion-label>
+        <ion-input
+          type="date"
+          [(ngModel)]="dataIntervento">
+        </ion-input>
+      </ion-item>
+
+      <ion-button
+        expand="block"
+        color="warning"
+        size="large"
+        [disabled]="!formValido"
+        (click)="inviaIntervento()">
+        Invia richiesta intervento
+      </ion-button>
+
+      @if (interventoInviato) {
+        <div class="success-message">
+          Richiesta intervento inviata correttamente.
+        </div>
+      }
+
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

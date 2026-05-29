@@ -1,0 +1,124 @@
+ion-content {
+  --background: #0b0f14;
+}
+
+.auth-header {
+  padding: 48px 22px 20px;
+  text-align: center;
+  color: white;
+}
+
+.auth-header h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.auth-header p {
+  max-width: 720px;
+  margin: 16px auto 0;
+  color: #b7c0cc;
+  line-height: 1.6;
+}
+
+.auth-card {
+  max-width: 620px;
+  margin: 24px auto 70px;
+
+  --background: #151b23;
+
+  border-radius: 24px;
+
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.form-container {
+  margin-top: 26px;
+}
+
+ion-item {
+  --background: transparent;
+
+  --color: white;
+
+  --border-color: rgba(255,255,255,0.12);
+
+  margin-bottom: 16px;
+}
+
+ion-label {
+  color: #f5a623 !important;
+
+  font-weight: 700;
+}
+
+ion-input {
+  --color: white;
+}
+
+ion-segment {
+  margin-bottom: 24px;
+}
+
+@media (max-width: 700px) {
+
+  .auth-card {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+}
+
+/* ==========================================================================
+   Bottone Accedi - Stile Vetro
+   ========================================================================== */
+.btn-glass-auth {
+  margin-top: 32px;
+  height: 52px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Colori Ambra Translucidi */
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px);
+  }
+}
+
+.register-link {
+  text-align: center;
+  color: #b7c0cc;
+  font-size: 0.95rem;
+  margin-top: 24px;
+  margin-bottom: 8px;
+
+  a {
+    color: #f5a623;
+    text-decoration: none;
+    font-weight: 800;
+    margin-left: 6px;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+}

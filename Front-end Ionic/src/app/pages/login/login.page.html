@@ -1,0 +1,92 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark"> 
+    
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      Home
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <section class="auth-header">
+
+    <h1>
+      Login
+    </h1>
+
+    <p>
+      Accedi per monitorare preventivi,
+      interventi e ordini.
+    </p>
+
+  </section>
+
+  <ion-card class="auth-card">
+
+    <ion-card-content>
+
+      <div class="form-container">
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Email
+          </ion-label>
+
+          <ion-input
+            type="email"
+            [(ngModel)]="email">
+          </ion-input>
+
+        </ion-item>
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Password
+          </ion-label>
+
+          <ion-input
+            type="password"
+            [(ngModel)]="password">
+          </ion-input>
+
+        </ion-item>
+
+      <ion-button
+          expand="block"
+          class="btn-glass-auth"
+          [disabled]="!loginValido"
+          (click)="accedi()">
+          Accedi
+        </ion-button>
+
+        <p class="register-link">
+          Non hai un account?
+          <a routerLink="/register">Registrati</a>
+        </p>
+
+      </div>
+
+      @if (erroreLogin) {
+          <ion-text color="danger">
+            <p style="text-align: center; margin-top: 16px; font-weight: 600;">
+              <ion-icon name="alert-circle-outline" style="vertical-align: middle; margin-right: 4px;"></ion-icon>
+              {{ erroreLogin }}
+            </p>
+          </ion-text>
+        }
+
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>

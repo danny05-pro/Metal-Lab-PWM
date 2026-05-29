@@ -1,0 +1,278 @@
+ion-content {
+  --background: #0b0f14;
+}
+
+.dashboard-header {
+  padding: 32px 22px 16px;
+  text-align: center;
+  color: white;
+}
+
+.dashboard-header h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.dashboard-header p {
+  color: #b7c0cc;
+  margin-top: 8px;
+}
+
+// Riga orizzontale superiore per i contatori
+.summary-row {
+  max-width: 1400px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+
+.summary-card {
+  background: #151b23;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.summary-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #f5a623;
+}
+
+.summary-label {
+  font-size: 0.8rem;
+  color: #b7c0cc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+// Contenitore inferiore per le liste verticali
+.details-row {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+// Le card ora usano height: auto per espandersi dinamicamente col contenuto
+.detail-section-card {
+  --background: #151b23;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 10px;
+  height: auto; 
+  min-height: 120px;
+}
+
+ion-card-title {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+/* Stili per le liste Interventi e Storico */
+.dashboard-item {
+  /* Aggiunto padding orizzontale per far respirare l'alone dell'hover */
+  padding: 16px; 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  
+  /* Arrotonda l'alone di selezione dell'intera riga al passaggio del mouse! */
+  border-radius: 18px; 
+  margin-bottom: 4px;
+}
+
+.dashboard-item:last-child {
+  border-bottom: none;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.dashboard-item h3 {
+  color: white;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.dashboard-item p {
+  color: #b7c0cc;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+ion-chip {
+  margin: 0;
+  background: rgba(245, 166, 35, 0.12);
+  color: #f5a623;
+  font-weight: 700;
+  font-size: 0.8rem;
+  
+  /* MAGIA APPLE: Forza la forma a "pillola" perfettamente arrotondata */
+  --border-radius: 30px;
+  border-radius: 30px;
+  padding: 0 12px;
+  
+  &.status-completed {
+    background: rgba(45, 211, 111, 0.12);
+    color: #2dd36f;
+  }
+}
+
+.empty-section {
+  color: #6c7a89;
+  font-style: italic;
+  padding: 10px 0;
+  font-size: 0.95rem;
+}
+
+.dashboard-actions {
+  margin: 28px auto 32px;
+  width: 100%;
+  max-width: 900px;
+  padding: 0 16px;
+
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.dashboard-actions ion-button {
+  flex: 1;
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --background: rgba(255, 255, 255, 0.06);
+  --color: #ffffff;
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --border-color: rgba(255, 255, 255, 0.15);
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.2s ease;
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px) translateZ(0);
+  }
+}
+
+@media (max-width: 850px) {
+  .dashboard-actions {
+    flex-direction: column;
+  }
+}
+
+.calendar-card {
+  --background: #151b23;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 16px;
+}
+
+.calendar-item {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 18px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.calendar-item:last-child {
+  border-bottom: none;
+}
+
+.calendar-date {
+  color: #f5a623;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.calendar-info h3 {
+  color: white;
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+}
+
+.calendar-info p {
+  color: #b7c0cc;
+  margin: 0 0 10px;
+}
+
+@media (max-width: 700px) {
+  .calendar-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+.clickable {
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.clickable:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-1px);
+}
+
+.open-detail-text {
+  margin-top: 8px !important;
+  color: #f5a623 !important;
+  font-weight: 700;
+  font-size: 0.85rem !important;
+}
+.preventivo-clickable {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  display: block;
+  font-family: inherit;
+}
+
+.preventivo-clickable:focus {
+  outline: none;
+}
+
+.preventivo-clickable:focus-visible {
+  outline: 2px solid #f5a623;
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+.intervento-clickable {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  display: block;
+  font-family: inherit;
+}
+
+.intervento-clickable:focus {
+  outline: none;
+}
+
+.intervento-clickable:focus-visible {
+  outline: 2px solid #f5a623;
+  outline-offset: 4px;
+  border-radius: 12px;
+}

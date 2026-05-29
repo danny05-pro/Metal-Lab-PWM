@@ -1,0 +1,7 @@
+{
+  "name": "metal-lab",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

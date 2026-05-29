@@ -1,0 +1,56 @@
+<ion-card class="catalog-card">
+
+  <img
+    [src]="prodotto.immagine"
+    [alt]="prodotto.nome">
+
+  <ion-card-header>
+
+    <ion-card-subtitle>
+      {{ prodotto.categoria }}
+    </ion-card-subtitle>
+
+    <ion-card-title>
+      {{ prodotto.nome }}
+    </ion-card-title>
+
+  </ion-card-header>
+
+  <ion-card-content>
+
+    <p>
+      {{ prodotto.descrizione }}
+    </p>
+
+    <div class="card-info">
+
+      <ion-badge color="medium">
+        {{ prodotto.materiale }}
+      </ion-badge>
+
+      <strong>
+        € {{ prodotto.prezzo | number:'1.2-2' }}
+      </strong>
+
+    </div>
+
+    <ion-button
+      expand="block"
+      fill="outline"
+      color="warning"
+      (click)="onTogglePreferito(prodotto)">
+
+      <ion-icon
+        slot="start"
+        [name]="prodotto.preferito ? 'heart' : 'heart-outline'">
+      </ion-icon>
+
+      {{ prodotto.preferito
+        ? 'Rimuovi dai preferiti'
+        : 'Aggiungi ai preferiti' }}
+
+    </ion-button>
+
+  </ion-card-content>
+
+</ion-card>
