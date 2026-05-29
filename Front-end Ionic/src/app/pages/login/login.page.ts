@@ -99,7 +99,7 @@ export class LoginPage {
 
         sessionStorage.setItem('token', response.token);
         sessionStorage.setItem('utenteLoggato', 'true');
-        sessionStorage.setItem('ruoloUtente', response.utente.ruolo);
+        sessionStorage.setItem('ruoloUtente', response.user.ruolo);
 
         this.router.navigate([this.returnUrl]);
       },
