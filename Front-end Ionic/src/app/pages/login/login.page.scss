@@ -122,3 +122,18 @@ ion-segment {
     }
   }
 }
+ion-item {
+  --background: transparent;
+  --color: white;
+  --border-color: rgba(255,255,255,0.12);
+  margin-bottom: 16px;
+
+  /* Forza l'ambra quando si clicca e per l'occhio attivo */
+  --ion-color-primary: #f5a623 !important;
+  --highlight-color-focused: #f5a623 !important;
+}
+
+ion-input-password-toggle {
+  color: #8f9aaa !important;
+  --icon-color: #8f9aaa !important;
+}

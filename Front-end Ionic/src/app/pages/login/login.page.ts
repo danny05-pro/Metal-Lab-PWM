@@ -21,11 +21,11 @@ import {
   IonItem,
   IonLabel,
   IonInput,
-  
+  IonText,
+  IonInputPasswordToggle // <--- Importato correttamente per l'occhio!
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-
 import {
   arrowBackOutline,
   alertCircleOutline
@@ -50,27 +50,26 @@ import {
     IonCardContent,
     IonItem,
     IonLabel,
-    IonInput
+    IonInput,
+    IonText,
+    IonInputPasswordToggle // <--- Inserito nel componente!
   ]
 })
 export class LoginPage {
 
   modalita: 'login' | 'register' = 'login';
-
   email = '';
-
   password = '';
-
   returnUrl = '/home';
-
-  erroreLogin = 'Credenziali non valide. Riprova.';
+  
+  // Variabile vuota in partenza, così il messaggio d'errore è nascosto
+  erroreLogin = ''; 
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private http: HttpClient
   ) {
-
     addIcons({
       arrowBackOutline,
       alertCircleOutline
@@ -79,41 +78,32 @@ export class LoginPage {
     this.returnUrl =
       this.route.snapshot.queryParamMap.get('returnUrl')
       || '/home';
-
   }
-
   
   accedi() {
     if (!this.loginValido) {
       return;
     }
 
-    this.erroreLogin = ''; // Resetta errori precedenti
+    this.erroreLogin = ''; // Resetta eventuali errori di un tentativo precedente
 
-    // Prepara i dati da inviare al backend
     const body = {
       email: this.email,
       password: this.password
     };
 
-    // Fai la chiamata POST al tuo server Express
+    // Chiamata al nostro backend!
     this.http.post('http://localhost:3000/api/auth/login', body).subscribe({
       next: (response: any) => {
-        // IL LOGIN È ANDATO A BUON FINE!
         console.log('Login riuscito:', response);
 
-        // 1. Salva il token crittografato (servirà in futuro per le rotte protette)
         sessionStorage.setItem('token', response.token);
-        
-        // 2. Aggiorna lo stato della sessione per la nostra app
         sessionStorage.setItem('utenteLoggato', 'true');
         sessionStorage.setItem('ruoloUtente', response.utente.ruolo);
 
-        // 3. Naviga alla home o alla pagina richiesta
         this.router.navigate([this.returnUrl]);
       },
       error: (err) => {
-        // Login fallito
         console.error('Errore login:', err);
         
         if (err.status === 401 || err.status === 400) {
@@ -125,12 +115,10 @@ export class LoginPage {
     });
   }
   
-get loginValido(): boolean {
-
-  return (
-    this.email.trim() !== '' &&
-    this.password.trim() !== ''
-  );
-
-}
+  get loginValido(): boolean {
+    return (
+      this.email.trim() !== '' &&
+      this.password.trim() !== ''
+    );
+  }
 }
