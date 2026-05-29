@@ -147,6 +147,9 @@
       type="password"
       [(ngModel)]="formDipendente.password"
       [placeholder]="modalMode === 'crea' ? 'Imposta una password' : 'Lascia vuoto per non cambiarla'">
+      
+      <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+      
     </ion-input>
   </div>
 </div>

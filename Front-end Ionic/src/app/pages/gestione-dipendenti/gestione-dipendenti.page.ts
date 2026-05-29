@@ -20,7 +20,8 @@ import {
   IonCardContent,
   IonChip,
   IonModal,
-  IonInput
+  IonInput,
+  IonInputPasswordToggle
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -67,7 +68,8 @@ interface Dipendente {
     IonCardContent,
     IonChip,
     IonModal,
-    IonInput
+    IonInput,
+    IonInputPasswordToggle
   ]
 })
 export class GestioneDipendentiPage implements OnInit {
