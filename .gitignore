@@ -1,7 +1,7 @@
 # Nascondi i motori e il DB del Backend
-mio-server-express/node_modules/
-mio-server-express/database/database.sqlite
+Backend/node_modules/
+Backend/database/database.sqlite
 
 # Nascondi i motori del Frontend
-Front-end Ionic/node_modules/
-Front-end Ionic/.angular/
+Frontend/node_modules/
+Frontend/.angular/
