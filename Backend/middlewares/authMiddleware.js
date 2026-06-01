@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const SECRET = 'metal-lab-secret-key';
 
-module.exports = (req, res, next) => {
+const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
 
   if (!authHeader) {
@@ -31,4 +31,9 @@ module.exports = (req, res, next) => {
       message: 'Token non valido'
     });
   }
+};
+
+
+module.exports = {
+  verifyToken
 };
