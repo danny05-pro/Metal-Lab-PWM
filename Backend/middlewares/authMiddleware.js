@@ -38,6 +38,7 @@ const isAdmin = (req, res, next) => {
   if (req.user && req.user.ruolo === 'admin') {
     next();
   } else {
+    return res.status(403).json({
       message: 'Accesso negato: area riservata agli amministratori.'
     });
   }
