@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -52,13 +52,13 @@ import { InterventiService } from '../../services/interventi.service';
     IonIcon
   ]
 })
-export class DashboardClientePage implements OnInit {
+export class DashboardClientePage { 
 
   // --- VARIABILI COLLEGATE AL DATABASE (REALI) ---
   tuttiGliInterventi: any[] = [];
   interventiFuturi: any[] = [];
 
-  // --- VARIABILI MOCKATE (Per mantenere l'UI funzionante) ---
+  // --- VARIABILI MOCKATE ---
   preventivi: Preventivo[] = [
     {
       id: 1,
@@ -116,7 +116,8 @@ export class DashboardClientePage implements OnInit {
     addIcons({ arrowBackOutline });
   }
 
-  ngOnInit() {
+  // Scatta automaticamente ogni volta che entri in questa pagina
+  ionViewWillEnter() {
     this.caricaInterventi();
   }
 
@@ -125,7 +126,6 @@ export class DashboardClientePage implements OnInit {
       next: (dati) => {
         this.tuttiGliInterventi = dati;
 
-        // Filtra solo gli interventi con una data programmata dall'admin nel futuro
         const oggi = new Date();
         oggi.setHours(0, 0, 0, 0);
 
