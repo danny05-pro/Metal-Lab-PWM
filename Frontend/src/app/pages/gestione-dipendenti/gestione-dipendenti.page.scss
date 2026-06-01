@@ -189,3 +189,25 @@ ion-input.has-focus ion-input-password-toggle,
   color: #f5a623 !important;
   --icon-color: #f5a623 !important;
 }
+/* Stili aggiuntivi per i dettagli nella card */
+.info-riga {
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+.dipendente-email, .dipendente-telefono {
+  color: #b7c0cc;
+  font-size: 0.95rem;
+  margin: 0 0 8px 0; /* Spaziatura tra email e telefono */
+}
+
+.dipendente-telefono {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Spazio tra icona e numero */
+  
+  ion-icon {
+    font-size: 1.1rem;
+    color: #f5a623; /* Icona ambra per richiamare il tema */
+  }
+}

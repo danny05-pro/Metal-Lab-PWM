@@ -42,23 +42,23 @@
             </ion-card-header>
             
             <ion-card-content>
-              <p class="dipendente-email">{{ dipendente.email }}</p>
+              <div class="info-riga">
+                <p class="dipendente-email">{{ dipendente.email }}</p>
+                <p class="dipendente-telefono">
+                  <ion-icon name="call-outline"></ion-icon>
+                  {{ dipendente.telefono }}
+                </p>
+              </div>
               
               <div class="item-actions">
                 <ion-button fill="clear" color="light" size="small" (click)="apriModaleModifica(dipendente)">
                   <ion-icon slot="start" name="create-outline"></ion-icon>
                   Modifica
                 </ion-button>
-                <ion-button
-  fill="clear"
-  color="danger"
-  size="small"
-  (click)="confermaEliminazioneDipendente(dipendente)">
-
-  <ion-icon slot="start" name="trash-outline"></ion-icon>
-  Elimina
-
-</ion-button>
+                <ion-button fill="clear" color="danger" size="small" (click)="confermaEliminazioneDipendente(dipendente)">
+                  <ion-icon slot="start" name="trash-outline"></ion-icon>
+                  Elimina
+                </ion-button>
               </div>
             </ion-card-content>
           </ion-card>
@@ -86,75 +86,63 @@
 
       <ion-content class="modal-content-dark">
         <div class="modal-form-container">
-      <div class="form-field">
+          
+          <div class="form-field">
+            <label>Nome</label>
+            <div class="input-shell">
+              <ion-input
+                [(ngModel)]="formDipendente.nome"
+                placeholder="Inserisci il nome">
+              </ion-input>
+            </div>
+          </div>
 
-  <label>
-    Nome
-  </label>
+          <div class="form-field">
+            <label>Cognome</label>
+            <div class="input-shell">
+              <ion-input
+                [(ngModel)]="formDipendente.cognome"
+                placeholder="Inserisci il cognome">
+              </ion-input>
+            </div>
+          </div>
 
-  <div class="input-shell">
+          <div class="form-field">
+            <label>Email</label>
+            <div class="input-shell">
+              <ion-input
+                type="email"
+                [(ngModel)]="formDipendente.email"
+                placeholder="email@metallab.it">
+              </ion-input>
+            </div>
+          </div>
 
-    <ion-input
-      [(ngModel)]="formDipendente.nome"
-      placeholder="Inserisci il nome">
-    </ion-input>
+          <div class="form-field">
+            <label>Telefono</label>
+            <div class="input-shell">
+              <ion-input
+                type="tel"
+                [(ngModel)]="formDipendente.telefono"
+                placeholder="Es. 3331234567">
+              </ion-input>
+            </div>
+          </div>
 
-  </div>
-
-</div>
-
-<div class="form-field">
-
-  <label>
-    Cognome
-  </label>
-
-  <div class="input-shell">
-
-    <ion-input
-      [(ngModel)]="formDipendente.cognome"
-      placeholder="Inserisci il cognome">
-    </ion-input>
-
-  </div>
-
-</div>
-
-<div class="form-field">
-
-  <label>
-    Email
-  </label>
-
-  <div class="input-shell">
-
-    <ion-input
-      type="email"
-      [(ngModel)]="formDipendente.email"
-      placeholder="email@metallab.it">
-    </ion-input>
-
-  </div>
-
-</div>
-
-<div class="form-field">
-  <label>
-    {{ modalMode === 'crea' ? 'Password' : 'Nuova Password (opzionale)' }}
-  </label>
-  <div class="input-shell">
-    <ion-input
-      type="password"
-      [(ngModel)]="formDipendente.password"
-      [placeholder]="modalMode === 'crea' ? 'Imposta una password' : 'Lascia vuoto per non cambiarla'">
-      
-      <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-      
-    </ion-input>
-  </div>
-</div>
+          <div class="form-field">
+            <label>
+              {{ modalMode === 'crea' ? 'Password' : 'Nuova Password (opzionale)' }}
+            </label>
+            <div class="input-shell">
+              <ion-input
+                type="password"
+                [(ngModel)]="formDipendente.password"
+                [placeholder]="modalMode === 'crea' ? 'Imposta una password' : 'Lascia vuoto per non cambiarla'">
+                <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+              </ion-input>
+            </div>
+          </div>
         
-
           <ion-button expand="block" class="modal-save-btn" [disabled]="!formDipendenteValido" (click)="salvaDipendente()">
             <ion-icon slot="start" name="save-outline"></ion-icon>
             {{ modalMode === 'crea' ? 'Crea Account' : 'Salva Modifiche' }}

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 
 import {
   IonHeader,
@@ -22,6 +21,9 @@ import {
 
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, alertCircleOutline } from 'ionicons/icons';
+
+// 1. Importiamo il Service
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -57,46 +59,42 @@ export class RegisterPage {
 
   erroreRegistrazione = '';
 
-  constructor(private router: Router, private http: HttpClient) {
+  // 2. Iniettiamo l'AuthService e rimuoviamo HttpClient
+  constructor(
+    private router: Router, 
+    private authService: AuthService
+  ) {
     addIcons({
       arrowBackOutline,
       alertCircleOutline
     });
   }
 
-  // Funzione che blocca le lettere in tempo reale
   filtraNumeri(event: any) {
     const valore = event.target.value;
-    
-    // Rimuove qualsiasi carattere che non sia un numero (0-9)
     this.telefono = valore.replace(/\D/g, '');
-    
-    // Forza l'aggiornamento grafico dell'input
     event.target.value = this.telefono;
   }
 
+  // 3. Regex aggiornata: l'indirizzo deve cominciare per forza con una lettera ([a-zA-Z])
   emailValida(email: string): boolean {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    return /^[a-zA-Z][^\s@]*@[^\s@]+\.[^\s@]+$/.test(email);
   }
-
-
 
   telefonoValido(telefono: string): boolean {
     const soloCifre = telefono.replace(/\D/g, '');
     return soloCifre.length >= 8;
   }
 
-  // L'UNICO CONTROLLO PASSWORD (Metodo Getter)
   get passwordValida(): boolean {
     const p = this.password;
     
     const haMaiuscola = /[A-Z]/.test(p);
     const haMinuscola = /[a-z]/.test(p);
     const haNumero = /[0-9]/.test(p);
-    const haSpeciale = /[\W_]/.test(p); // \W cerca qualsiasi simbolo speciale
+    const haSpeciale = /[\W_]/.test(p); 
     const lungaAbbastanza = p.length >= 6;
 
-    // Ritorna true SOLO se TUTTE le condizioni sono soddisfatte
     return haMaiuscola && haMinuscola && haNumero && haSpeciale && lungaAbbastanza;
   }
 
@@ -106,18 +104,17 @@ export class RegisterPage {
       this.cognome.trim() !== '' &&
       this.emailValida(this.email) &&
       this.telefonoValido(this.telefono) &&
-      this.passwordValida // <--- Niente più parentesi qui, usiamo il getter!
+      this.passwordValida 
     );
   }
 
- registrati() {
+  registrati() {
     if (!this.registrazioneValida) {
       return;
     }
 
     this.erroreRegistrazione = '';
 
-    // Prepara il pacchetto dati
     const payload = {
       nome: this.nome,
       cognome: this.cognome,
@@ -126,18 +123,14 @@ export class RegisterPage {
       password: this.password
     };
 
-    // Chiama l'API
-    this.http.post('http://localhost:3000/api/auth/register', payload).subscribe({
+    // 4. Deleghiamo il lavoro sporco al Service
+    this.authService.register(payload).subscribe({
       next: (response: any) => {
         console.log('Registrato con successo:', response);
-        
-        // Nel tuo authController.js la registrazione non restituisce un token automatico.
-        // Di conseguenza, la prassi standard è reindirizzare l'utente al Login!
         this.router.navigate(['/login']);
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error(err);
-        // Cattura gli errori inviati dal backend (es. status 409 o 400)
         if (err.status === 409) {
           this.erroreRegistrazione = 'Questa email è già registrata. Vai al login.';
         } else if (err.error && err.error.message) {
