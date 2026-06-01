@@ -1,7 +1,7 @@
 # Nascondi i motori e il DB del Backend
-backend/node_modules/
-backend/database/database.sqlite
+Backend/node_modules/
+Backend/database/database.sqlite
 
 # Nascondi i motori del Frontend
-frontend/node_modules/
-frontend/.angular/
+Frontend/node_modules/
+Frontend/.angular/
