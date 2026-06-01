@@ -33,7 +33,18 @@ const verifyToken = (req, res, next) => {
   }
 };
 
+const isAdmin = (req, res, next) => {
+  // Il token (spacchettato da verifyToken) contiene il ruolo. Controlliamo se è admin.
+  if (req.user && req.user.ruolo === 'admin') {
+    next();
+  } else {
+      message: 'Accesso negato: area riservata agli amministratori.'
+    });
+  }
+};
+
 
 module.exports = {
-  verifyToken
+  verifyToken,
+  isAdmin
 };

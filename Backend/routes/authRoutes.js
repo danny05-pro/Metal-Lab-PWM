@@ -1,14 +1,30 @@
-    const express = require('express');
+const express = require('express');
 
-    const authController = require('../controllers/authController');
-    const authMiddleware = require('../middlewares/authMiddleware');
+// Controllers
+const authController = require('../controllers/authController');
+const dipendentiController = require('../controllers/dipendentiController');
 
-    const router = express.Router();
+// Middlewares
+const authMiddleware = require('../middlewares/authMiddleware');
 
-    router.post('/register', authController.register);
+const router = express.Router();
 
-    router.post('/login', authController.login);
+// ==========================================
+// AREA AUTENTICAZIONE
+// ==========================================
+router.post('/register', authController.register);
+router.post('/login', authController.login);
+router.get('/profile', authMiddleware.verifyToken, authController.profile);
 
-    router.get('/profile', authMiddleware.verifyToken, authController.profile);
+// ==========================================
+// AREA ADMIN: GESTIONE DIPENDENTI
+// ==========================================
+router.get('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.getAll);
 
-    module.exports = router;
+router.post('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.create);
+//quando modifico o elimino un account mi servirà il suo id per riconoscerlo
+router.put('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.update);
+
+router.delete('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.delete);
+
+module.exports = router;

@@ -73,3 +73,48 @@ exports.findById = (id) => {
     );
   });
 };
+
+
+
+exports.findByRole = (ruolo) => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `SELECT id, nome, cognome, telefono, email, ruolo FROM users WHERE ruolo = ?`,
+      [ruolo],
+      (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      }
+    );
+  });
+};
+// la funzione update riguarda solamente la modifica del profilo dipendente non l'inserimento.
+exports.update = (id, dati) => {
+  return new Promise((resolve, reject) => {
+
+    if (dati.password) {
+      db.run(
+        `UPDATE users SET nome = ?, cognome = ?, email = ?, password = ? WHERE id = ?`,
+        [dati.nome, dati.cognome, dati.email, dati.password, id],
+        (err) => err ? reject(err) : resolve()
+      );
+    } else {
+     
+      db.run(
+        `UPDATE users SET nome = ?, cognome = ?, email = ? WHERE id = ?`,
+        [dati.nome, dati.cognome, dati.email, id],
+        (err) => err ? reject(err) : resolve()
+      );
+    }
+  });
+};
+
+exports.delete = (id) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `DELETE FROM users WHERE id = ?`, 
+      [id], 
+      (err) => err ? reject(err) : resolve()
+    );
+  });
+};
