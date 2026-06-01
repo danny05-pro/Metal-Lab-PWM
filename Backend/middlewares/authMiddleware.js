@@ -21,11 +21,8 @@ const verifyToken = (req, res, next) => {
 
   try {
     const verified = jwt.verify(token, SECRET);
-
     req.user = verified;
-
     next();
-
   } catch (error) {
     return res.status(403).json({
       message: 'Token non valido'
@@ -34,7 +31,6 @@ const verifyToken = (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
-  // Il token (spacchettato da verifyToken) contiene il ruolo. Controlliamo se è admin.
   if (req.user && req.user.ruolo === 'admin') {
     next();
   } else {
@@ -44,8 +40,31 @@ const isAdmin = (req, res, next) => {
   }
 };
 
+// NUOVO: Protegge le rotte esclusive dei clienti (come creare una richiesta)
+const isCliente = (req, res, next) => {
+  if (req.user && req.user.ruolo === 'cliente') {
+    next();
+  } else {
+    return res.status(403).json({
+      message: 'Accesso negato: area riservata ai clienti.'
+    });
+  }
+};
+
+// NUOVO: Proteggerà le rotte future dei dipendenti (come cambiare lo stato in "Completato")
+const isDipendente = (req, res, next) => {
+  if (req.user && req.user.ruolo === 'dipendente') {
+    next();
+  } else {
+    return res.status(403).json({
+      message: 'Accesso negato: area riservata al personale operativo.'
+    });
+  }
+};
 
 module.exports = {
   verifyToken,
-  isAdmin
+  isAdmin,
+  isCliente,
+  isDipendente
 };

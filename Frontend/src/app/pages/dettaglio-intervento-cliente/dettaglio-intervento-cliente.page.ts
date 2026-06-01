@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common'; // <-- Utile per gestire i dati asincroni nell'HTML
 
 import {
   IonContent,
@@ -17,10 +18,9 @@ import {
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
+import { arrowBackOutline } from 'ionicons/icons';
 
-import {
-  arrowBackOutline
-} from 'ionicons/icons';
+import { InterventiService } from '../../services/interventi.service';
 
 @Component({
   selector: 'app-dettaglio-intervento-cliente',
@@ -28,6 +28,7 @@ import {
   styleUrls: ['./dettaglio-intervento-cliente.page.scss'],
   standalone: true,
   imports: [
+    CommonModule, // <-- Aggiunto
     RouterLink,
     IonContent,
     IonHeader,
@@ -43,30 +44,41 @@ import {
     IonChip
   ]
 })
-export class DettaglioInterventoClientePage {
+export class DettaglioInterventoClientePage implements OnInit {
 
   interventoId = '';
+  // Lo inizializziamo a null. L'HTML si aggiornerà non appena i dati arriveranno dal backend.
+  intervento: any = null; 
 
-  intervento = {
-    id: 1,
-    descrizione: 'Riparazione impianto',
-    luogo: 'Stabilimento Napoli',
-    priorita: 'Alta',
-    stato: 'Programmato',
-    dataOra: '2026-05-20',
-    tecnicoAssegnato: 'Luigi Ferri',
-    note: 'Intervento programmato per verifica e riparazione dell’impianto industriale.'
-  };
+  constructor(
+    private route: ActivatedRoute,
+    private interventiService: InterventiService // <-- Iniettiamo il service
+  ) {
+    addIcons({ arrowBackOutline });
+    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
+  }
 
-  constructor(private route: ActivatedRoute) {
+  // Eseguiamo la chiamata all'avvio della pagina
+  ngOnInit() {
+    if (this.interventoId) {
+      this.caricaDettaglio();
+    }
+  }
 
-    addIcons({
-      arrowBackOutline
+  caricaDettaglio() {
+    this.interventiService.getInterventiCliente().subscribe({
+      next: (tuttiGliInterventi) => {
+        // Peschiamo dall'array l'intervento con l'ID corrispondente a quello dell'URL
+        this.intervento = tuttiGliInterventi.find(i => i.id.toString() === this.interventoId);
+        
+        // Adattiamo i nomi dei campi per farli coincidere col tuo HTML
+        if (this.intervento) {
+          this.intervento.dataOra = this.intervento.data_intervento || this.intervento.data_preferita || 'Data non ancora fissata';
+          this.intervento.tecnicoAssegnato = this.intervento.dipendente_id ? `ID Tecnico: ${this.intervento.dipendente_id}` : 'In attesa di assegnazione';
+        }
+      },
+      error: (err) => console.error('Errore durante il caricamento dell\'intervento:', err)
     });
-
-    this.interventoId =
-      this.route.snapshot.paramMap.get('id') || '';
-
   }
 
 }

@@ -22,14 +22,17 @@ import {
   IonModal
 } from '@ionic/angular/standalone';
 
+import { AlertController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-
 import {
   arrowBackOutline,
   warningOutline,
   constructOutline,
   calendarOutline 
 } from 'ionicons/icons';
+
+// 1. IMPORTIAMO IL SERVICE DEGLI INTERVENTI
+import { InterventiService, InterventoRichiesta } from '../../services/interventi.service';
 
 @Component({
   selector: 'app-interventi',
@@ -58,7 +61,6 @@ import {
     IonModal
   ]
 })
-
 export class InterventiPage {
   descrizione = '';
   luogo = '';
@@ -74,7 +76,12 @@ export class InterventiPage {
     return d.toLocaleDateString('it-IT');
   }
 
-  constructor(private router: Router) {
+  // 2. INIETTIAMO SERVICE E ALERTCONTROLLER
+  constructor(
+    private router: Router,
+    private interventiService: InterventiService,
+    private alertController: AlertController
+  ) {
     addIcons({
       arrowBackOutline,
       warningOutline,
@@ -96,17 +103,37 @@ export class InterventiPage {
     );
   }
 
+  // 3. SOSTITUIAMO IL VECCHIO CODICE CON LA VERA CHIAMATA HTTP
   inviaIntervento() {
-    console.log({
+    if (!this.formValido) return;
+
+    // Prepariamo l'oggetto per il backend
+    const dati: InterventoRichiesta = {
       descrizione: this.descrizione,
       luogo: this.luogo,
       priorita: this.priorita,
-      dataIntervento: this.dataIntervento
-    });
+      data_preferita: this.dataIntervento ? this.dataIntervento.split('T')[0] : undefined
+    };
 
-    this.interventoInviato = true;
-    setTimeout(() => {
-      this.router.navigate(['/dashboard-cliente']);
-    }, 5);
+    this.interventiService.creaIntervento(dati).subscribe({
+      next: () => {
+        this.interventoInviato = true;
+        // Aspettiamo un secondo e mezzo per far leggere il messaggio di successo prima di cambiare pagina
+        setTimeout(() => {
+          this.router.navigate(['/dashboard-cliente']);
+        }, 1500);
+      },
+      error: async (err: any) => {
+        console.error('Errore invio richiesta', err);
+        const messaggio = err.error?.message || 'Errore di connessione al server.';
+        const alert = await this.alertController.create({
+          cssClass: 'custom-dark-alert',
+          header: 'Errore',
+          message: messaggio,
+          buttons: ['OK']
+        });
+        await alert.present();
+      }
+    });
   }
 }

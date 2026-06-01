@@ -89,20 +89,20 @@ exports.findByRole = (ruolo) => {
   });
 };
 // la funzione update riguarda solamente la modifica del profilo dipendente non l'inserimento.
+// la funzione update riguarda la modifica del profilo, ora include anche il telefono.
 exports.update = (id, dati) => {
   return new Promise((resolve, reject) => {
 
     if (dati.password) {
       db.run(
-        `UPDATE users SET nome = ?, cognome = ?, email = ?, password = ? WHERE id = ?`,
-        [dati.nome, dati.cognome, dati.email, dati.password, id],
+        `UPDATE users SET nome = ?, cognome = ?, telefono = ?, email = ?, password = ? WHERE id = ?`,
+        [dati.nome, dati.cognome, dati.telefono, dati.email, dati.password, id],
         (err) => err ? reject(err) : resolve()
       );
     } else {
-     
       db.run(
-        `UPDATE users SET nome = ?, cognome = ?, email = ? WHERE id = ?`,
-        [dati.nome, dati.cognome, dati.email, id],
+        `UPDATE users SET nome = ?, cognome = ?, telefono = ?, email = ? WHERE id = ?`,
+        [dati.nome, dati.cognome, dati.telefono, dati.email, id],
         (err) => err ? reject(err) : resolve()
       );
     }

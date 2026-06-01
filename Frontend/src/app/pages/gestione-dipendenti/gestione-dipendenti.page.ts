@@ -4,9 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 
-// IMPORT HTTP AGGIUNTI QUI DIRETTAMENTE
-import { HttpClient, HttpHeaders } from '@angular/common/http'; 
-
 import {
   IonContent,
   IonHeader,
@@ -40,15 +37,9 @@ import {
   callOutline
 } from 'ionicons/icons';
 
-export interface Dipendente {
-  id?: number; 
-  nome: string;
-  cognome: string;
-  email: string;
-  telefono: string; 
-  stato?: string; 
-  password?: string;
-}
+// 1. IMPORTIAMO IL SERVICE E L'INTERFACCIA
+// (Assicurati che il percorso relativo sia corretto)
+import { DipendentiService, Dipendente } from '../../services/dipendenti.service';
 
 @Component({
   selector: 'app-gestione-dipendenti',
@@ -86,25 +77,14 @@ export class GestioneDipendentiPage implements OnInit {
   modalMode: 'crea' | 'modifica' = 'crea';
   formDipendente: Partial<Dipendente> & { password?: string } = {};
 
-  // INDIRIZZO DEL BACKEND INSERITO DIRETTAMENTE QUI
-  private apiUrl = 'http://localhost:3000/api/gestione-dipendenti';
-
+  // 2. INIETTIAMO IL SERVICE AL POSTO DI HTTPCLIENT
   constructor(
     private alertController: AlertController,
-    private http: HttpClient // INIETTATO HTTPCLIENT DIRETTAMENTE QUI
+    private dipendentiService: DipendentiService 
   ) {
     addIcons({
       arrowBackOutline, addOutline, createOutline, trashOutline,
       personOutline, closeOutline, saveOutline, callOutline 
-    });
-  }
-
-  // FUNZIONE PER CREARE GLI HEADERS CON IL TOKEN INCLUSA QUI
-  private getHeaders(): HttpHeaders {
-    const token = sessionStorage.getItem('token'); 
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
     });
   }
 
@@ -146,9 +126,9 @@ export class GestioneDipendentiPage implements OnInit {
     this.caricaDipendenti();
   }
 
-  // CHIAMATA GET DIRETTA
+  // 3. USO DEL SERVICE: GET
   caricaDipendenti() {
-    this.http.get<Dipendente[]>(this.apiUrl, { headers: this.getHeaders() }).subscribe({
+    this.dipendentiService.getDipendenti().subscribe({
       next: (datiReali: Dipendente[]) => {
         this.dipendenti = datiReali.map((d: Dipendente) => ({ ...d, stato: 'Attivo' }));
       },
@@ -176,32 +156,54 @@ export class GestioneDipendentiPage implements OnInit {
     if (!this.formDipendenteValido) return;
 
     if (this.modalMode === 'crea') {
-      // CHIAMATA POST DIRETTA
-      this.http.post<Dipendente>(this.apiUrl, this.formDipendente, { headers: this.getHeaders() }).subscribe({
+      // CHIAMATA POST
+      this.dipendentiService.creaDipendente(this.formDipendente as Dipendente).subscribe({
         next: () => {
           this.caricaDipendenti(); 
           this.chiudiModale();
         },
-        error: (err: any) => console.error('Errore durante la creazione', err)
+        error: async (err: any) => {
+          console.error('Errore durante la creazione', err);
+          // MOSTRIAMO L'ERRORE DEL BACKEND A SCHERMO
+          const messaggio = err.error?.message || 'Si è verificato un errore di connessione.';
+          const alert = await this.alertController.create({
+            cssClass: 'custom-dark-alert',
+            header: 'Errore di Creazione',
+            message: messaggio,
+            buttons: ['OK']
+          });
+          await alert.present();
+        }
       });
     
     } else {
       if (this.formDipendente.id) {
-        // CHIAMATA PUT DIRETTA
-        this.http.put(`${this.apiUrl}/${this.formDipendente.id}`, this.formDipendente, { headers: this.getHeaders() }).subscribe({
+        // CHIAMATA PUT
+        this.dipendentiService.modificaDipendente(this.formDipendente.id, this.formDipendente as Dipendente).subscribe({
           next: () => {
             this.caricaDipendenti(); 
             this.chiudiModale();
           },
-          error: (err: any) => console.error('Errore durante la modifica', err)
+          error: async (err: any) => {
+            console.error('Errore durante la modifica', err);
+            // MOSTRIAMO L'ERRORE DEL BACKEND A SCHERMO
+            const messaggio = err.error?.message || 'Si è verificato un errore durante il salvataggio.';
+            const alert = await this.alertController.create({
+              cssClass: 'custom-dark-alert',
+              header: 'Errore di Modifica',
+              message: messaggio,
+              buttons: ['OK']
+            });
+            await alert.present();
+          }
         });
       }
     }
   }
 
+  // 6. USO DEL SERVICE: DELETE
   eliminaDipendente(id: number) {
-    // CHIAMATA DELETE DIRETTA
-    this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() }).subscribe({
+    this.dipendentiService.eliminaDipendente(id).subscribe({
       next: () => {
         this.dipendenti = this.dipendenti.filter((dipendente: Dipendente) => dipendente.id !== id);
       },

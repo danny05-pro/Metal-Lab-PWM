@@ -14,6 +14,8 @@
 
   db.serialize(() => {
 
+    
+
     db.run(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,6 +25,24 @@
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         ruolo TEXT NOT NULL CHECK (ruolo IN ('cliente', 'admin', 'dipendente'))
+      )
+    `);
+
+    db.run(`
+      CREATE TABLE IF NOT EXISTS interventi (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cliente_id INTEGER NOT NULL,
+        dipendente_id INTEGER,
+        descrizione TEXT NOT NULL,
+        luogo TEXT NOT NULL,
+        priorita TEXT NOT NULL,
+        stato TEXT DEFAULT 'Da assegnare',
+        data_richiesta TEXT NOT NULL,
+        data_preferita TEXT,
+        data_intervento TEXT,
+        note TEXT,
+        FOREIGN KEY (cliente_id) REFERENCES users(id),
+        FOREIGN KEY (dipendente_id) REFERENCES users(id)
       )
     `);
 
