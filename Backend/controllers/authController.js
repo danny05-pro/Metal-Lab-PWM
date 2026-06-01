@@ -6,7 +6,7 @@ const User = require('../models/userModel');
 const SECRET = 'metal-lab-secret-key';
 
 function emailValida(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return /^[a-zA-Z][^\s@]*@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 function passwordValida(password) {

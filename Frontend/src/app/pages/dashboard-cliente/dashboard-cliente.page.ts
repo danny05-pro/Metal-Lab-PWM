@@ -21,14 +21,11 @@ import {
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-
-import {
-  arrowBackOutline
-} from 'ionicons/icons';
+import { arrowBackOutline } from 'ionicons/icons';
 
 import { Preventivo } from 'src/app/models/preventivo.model';
-import { Intervento } from 'src/app/models/intervento.model';
 import { Ordine } from 'src/app/models/ordine.model';
+import { InterventiService } from '../../services/interventi.service';
 
 @Component({
   selector: 'app-dashboard-cliente',
@@ -55,8 +52,13 @@ import { Ordine } from 'src/app/models/ordine.model';
     IonIcon
   ]
 })
-export class DashboardClientePage {
+export class DashboardClientePage { 
 
+  // --- VARIABILI COLLEGATE AL DATABASE (REALI) ---
+  tuttiGliInterventi: any[] = [];
+  interventiFuturi: any[] = [];
+
+  // --- VARIABILI MOCKATE ---
   preventivi: Preventivo[] = [
     {
       id: 1,
@@ -80,85 +82,60 @@ export class DashboardClientePage {
     }
   ];
 
-  interventi: Intervento[] = [
-    {
-      id: 1,
-      descrizione: 'Riparazione impianto',
-      luogo: 'Stabilimento Napoli',
-      priorita: 'Alta', // Priorità valida
-      stato: 'Programmato', // Stato valido
-      dataOra: '2026-05-20'
-    },
-    {
-      id: 2,
-      descrizione: 'Manutenzione straordinaria pressa idraulica',
-      luogo: 'Officina Bologna',
-      priorita: 'Media', // Priorità valida
-      stato: 'Terminato', // Corretto da "In corso" a "Terminato"
-      dataOra: '2026-05-22'
-    }
-  ];
-
   ordini: Ordine[] = [
     {
       id: 1,
       descrizione: 'Ordine profilati metallici',
-      stato: 'Pronto per il ritiro', // Stato valido
+      stato: 'Pronto per il ritiro', 
       dataConsegnaPrevista: '2026-05-25'
     },
     {
       id: 2,
       descrizione: 'Bulloneria speciale ad alta resistenza',
-      stato: 'In lavorazione', // Corretto da "In spedizione" a "In lavorazione"
+      stato: 'In lavorazione', 
       dataConsegnaPrevista: '2026-05-28'
     }
   ];
-
-constructor() {
-    addIcons({
-      arrowBackOutline
-    });
-  }
 
   storicoOrdini: Ordine[] = [
     {
       id: 101,
       descrizione: 'Fornitura staffe di giunzione V1',
-      stato: 'Consegnato', // Stato valido
+      stato: 'Consegnato', 
       dataConsegnaPrevista: '2026-04-14'
     },
     {
       id: 102,
       descrizione: 'Piastre preforate su misura',
-      stato: 'Consegnato', // Stato valido
+      stato: 'Consegnato', 
       dataConsegnaPrevista: '2026-03-28'
     }
   ];
 
-  motivoIntervento(descrizione: string): string {
-    return descrizione || 'Intervento Tecnico';
+  constructor(private interventiService: InterventiService) {
+    addIcons({ arrowBackOutline });
   }
-  eventiCalendario = [
-  {
-    id: 1,
-    titolo: 'Intervento programmato',
-    tipo: 'Intervento',
-    data: '2026-05-20',
-    descrizione: 'Riparazione impianto - Stabilimento Napoli'
-  },
-  {
-    id: 2,
-    titolo: 'Ritiro ordine',
-    tipo: 'Ordine',
-    data: '2026-05-25',
-    descrizione: 'Ordine profilati metallici pronto per il ritiro'
-  },
-  {
-    id: 3,
-    titolo: 'Consegna prevista',
-    tipo: 'Ordine',
-    data: '2026-05-28',
-    descrizione: 'Bulloneria speciale ad alta resistenza'
+
+  // Scatta automaticamente ogni volta che entri in questa pagina
+  ionViewWillEnter() {
+    this.caricaInterventi();
   }
-];
+
+  caricaInterventi() {
+    this.interventiService.getInterventiCliente().subscribe({
+      next: (dati) => {
+        this.tuttiGliInterventi = dati;
+
+        const oggi = new Date();
+        oggi.setHours(0, 0, 0, 0);
+
+        this.interventiFuturi = dati.filter(intervento => {
+          if (!intervento.data_intervento) return false; 
+          const dataIntervento = new Date(intervento.data_intervento);
+          return dataIntervento >= oggi;
+        });
+      },
+      error: (err) => console.error('Errore caricamento interventi', err)
+    });
+  }
 }

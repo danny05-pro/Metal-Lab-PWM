@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+
 import {
   IonContent,
   IonHeader,
@@ -32,16 +33,13 @@ import {
   trashOutline,
   personOutline,
   closeOutline,
-  saveOutline
+  saveOutline,
+  callOutline
 } from 'ionicons/icons';
 
-interface Dipendente {
-  id: number;
-  nome: string;
-  cognome: string;
-  email: string;
-  stato: 'Attivo' | 'Sospeso';
-}
+// 1. IMPORTIAMO IL SERVICE E L'INTERFACCIA
+// (Assicurati che il percorso relativo sia corretto)
+import { DipendentiService, Dipendente } from '../../services/dipendenti.service';
 
 @Component({
   selector: 'app-gestione-dipendenti',
@@ -74,62 +72,49 @@ interface Dipendente {
 })
 export class GestioneDipendentiPage implements OnInit {
   
-  // Dati Mock (In futuro arriveranno dal backend tramite GET /api/utenti?ruolo=dipendente)
-  dipendenti: Dipendente[] = [
-    { id: 1, nome: 'Marco', cognome: 'Bianchi', email: 'marco.bianchi@metallab.it', stato: 'Attivo' },
-    { id: 2, nome: 'Giuseppe', cognome: 'Verdi', email: 'giuseppe.verdi@metallab.it', stato: 'Attivo' },
-    { id: 3, nome: 'Luigi', cognome: 'Russo', email: 'luigi.russo@metallab.it', stato: 'Sospeso' }
-  ];
-
-  // Variabili per il Modale
+  dipendenti: Dipendente[] = [];
   isModalOpen = false;
   modalMode: 'crea' | 'modifica' = 'crea';
-  
-  // Campi del form
   formDipendente: Partial<Dipendente> & { password?: string } = {};
 
-  constructor(private alertController: AlertController) {
+  // 2. INIETTIAMO IL SERVICE AL POSTO DI HTTPCLIENT
+  constructor(
+    private alertController: AlertController,
+    private dipendentiService: DipendentiService 
+  ) {
     addIcons({
-      arrowBackOutline,
-      addOutline,
-      createOutline,
-      trashOutline,
-      personOutline,
-      closeOutline,
-      saveOutline
+      arrowBackOutline, addOutline, createOutline, trashOutline,
+      personOutline, closeOutline, saveOutline, callOutline 
     });
   }
-get formDipendenteValido(): boolean {
-  const nomeValido = (this.formDipendente.nome?.trim() ?? '') !== '';
-  const cognomeValido = (this.formDipendente.cognome?.trim() ?? '') !== '';
-  const emailValido = (this.formDipendente.email?.trim() ?? '') !== '';
-  
-  if (this.modalMode === 'crea') {
-    // In creazione la password DEVE esserci
-    const passwordValida = (this.formDipendente.password?.trim() ?? '') !== '';
-    return nomeValido && cognomeValido && emailValido && passwordValida;
-  } else {
-    // In modifica puoi anche lasciare il campo password vuoto (se non vuoi cambiarla)
-    return nomeValido && cognomeValido && emailValido;
+
+  get formDipendenteValido(): boolean {
+    const nomeValido = (this.formDipendente.nome?.trim() ?? '') !== '';
+    const cognomeValido = (this.formDipendente.cognome?.trim() ?? '') !== '';
+    const emailValido = (this.formDipendente.email?.trim() ?? '') !== '';
+    const telefonoValido = (this.formDipendente.telefono?.trim() ?? '') !== '';
+    
+    if (this.modalMode === 'crea') {
+      const passwordValida = (this.formDipendente.password?.trim() ?? '') !== '';
+      return nomeValido && cognomeValido && emailValido && telefonoValido && passwordValida;
+    } else {
+      return nomeValido && cognomeValido && emailValido && telefonoValido;
+    }
   }
-}
-async confermaEliminazioneDipendente(dipendente: Dipendente) {
+
+  async confermaEliminazioneDipendente(dipendente: Dipendente) {
     const alert = await this.alertController.create({
-      cssClass: 'custom-dark-alert', // <--- Usa il tema scuro globale che abbiamo già creato!
+      cssClass: 'custom-dark-alert',
       header: 'Eliminare dipendente?',
       message: `Vuoi eliminare l’account di ${dipendente.nome} ${dipendente.cognome}? Questa azione è irreversibile.`,
       buttons: [
+        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
         {
-          text: 'Annulla',
-          role: 'cancel',
-          cssClass: 'dark-alert-btn-cancel' // <--- Usa lo stile grigio per annullare
-        },
-        {
-          text: 'Elimina',
-          role: 'destructive',
-          cssClass: 'dark-alert-btn-danger', // <--- Nuova classe per il tasto rosso!
+          text: 'Elimina', role: 'destructive', cssClass: 'dark-alert-btn-danger',
           handler: () => {
-            this.eliminaDipendente(dipendente.id);
+            if(dipendente.id) {
+              this.eliminaDipendente(dipendente.id);
+            }
           }
         }
       ]
@@ -137,17 +122,28 @@ async confermaEliminazioneDipendente(dipendente: Dipendente) {
     await alert.present();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.caricaDipendenti();
+  }
+
+  // 3. USO DEL SERVICE: GET
+  caricaDipendenti() {
+    this.dipendentiService.getDipendenti().subscribe({
+      next: (datiReali: Dipendente[]) => {
+        this.dipendenti = datiReali.map((d: Dipendente) => ({ ...d, stato: 'Attivo' }));
+      },
+      error: (err: any) => console.error('Errore nel recupero dipendenti', err)
+    });
+  }
 
   apriModaleCrea() {
     this.modalMode = 'crea';
-    this.formDipendente = { stato: 'Attivo' }; // Valore di default
+    this.formDipendente = { stato: 'Attivo' }; 
     this.isModalOpen = true;
   }
 
   apriModaleModifica(dipendente: Dipendente) {
     this.modalMode = 'modifica';
-    // Copiamo i dati per non modificare l'originale fino al salvataggio
     this.formDipendente = { ...dipendente }; 
     this.isModalOpen = true;
   }
@@ -157,46 +153,61 @@ async confermaEliminazioneDipendente(dipendente: Dipendente) {
   }
 
   salvaDipendente() {
-  if (this.modalMode === 'crea') {
-    // ID fittizio per il test
-    if (!this.formDipendenteValido) {
-  return;
-}
-    const nuovoDipendente: Dipendente = {
-      id: Date.now(), 
-      nome: this.formDipendente.nome || '',
-      cognome: this.formDipendente.cognome || '',
-      email: this.formDipendente.email || '',
-      stato: 'Attivo'
-    };
+    if (!this.formDipendenteValido) return;
+
+    if (this.modalMode === 'crea') {
+      // CHIAMATA POST
+      this.dipendentiService.creaDipendente(this.formDipendente as Dipendente).subscribe({
+        next: () => {
+          this.caricaDipendenti(); 
+          this.chiudiModale();
+        },
+        error: async (err: any) => {
+          console.error('Errore durante la creazione', err);
+          // MOSTRIAMO L'ERRORE DEL BACKEND A SCHERMO
+          const messaggio = err.error?.message || 'Si è verificato un errore di connessione.';
+          const alert = await this.alertController.create({
+            cssClass: 'custom-dark-alert',
+            header: 'Errore di Creazione',
+            message: messaggio,
+            buttons: ['OK']
+          });
+          await alert.present();
+        }
+      });
     
-    this.dipendenti.push(nuovoDipendente);
-  
-  }else {
-      // --- LOGICA DI MODIFICA (Simulata) ---
-      // Cerchiamo la posizione (l'indice) del dipendente nel nostro array usando il suo ID
-      const index = this.dipendenti.findIndex(d => d.id === this.formDipendente.id);
-      
-      if (index !== -1) {
-        // Sovrascriviamo l'oggetto vecchio con i nuovi dati presenti nel form
-        this.dipendenti[index] = {
-          id: this.formDipendente.id!,
-          nome: this.formDipendente.nome || '',
-          cognome: this.formDipendente.cognome || '',
-          email: this.formDipendente.email || '',
-          stato: this.formDipendente.stato || 'Attivo'
-        };
-        console.log('Dipendente aggiornato visivamente con ID:', this.formDipendente.id);
+    } else {
+      if (this.formDipendente.id) {
+        // CHIAMATA PUT
+        this.dipendentiService.modificaDipendente(this.formDipendente.id, this.formDipendente as Dipendente).subscribe({
+          next: () => {
+            this.caricaDipendenti(); 
+            this.chiudiModale();
+          },
+          error: async (err: any) => {
+            console.error('Errore durante la modifica', err);
+            // MOSTRIAMO L'ERRORE DEL BACKEND A SCHERMO
+            const messaggio = err.error?.message || 'Si è verificato un errore durante il salvataggio.';
+            const alert = await this.alertController.create({
+              cssClass: 'custom-dark-alert',
+              header: 'Errore di Modifica',
+              message: messaggio,
+              buttons: ['OK']
+            });
+            await alert.present();
+          }
+        });
       }
     }
-    
-    // Chiudiamo il modale in entrambi i casi
-    this.chiudiModale();
   }
 
+  // 6. USO DEL SERVICE: DELETE
   eliminaDipendente(id: number) {
-  this.dipendenti = this.dipendenti.filter(
-    dipendente => dipendente.id !== id
-  );
-}
+    this.dipendentiService.eliminaDipendente(id).subscribe({
+      next: () => {
+        this.dipendenti = this.dipendenti.filter((dipendente: Dipendente) => dipendente.id !== id);
+      },
+      error: (err: any) => console.error('Errore durante l\'eliminazione', err)
+    });
+  }
 }
