@@ -1,0 +1,225 @@
+ion-content {
+  --background: #0b0f14;
+}
+
+.quote-header {
+  padding: 42px 22px 20px;
+  text-align: center;
+  color: white;
+}
+
+.quote-header h1 {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.quote-header p {
+  max-width: 720px;
+  margin: 14px auto 0;
+  color: #b7c0cc;
+  line-height: 1.6;
+}
+
+.quote-card {
+  max-width: 760px;
+  margin: 24px auto 70px;
+  --background: #151b23;
+  color: white;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+ion-item {
+  --background: transparent;
+  --color: white;
+  --border-color: rgba(255,255,255,0.12);
+  margin-bottom: 14px;
+}
+
+ion-label {
+  color: #f5a623 !important;
+  font-weight: 700;
+}
+
+ion-input,
+ion-textarea,
+ion-select {
+  --color: white;
+  --placeholder-color: #8f9aaa;
+}
+
+.file-box {
+  display: flex;
+  gap: 18px;
+  padding: 22px;
+  margin: 22px 0;
+  background: #0f141b;
+  border: 1px dashed rgba(245,166,35,0.5);
+  border-radius: 18px;
+}
+
+.file-box ion-icon {
+  font-size: 42px;
+  color: #f5a623;
+}
+
+.file-box h3 {
+  margin: 0 0 8px;
+  font-weight: 800;
+}
+
+.file-box p {
+  margin: 0 0 12px;
+  color: #b7c0cc;
+}
+
+.file-name {
+  color: #f5a623;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.success-message {
+  margin-top: 22px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(45, 211, 111, 0.14);
+  color: #2dd36f;
+  text-align: center;
+  font-weight: 700;
+}
+
+@media (max-width: 850px) {
+  .quote-card {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .file-box {
+    flex-direction: column;
+  }
+}
+
+.btn-glass-submit {
+  margin-top: 32px;
+  height: 52px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Colori Ambra Translucidi (Base) */
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  /* Effetto Hover (Pieno) */
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px);
+  }
+
+  /* Gestione dello stato disabilitato */
+  &::part(native) {
+    transition: all 0.2s ease;
+  }
+  
+  &.button-disabled {
+    opacity: 0.5;
+    --background: rgba(255, 255, 255, 0.05);
+    --color: #6c7a89;
+    --border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/*Personalizzazione Bottone "Scegli File"*/
+
+input[type="file"] {
+  color: transparent;
+  font-size: 0;
+  cursor: pointer;
+  outline: none;
+
+  padding: 4px 0;
+}
+
+input[type="file"]::file-selector-button,
+input[type="file"]::-webkit-file-upload-button {
+  margin-right: 16px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  
+  font-weight: 700;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  
+  background: rgba(245, 166, 35, 0.12);
+  color: #f5a623;
+  border: 1px solid rgba(245, 166, 35, 0.2);
+  
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input[type="file"]::file-selector-button:hover,
+input[type="file"]::-webkit-file-upload-button:hover {
+  background: #f5a623;
+  border-color: #f5a623;
+  color: #0b0f14;
+  transform: translateY(-2px);
+}
+
+/* Stile per la lista di file multipli */
+.file-names-container {
+  margin-bottom: 22px;
+  padding: 0 4px;
+}
+
+.file-names-container p {
+  color: #b7c0cc;
+  margin: 0 0 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.file-names-container ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.file-names-container .file-name {
+  color: #f5a623;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.os-hint {
+  font-size: 0.85rem !important;
+  color: #f5a623 !important; 
+  margin-top: -8px;
+  margin-bottom: 14px;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.os-hint strong {
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}

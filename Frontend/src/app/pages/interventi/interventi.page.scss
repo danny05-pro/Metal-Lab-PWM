@@ -1,0 +1,184 @@
+ion-content {
+  --background: #0b0f14;
+}
+
+.intervention-header {
+  padding: 46px 22px 20px;
+  text-align: center;
+  color: white;
+}
+
+.intervention-header ion-icon {
+  font-size: 56px;
+  color: #f5a623;
+  margin-bottom: 14px;
+}
+
+.intervention-header h1 {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.intervention-header p {
+  max-width: 720px;
+  margin: 16px auto 0;
+  color: #b7c0cc;
+  line-height: 1.6;
+}
+
+.intervention-card {
+  max-width: 760px;
+  margin: 24px auto 70px;
+
+  --background: #151b23;
+
+  border-radius: 24px;
+
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+ion-item {
+  --background: transparent;
+  --color: white;
+  --border-color: rgba(255,255,255,0.12);
+  margin-bottom: 16px;
+}
+
+ion-label {
+  color: #f5a623 !important;
+  font-weight: 700;
+}
+
+ion-input,
+ion-textarea,
+ion-select {
+  --color: white;
+  --placeholder-color: #8f9aaa;
+}
+
+.success-message {
+  margin-top: 22px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(45, 211, 111, 0.14);
+  color: #2dd36f;
+  text-align: center;
+  font-weight: 700;
+}
+
+@media (max-width: 850px) {
+  .intervention-card {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+}
+
+.btn-glass-submit {
+  margin-top: 32px;
+  height: 52px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Colori Ambra Translucidi (Base) */
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  /* Effetto Hover (Pieno) */
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px);
+  }
+
+  /* Gestione dello stato disabilitato */
+  &::part(native) {
+    transition: all 0.2s ease;
+  }
+  
+  &.button-disabled {
+    opacity: 0.5;
+    --background: rgba(255, 255, 255, 0.05);
+    --color: #6c7a89;
+    --border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ==========================================================================
+   Modale Calendario Pop-up - Tema Scuro/Ambra (Wheel Picker Disabilitato)
+   ========================================================================== */
+
+ion-modal.dark-calendar-modal {
+  --width: max-content;
+  --height: max-content;
+  --background: transparent;
+  --box-shadow: none;
+  --border-radius: 24px; 
+  
+  align-items: center;
+  justify-content: center;
+
+  ion-datetime.custom-amber-calendar {
+    /* Background e Struttura Generale */
+    --background: #151b23;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    
+    /* Colore del testo standard (Giorni della griglia) */
+    color: #ffffff; 
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255, 255, 255;
+
+    /* Variabili Tema Ambra (Giorno attivo e bottoni base) */
+    --ion-color-primary: #f5a623;
+    --ion-color-primary-rgb: 245, 166, 35;
+    --ion-color-primary-contrast: #0b0f14;
+    --ion-color-primary-contrast-rgb: 11, 15, 20;
+
+    
+    /* 1. Mese e Anno: Colore Ambra e DISABILITAZIONE CLICK */
+    /* ==========================================================
+       HEADER E INIBIZIONE DEL WHEEL PICKER
+       ========================================================== */
+    
+    /* 1. Mese e Anno: Rimozione freccetta, Colore Ambra e DISABILITAZIONE CLICK */
+    &::part(month-year-button) {
+      pointer-events: none; /* Impedisce l'apertura della rotella */
+
+      /* TRUCCO CSS: Nasconde l'icona SVG mantenendo il testo perfetto */
+      color: transparent; 
+      text-shadow: 0 0 0 #f5a623; 
+    }
+
+    /* 2. Frecce Direzionali: Colore Ambra e interattività mantenuta */
+    &::part(prev-month-button),
+    &::part(next-month-button) {
+      color: #f5a623;
+      opacity: 1 !important;
+    }
+
+    /* 3. Soppressione dell'alone di background sugli stati di interazione delle frecce */
+    &::part(prev-month-button):hover,
+    &::part(next-month-button):hover,
+    &::part(prev-month-button):active,
+    &::part(next-month-button):active {
+      background: #151b23 !important;
+      background-color: #151b23 !important;
+      opacity: 1 !important; 
+    }
+  }
+}
