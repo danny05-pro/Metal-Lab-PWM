@@ -65,16 +65,23 @@ export class DettaglioInterventoClientePage implements OnInit {
     }
   }
 
-  caricaDettaglio() {
+ caricaDettaglio() {
     this.interventiService.getInterventiCliente().subscribe({
       next: (tuttiGliInterventi) => {
-        // Peschiamo dall'array l'intervento con l'ID corrispondente a quello dell'URL
         this.intervento = tuttiGliInterventi.find(i => i.id.toString() === this.interventoId);
         
-        // Adattiamo i nomi dei campi per farli coincidere col tuo HTML
         if (this.intervento) {
-          this.intervento.dataOra = this.intervento.data_intervento || this.intervento.data_preferita || 'Data non ancora fissata';
-          this.intervento.tecnicoAssegnato = this.intervento.dipendente_id ? `ID Tecnico: ${this.intervento.dipendente_id}` : 'In attesa di assegnazione';
+          this.intervento.dataOra = this.intervento.data_intervento 
+            ? this.intervento.data_intervento 
+            : 'In attesa di conferma';
+
+          this.intervento.dataPreferitaFormattata = this.intervento.data_preferita 
+            ? this.intervento.data_preferita 
+            : 'Nessuna preferenza indicata';
+            
+          this.intervento.tecnicoAssegnato = this.intervento.dipendente_id 
+            ? `ID Tecnico: ${this.intervento.dipendente_id}` 
+            : 'In attesa di assegnazione';
         }
       },
       error: (err) => console.error('Errore durante il caricamento dell\'intervento:', err)

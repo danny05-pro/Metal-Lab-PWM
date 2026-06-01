@@ -1,5 +1,6 @@
 ion-content {
   --background: #0b0f14;
+  --padding-bottom: 60px;
 }
 
 .detail-header {
@@ -23,6 +24,10 @@ ion-content {
   max-width: 900px;
   margin: 22px auto;
   --background: #151b23;
+
+.detail-card:last-of-type {
+  margin-bottom: 60px; 
+}
 
   border-radius: 22px;
 

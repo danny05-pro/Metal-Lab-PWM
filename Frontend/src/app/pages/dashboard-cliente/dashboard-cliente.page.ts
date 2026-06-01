@@ -25,8 +25,6 @@ import { arrowBackOutline } from 'ionicons/icons';
 
 import { Preventivo } from 'src/app/models/preventivo.model';
 import { Ordine } from 'src/app/models/ordine.model';
-
-// IMPORTIAMO IL SERVICE DEGLI INTERVENTI
 import { InterventiService } from '../../services/interventi.service';
 
 @Component({
@@ -114,26 +112,20 @@ export class DashboardClientePage implements OnInit {
     }
   ];
 
-  // INIETTIAMO IL SERVICE NEL COSTRUTTORE
   constructor(private interventiService: InterventiService) {
-    addIcons({
-      arrowBackOutline
-    });
+    addIcons({ arrowBackOutline });
   }
 
-  // SCATTA AUTOMATICAMENTE ALL'APERTURA DELLA PAGINA
   ngOnInit() {
     this.caricaInterventi();
   }
 
-  // FUNZIONE PER SCARICARE I DATI E DIVIDERLI
   caricaInterventi() {
     this.interventiService.getInterventiCliente().subscribe({
       next: (dati) => {
-        // 1. Popoliamo la lista totale degli interventi
         this.tuttiGliInterventi = dati;
 
-        // 2. Filtriamo solo gli interventi con una data programmata nel futuro (per il calendario)
+        // Filtra solo gli interventi con una data programmata dall'admin nel futuro
         const oggi = new Date();
         oggi.setHours(0, 0, 0, 0);
 
@@ -145,9 +137,5 @@ export class DashboardClientePage implements OnInit {
       },
       error: (err) => console.error('Errore caricamento interventi', err)
     });
-  }
-
-  motivoIntervento(descrizione: string): string {
-    return descrizione || 'Intervento Tecnico';
   }
 }

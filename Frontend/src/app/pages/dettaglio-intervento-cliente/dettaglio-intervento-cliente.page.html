@@ -1,100 +1,71 @@
 <ion-header class="ion-no-border">
-
   <ion-toolbar color="dark">
-
     <ion-buttons slot="start">
-
       <ion-button routerLink="/dashboard-cliente">
         <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
-
     </ion-buttons>
-
-    <ion-title>
-       Dashboard Cliente
-    </ion-title>
-
+    <ion-title>Dashboard Cliente</ion-title>
   </ion-toolbar>
-
 </ion-header>
 
 <ion-content>
-
   <section class="detail-header">
-
-    <h1>
-      Intervento #{{ interventoId }}
-    </h1>
-
-    <p>
-      Riepilogo della richiesta di assistenza tecnica.
-    </p>
-
+    <h1>Intervento #{{ interventoId }}</h1>
+    <p>Riepilogo della richiesta di assistenza tecnica.</p>
   </section>
 
-  <ion-card class="detail-card">
+  @if (intervento) {
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Stato Intervento</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-row">
+          <span>Stato</span>
+          <ion-chip>{{ intervento.stato }}</ion-chip>
+        </div>
+        <div class="info-row">
+          <span>Priorità</span>
+          <strong>{{ intervento.priorita }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Data programmata</span>
+          <strong [style.color]="!intervento.data_intervento ? '#eb445a' : 'white'">
+            {{ intervento.dataOra }}
+          </strong>
+        </div>
+        <div class="info-row">
+          <span>Tecnico assegnato</span>
+          <strong>{{ intervento.tecnicoAssegnato }}</strong>
+        </div>
+      </ion-card-content>
+    </ion-card>
 
-    <ion-card-header>
-      <ion-card-title>
-        Stato Intervento
-      </ion-card-title>
-    </ion-card-header>
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Dati della richiesta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-row">
+          <span>Descrizione intervento</span>
+          <strong>{{ intervento.descrizione }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Luogo intervento</span>
+          <strong>{{ intervento.luogo }}</strong>
+        </div>
+        
+        <div class="info-row">
+          <span>Data preferita richiesta</span>
+          <strong>{{ intervento.dataPreferitaFormattata }}</strong>
+        </div>
 
-    <ion-card-content>
-
-      <div class="info-row">
-        <span>Stato</span>
-        <ion-chip>
-          {{ intervento.stato }}
-        </ion-chip>
-      </div>
-
-      <div class="info-row">
-        <span>Priorità</span>
-        <strong>{{ intervento.priorita }}</strong>
-      </div>
-
-      <div class="info-row">
-        <span>Data programmata</span>
-        <strong>{{ intervento.dataOra }}</strong>
-      </div>
-
-      <div class="info-row">
-        <span>Tecnico assegnato</span>
-        <strong>{{ intervento.tecnicoAssegnato }}</strong>
-      </div>
-
-    </ion-card-content>
-
-  </ion-card>
-
- <ion-card class="detail-card">
-
-  <ion-card-header>
-    <ion-card-title>
-      Dati della richiesta
-    </ion-card-title>
-  </ion-card-header>
-
-  <ion-card-content>
-
-    <div class="info-row">
-      <span>Descrizione intervento</span>
-      <strong>{{ intervento.descrizione }}</strong>
-    </div>
-
-    <div class="info-row">
-      <span>Luogo intervento</span>
-      <strong>{{ intervento.luogo }}</strong>
-    </div>
-
-    <div class="info-row note-row">
-      <span>Note operative</span>
-      <strong>{{ intervento.note }}</strong>
-    </div>
-
-  </ion-card-content>
-
-</ion-card>
-
+        <div class="info-row note-row">
+          <span>Note operative</span>
+          <strong>{{ intervento.note }}</strong>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  }
 </ion-content>
