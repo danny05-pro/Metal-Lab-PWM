@@ -20,22 +20,6 @@ Frontend/out-tsc/
 Frontend/coverage/
 Frontend/.env
 
-
-# =========================
-# VECCHIE CARTELLE DA NON USARE
-# =========================
-
-Front-end Ionic/node_modules/
-Front-end Ionic/.angular/
-Front-end Ionic/www/
-Front-end Ionic/dist/
-
-mio-server-express/node_modules/
-mio-server-express/database/database.sqlite
-mio-server-express/database.sqlite
-mio-server-express/.env
-
-
 # =========================
 # LOG E TEMPORANEI
 # =========================
