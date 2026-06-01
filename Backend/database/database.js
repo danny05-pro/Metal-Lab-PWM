@@ -40,6 +40,7 @@
         data_richiesta TEXT NOT NULL,
         data_preferita TEXT,
         data_intervento TEXT,
+        conferma_data TEXT DEFAULT 'In attesa',
         note TEXT,
         FOREIGN KEY (cliente_id) REFERENCES users(id),
         FOREIGN KEY (dipendente_id) REFERENCES users(id)
