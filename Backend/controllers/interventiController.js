@@ -47,3 +47,41 @@ exports.getInterventiCliente = async (req, res) => {
     return res.status(500).json({ message: 'Errore durante la lettura degli interventi.' });
   }
 };
+
+exports.getInterventiAdmin = async (req, res) => {
+  try {
+    const interventi = await Intervento.findAllForAdmin();
+
+    return res.json(interventi);
+
+  } catch (error) {
+    console.error('Errore nel recupero interventi admin:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante la lettura degli interventi admin.'
+    });
+  }
+};
+
+exports.getInterventoById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    return res.json(intervento);
+
+  } catch (error) {
+    console.error('Errore nel recupero dettaglio intervento:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante la lettura del dettaglio intervento.'
+    });
+  }
+};

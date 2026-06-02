@@ -43,5 +43,21 @@ router.get('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.is
 router.post('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.create);
 router.put('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.update);
 router.delete('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.delete);
+// ==========================================
+// AREA ADMIN: GESTIONE INTERVENTI
+// ==========================================
 
+router.get(
+  '/admin/interventi',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.getInterventiAdmin
+);
+
+router.get(
+  '/admin/interventi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.getInterventoById
+);
 module.exports = router;
