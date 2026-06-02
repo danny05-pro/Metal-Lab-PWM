@@ -1,13 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
-  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonChip
 } from '@ionic/angular/standalone';
+
 import { addIcons } from 'ionicons';
 import { arrowBackOutline } from 'ionicons/icons';
+
 import { Intervento } from 'src/app/models/intervento.model';
+import { InterventiService } from 'src/app/services/interventi.service';
 
 @Component({
   selector: 'app-dettaglio-intervento-admin',
@@ -15,34 +29,67 @@ import { Intervento } from 'src/app/models/intervento.model';
   styleUrls: ['./dettaglio-intervento-admin.page.scss'],
   standalone: true,
   imports: [
-    RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons,
-    IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
+    RouterLink,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonChip
   ]
 })
 export class DettaglioInterventoAdminPage implements OnInit {
 
   interventoId = '';
-  intervento: Intervento | null = null; // Inizializzato a null (dati reali dal DB)
-  
-  // Lista vuota, da popolare tramite service con i dipendenti reali dal DB
-  dipendentiDisponibili: string[] = []; 
+
+  intervento: Intervento | null = null;
+
+  caricamento = true;
+
+  dipendentiDisponibili: string[] = [];
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private interventiService: InterventiService
   ) {
-    addIcons({ arrowBackOutline });
-    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
+    addIcons({
+      arrowBackOutline
+    });
   }
 
   ngOnInit() {
-    // TODO: Qui devi chiamare il tuo service per caricare i dati reali dell'intervento
-    // e la lista dei dipendenti disponibili dal DB
+    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
+
+    this.caricaIntervento();
+  }
+
+  caricaIntervento() {
+    this.caricamento = true;
+
+    this.interventiService.getInterventoAdminById(this.interventoId).subscribe({
+      next: (intervento) => {
+        this.intervento = intervento;
+        this.caricamento = false;
+      },
+      error: (err) => {
+        console.error('Errore caricamento dettaglio intervento admin:', err);
+        this.caricamento = false;
+      }
+    });
   }
 
   async assegnaDipendente() {
-    if (!this.intervento) return;
+    if (!this.intervento) {
+      return;
+    }
 
     const alert = await this.alertController.create({
       header: 'Assegna dipendente',
@@ -54,27 +101,27 @@ export class DettaglioInterventoAdminPage implements OnInit {
         value: dipendente
       })),
       buttons: [
-        { text: 'Annulla', role: 'cancel' },
+        {
+          text: 'Annulla',
+          role: 'cancel'
+        },
         {
           text: 'Conferma',
           handler: (dipendenteSelezionato: string) => {
-            if (!dipendenteSelezionato || !this.intervento) return false;
+            if (!dipendenteSelezionato || !this.intervento) {
+              return false;
+            }
 
-            // Inizializza array se non esiste
             if (!this.intervento.dipendentiAssegnati) {
               this.intervento.dipendentiAssegnati = [];
             }
 
-            // Aggiungi dipendente se non già presente
             if (!this.intervento.dipendentiAssegnati.includes(dipendenteSelezionato)) {
               this.intervento.dipendentiAssegnati.push(dipendenteSelezionato);
             }
 
-            // Aggiorna lo stato admin nel database
-            this.intervento.stato_admin = 'Data proposta'; 
-            
-            // TODO: Inserire qui la chiamata al service per salvare sul DB
             this.router.navigate(['/dashboard-admin']);
+
             return true;
           }
         }
