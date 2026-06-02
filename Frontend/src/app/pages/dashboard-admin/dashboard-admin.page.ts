@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
 import { AlertController } from '@ionic/angular';
 
+
 import {
   IonContent,
   IonHeader,
@@ -35,6 +36,7 @@ import {
 
 import { Intervento } from 'src/app/models/intervento.model';
 import { Preventivo } from 'src/app/models/preventivo.model';
+import { InterventiService } from 'src/app/services/interventi.service';
 
 interface VoceCatalogo {
   id: number;
@@ -97,20 +99,39 @@ export class DashboardAdminPage implements OnInit {
   modalMode: 'crea' | 'modifica' = 'crea';
   formCatalogo: Partial<VoceCatalogo> = {};
 
-  constructor(private alertController: AlertController) {
-    addIcons({
-      arrowBackOutline,
-      createOutline,
-      addOutline,
-      peopleOutline,
-      saveOutline,
-      trashOutline
-    });
-  }
+  constructor(
+  private alertController: AlertController,
+  private interventiService: InterventiService
+) {
+  addIcons({
+    arrowBackOutline,
+    createOutline,
+    addOutline,
+    peopleOutline,
+    saveOutline,
+    trashOutline
+  });
+}
 
-  ngOnInit() {
-    // Inizializza qui le chiamate ai tuoi Service (es: this.caricaDati())
-  }
+ ngOnInit() {
+  this.caricaInterventiAdmin();
+}
+caricaInterventiAdmin() {
+  this.interventiService.getInterventiAdmin().subscribe({
+    next: (interventi) => {
+      this.interventi = interventi;
+      this.interventiAperti = interventi.filter(
+        intervento =>
+          intervento.stato_admin !== 'Rifiutato' &&
+          intervento.stato_risposta_cliente !== 'Intervento annullato' &&
+          intervento.stato_lavorazione !== 'Terminato'
+      ).length;
+    },
+    error: (err) => {
+      console.error('Errore caricamento interventi admin:', err);
+    }
+  });
+}
 
   // --- LOGICA CATALOGO ---
   modificaVoceCatalogo(id: number) {

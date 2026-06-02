@@ -1,53 +1,73 @@
 export interface Intervento {
   id: number;
 
+  cliente_id?: number;
+
   descrizione: string;
 
   luogo: string;
 
   priorita: 'Bassa' | 'Media' | 'Alta';
 
-  // --- I 3 NUOVI STATI ESATTI DEL DATABASE ---
-  stato_admin: 
-    | 'Richiesto' 
-    | 'Rifiutato' 
-    | 'Data proposta' 
+  stato_admin:
+    | 'Richiesto'
+    | 'Rifiutato'
+    | 'Data proposta'
     | 'In attesa nuova valutazione';
 
-  stato_risposta_cliente: 
-    | 'In attesa' 
-    | 'Data accettata' 
-    | 'Nuova data proposta' 
+  stato_risposta_cliente:
+    | 'In attesa'
+    | 'Data accettata'
+    | 'Nuova data proposta'
     | 'Intervento annullato';
 
-  stato_lavorazione: 
-    | 'Da programmare' 
-    | 'Programmato' 
-    | 'In lavorazione' 
+  stato_lavorazione:
+    | 'Da programmare'
+    | 'Programmato'
+    | 'In lavorazione'
     | 'Terminato';
 
-  // Variabile di comodo che usavi per stampare a schermo l'orario (la lasciamo intatta)
+  // Campo di comodo usato in alcune viste frontend
   dataOra?: string;
 
-  // --- DATI DEL CLIENTE (utili all'admin/dipendente) ---
+  // Vecchi campi usati nei mock/pagine già esistenti
   cliente?: string;
 
   emailCliente?: string;
 
   telefonoCliente?: string;
 
-  // --- LE NUOVE DATE DEL DATABASE ---
+  // Campi reali restituiti dal backend nelle query admin con JOIN users
+  cliente_nome?: string;
+
+  cliente_cognome?: string;
+
+  cliente_email?: string;
+
+  cliente_telefono?: string;
+
+  // Date del database
   data_richiesta?: string;
 
-  data_proposta_cliente?: string; // Sostituisce la vecchia dataPreferita
+  data_proposta_cliente?: string;
 
   data_proposta_admin?: string;
 
   data_accettata?: string;
 
-  // --- TABELLA PONTE DIPENDENTI ---
-  // Sostituisce dipendenteAssegnato: ora è un array perché possono essere multipli
-  dipendentiAssegnati?: string[];
+  // Motivi/note del flusso cliente-admin
+  motivo_rifiuto_admin?: string;
 
-  // La colonna "note" è stata rimossa, quindi sparisce anche da qui!
+  motivo_rifiuto_cliente?: string;
+
+  note_cliente?: string;
+
+  note_admin?: string;
+
+  created_at?: string;
+
+  updated_at?: string;
+
+  // Tabella ponte dipendenti_interventi
+  dipendentiAssegnati?: string[];
 }

@@ -23,16 +23,20 @@ import {
 } from '@ionic/angular/standalone';
 
 import { AlertController } from '@ionic/angular';
+
 import { addIcons } from 'ionicons';
+
 import {
   arrowBackOutline,
   warningOutline,
   constructOutline,
-  calendarOutline 
+  calendarOutline
 } from 'ionicons/icons';
 
-// 1. IMPORTIAMO IL SERVICE DEGLI INTERVENTI
-import { InterventiService, InterventoRichiesta } from '../../services/interventi.service';
+import {
+  InterventiService,
+  InterventoRichiesta
+} from '../../services/interventi.service';
 
 @Component({
   selector: 'app-interventi',
@@ -62,21 +66,19 @@ import { InterventiService, InterventoRichiesta } from '../../services/intervent
   ]
 })
 export class InterventiPage {
+
   descrizione = '';
+
   luogo = '';
-  priorita = '';
+
+  priorita: 'Bassa' | 'Media' | 'Alta' | '' = '';
+
   dataIntervento: string | undefined;
+
   interventoInviato = false;
-  
+
   dataMinima: string;
 
-  get dataFormattata(): string {
-    if (!this.dataIntervento) return '';
-    const d = new Date(this.dataIntervento);
-    return d.toLocaleDateString('it-IT');
-  }
-
-  // 2. INIETTIAMO SERVICE E ALERTCONTROLLER
   constructor(
     private router: Router,
     private interventiService: InterventiService,
@@ -90,48 +92,78 @@ export class InterventiPage {
     });
 
     const domani = new Date();
-    domani.setDate(domani.getDate() + 1); 
+    domani.setDate(domani.getDate() + 1);
+
     const tzoffset = domani.getTimezoneOffset() * 60000;
-    this.dataMinima = (new Date(domani.getTime() - tzoffset)).toISOString().split('T')[0];
+
+    this.dataMinima = new Date(
+      domani.getTime() - tzoffset
+    ).toISOString().split('T')[0];
+  }
+
+  get dataFormattata(): string {
+    if (!this.dataIntervento) {
+      return '';
+    }
+
+    const d = new Date(this.dataIntervento);
+
+    return d.toLocaleDateString('it-IT');
   }
 
   get formValido(): boolean {
     return (
       this.descrizione.trim() !== '' &&
       this.luogo.trim() !== '' &&
-      this.priorita.trim() !== '' 
+      this.priorita !== ''
     );
   }
 
-  // 3. SOSTITUIAMO IL VECCHIO CODICE CON LA VERA CHIAMATA HTTP
   inviaIntervento() {
-    if (!this.formValido) return;
+    if (!this.formValido) {
+      return;
+    }
 
-    // Prepariamo l'oggetto per il backend
+    if (
+      this.priorita !== 'Bassa' &&
+      this.priorita !== 'Media' &&
+      this.priorita !== 'Alta'
+    ) {
+      return;
+    }
+
     const dati: InterventoRichiesta = {
       descrizione: this.descrizione,
       luogo: this.luogo,
       priorita: this.priorita,
-      data_proposta_cliente: this.dataIntervento ? this.dataIntervento.split('T')[0] : undefined
+      data_proposta_cliente: this.dataIntervento
+        ? this.dataIntervento.split('T')[0]
+        : undefined
     };
 
     this.interventiService.creaIntervento(dati).subscribe({
       next: () => {
         this.interventoInviato = true;
-        // Aspettiamo un secondo e mezzo per far leggere il messaggio di successo prima di cambiare pagina
+
         setTimeout(() => {
           this.router.navigate(['/dashboard-cliente']);
         }, 1500);
       },
+
       error: async (err: any) => {
         console.error('Errore invio richiesta', err);
-        const messaggio = err.error?.message || 'Errore di connessione al server.';
+
+        const messaggio =
+          err.error?.message ||
+          'Errore di connessione al server.';
+
         const alert = await this.alertController.create({
           cssClass: 'custom-dark-alert',
           header: 'Errore',
           message: messaggio,
           buttons: ['OK']
         });
+
         await alert.present();
       }
     });

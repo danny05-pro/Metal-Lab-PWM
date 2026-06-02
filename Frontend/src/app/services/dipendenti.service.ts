@@ -19,7 +19,7 @@ export interface Dipendente {
 export class DipendentiService {
   
   // Assicurati che l'indirizzo corrisponda alle tue rotte sul backend
-  private apiUrl = 'http://localhost:3000/api/auth/gestione-dipendenti';
+  private apiUrl = 'http://localhost:3000/api/gestione-dipendenti';
 
   constructor(private http: HttpClient) {}
 

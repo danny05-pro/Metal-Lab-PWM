@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Intervento } from 'src/app/models/intervento.model';
 
-// L'interfaccia che definisce i dati esatti che il frontend spedirà al backend
 export interface InterventoRichiesta {
   descrizione: string;
   luogo: string;
-  priorita: string;
+  priorita: 'Bassa' | 'Media' | 'Alta';
   data_proposta_cliente?: string;
 }
 
@@ -14,27 +14,55 @@ export interface InterventoRichiesta {
   providedIn: 'root'
 })
 export class InterventiService {
-  
-  // L'indirizzo esatto che abbiamo configurato nel backend
-  private apiUrl = 'http://localhost:3000/api/auth/interventi';
+
+  private apiUrl = 'http://localhost:3000/api/interventi';
+  private adminApiUrl = 'http://localhost:3000/api/admin/interventi';
 
   constructor(private http: HttpClient) {}
 
-  // Funzione per recuperare il token del cliente e farsi riconoscere dal server
   private getHeaders(): HttpHeaders {
-    const token = sessionStorage.getItem('token'); 
+    const token = sessionStorage.getItem('token');
+
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`
     });
   }
 
-  // Chiamata POST per creare una nuova richiesta nel database
   creaIntervento(dati: InterventoRichiesta): Observable<any> {
-    return this.http.post(this.apiUrl, dati, { headers: this.getHeaders() });
+    return this.http.post(
+      this.apiUrl,
+      dati,
+      {
+        headers: this.getHeaders()
+      }
+    );
   }
 
-  getInterventiCliente(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl, { headers: this.getHeaders() });
+  getInterventiCliente(): Observable<Intervento[]> {
+    return this.http.get<Intervento[]>(
+      this.apiUrl,
+      {
+        headers: this.getHeaders()
+      }
+    );
+  }
+
+  getInterventiAdmin(): Observable<Intervento[]> {
+    return this.http.get<Intervento[]>(
+      this.adminApiUrl,
+      {
+        headers: this.getHeaders()
+      }
+    );
+  }
+
+  getInterventoAdminById(id: number | string): Observable<Intervento> {
+    return this.http.get<Intervento>(
+      `${this.adminApiUrl}/${id}`,
+      {
+        headers: this.getHeaders()
+      }
+    );
   }
 }

@@ -3,7 +3,7 @@ const cors = require('cors');
 
 require('./database/database');
 
-const authRoutes = require('./routes/authRoutes');
+const routes = require('./routes/routes');
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
   res.send('Server Metal Lab attivo');
 });
 
-app.use('/api/auth', authRoutes);
+app.use('/api', routes);
 
 app.listen(PORT, () => {
   console.log(`Server in ascolto su http://localhost:${PORT}`);

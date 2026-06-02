@@ -14,9 +14,9 @@ const router = express.Router();
 // ==========================================
 // AREA AUTENTICAZIONE
 // ==========================================
-router.post('/register', authController.register);
-router.post('/login', authController.login);
-router.get('/profile', authMiddleware.verifyToken, authController.profile);
+router.post('/auth/register', authController.register);
+router.post('/auth/login', authController.login);
+router.get('/auth/profile', authMiddleware.verifyToken, authController.profile);
 
 // ==========================================
 // AREA CLIENTI

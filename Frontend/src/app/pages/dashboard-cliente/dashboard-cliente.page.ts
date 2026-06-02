@@ -130,8 +130,17 @@ export class DashboardClientePage {
         oggi.setHours(0, 0, 0, 0);
 
         this.interventiFuturi = dati.filter(intervento => {
-          if (!intervento.data_intervento) return false; 
-          const dataIntervento = new Date(intervento.data_intervento);
+         const dataDaUsare =
+  intervento.data_accettata ||
+  intervento.data_proposta_admin ||
+  intervento.data_proposta_cliente ||
+  intervento.data_richiesta;
+
+if (!dataDaUsare) {
+  return false;
+}
+
+const dataIntervento = new Date(dataDaUsare);
           return dataIntervento >= oggi;
         });
       },
