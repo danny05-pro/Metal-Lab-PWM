@@ -130,4 +130,105 @@ export class DettaglioInterventoAdminPage implements OnInit {
 
     await alert.present();
   }
+  accettaDataCliente() {
+  if (!this.intervento) {
+    return;
+  }
+
+  this.interventiService.adminProponeData(this.interventoId, {
+    usa_data_cliente: true
+  }).subscribe({
+    next: () => {
+      this.caricaIntervento();
+    },
+    error: (err) => {
+      console.error('Errore accettazione data cliente:', err);
+    }
+  });
+}
+async proponiAltraData() {
+  const alert = await this.alertController.create({
+    header: 'Proponi nuova data',
+    message: 'Inserisci una data alternativa da proporre al cliente.',
+    cssClass: 'custom-dark-alert',
+    inputs: [
+      {
+        name: 'data',
+        type: 'date',
+        placeholder: 'Seleziona data'
+      }
+    ],
+    buttons: [
+      {
+        text: 'Annulla',
+        role: 'cancel'
+      },
+      {
+        text: 'Conferma',
+        handler: (data: any) => {
+          if (!data.data) {
+            return false;
+          }
+
+          this.interventiService.adminProponeData(this.interventoId, {
+            data_proposta_admin: data.data,
+            usa_data_cliente: false
+          }).subscribe({
+            next: () => {
+              this.caricaIntervento();
+            },
+            error: (err) => {
+              console.error('Errore proposta nuova data:', err);
+            }
+          });
+
+          return true;
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
+async rifiutaIntervento() {
+  const alert = await this.alertController.create({
+    header: 'Rifiuta intervento',
+    message: 'Inserisci il motivo del rifiuto.',
+    cssClass: 'custom-dark-alert',
+    inputs: [
+      {
+        name: 'motivo',
+        type: 'textarea',
+        placeholder: 'Motivo del rifiuto'
+      }
+    ],
+    buttons: [
+      {
+        text: 'Annulla',
+        role: 'cancel'
+      },
+      {
+        text: 'Rifiuta',
+        role: 'destructive',
+        handler: (data: any) => {
+          this.interventiService.adminRifiutaIntervento(
+            this.interventoId,
+            data.motivo || ''
+          ).subscribe({
+            next: () => {
+              this.caricaIntervento();
+            },
+            error: (err) => {
+              console.error('Errore rifiuto intervento:', err);
+            }
+          });
+
+          return true;
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
 }

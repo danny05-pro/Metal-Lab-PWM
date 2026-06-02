@@ -1,6 +1,5 @@
 ion-content {
   --background: #0b0f14;
-  --padding-bottom: 60px;
 }
 
 .detail-header {
@@ -16,8 +15,10 @@ ion-content {
 }
 
 .detail-header p {
+  max-width: 760px;
+  margin: 14px auto 0;
   color: #b7c0cc;
-  margin-top: 12px;
+  line-height: 1.6;
 }
 
 .detail-card {
@@ -25,20 +26,10 @@ ion-content {
   margin: 22px auto;
   --background: #151b23;
 
-.detail-card:last-of-type {
-  margin-bottom: 60px; 
-}
-
   border-radius: 22px;
-
   border: 1px solid rgba(255, 255, 255, 0.08);
 
   overflow: hidden;
-}
-
-ion-card-title {
-  color: #f5a623;
-  font-weight: 800;
 }
 
 ion-card-header {
@@ -47,6 +38,12 @@ ion-card-header {
 
 ion-card-content {
   padding: 8px 24px 24px;
+}
+
+ion-card-title {
+  color: #f5a623;
+  font-weight: 800;
+  font-size: 1.2rem;
 }
 
 .info-row {
@@ -60,7 +57,6 @@ ion-card-content {
 
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-
 
 .info-row:last-child {
   border-bottom: none;
@@ -77,37 +73,169 @@ ion-card-content {
   font-weight: 800;
   line-height: 1.5;
 }
+
 .info-row ion-chip {
   width: fit-content;
   justify-self: end;
   margin: 0;
-}
-.note-row {
-  align-items: start;
-}
 
-.description-box {
-  margin-bottom: 18px;
-}
-
-.description-box h3 {
-  color: white;
-  margin-bottom: 8px;
-}
-
-.description-box p {
-  color: #b7c0cc;
-  line-height: 1.6;
-}
-
-ion-chip {
-  background: rgba(245,166,35,0.12);
+  background: rgba(245, 166, 35, 0.12);
   color: #f5a623;
+  font-weight: 800;
+
+  --border-radius: 30px;
+  border-radius: 30px;
+}
+
+.proposal-box {
+  padding: 18px;
+  border-radius: 16px;
+
+  background: rgba(245, 166, 35, 0.12);
+
+  color: #f5a623;
+  font-weight: 800;
+  text-align: center;
+
+  border: 1px solid rgba(245, 166, 35, 0.18);
+}
+
+.proposal-box strong {
+  color: white;
+}
+
+.proposal-box.empty {
+  color: #b7c0cc;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.btn-glass-accept,
+.btn-glass-propose,
+.btn-glass-reject {
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-glass-accept,
+.btn-glass-propose {
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+}
+
+.btn-glass-accept:hover,
+.btn-glass-propose:hover {
+  --background: #f5a623;
+  --border-color: #f5a623;
+  --color: #0b0f14;
+  transform: translateY(-2px);
+}
+
+.btn-glass-reject {
+  --background: rgba(235, 68, 90, 0.12);
+  --color: #eb445a;
+  --border-color: rgba(235, 68, 90, 0.2);
+}
+
+.btn-glass-reject:hover {
+  --background: #eb445a;
+  --border-color: #eb445a;
+  --color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* CAMPO CALENDARIO UGUALE A RICHIEDI INTERVENTO */
+
+.calendar-trigger-item {
+  --background: transparent;
+  --color: white;
+  --border-color: rgba(255, 255, 255, 0.12);
+  margin-bottom: 16px;
+}
+
+.calendar-trigger-item ion-label {
+  color: #f5a623 !important;
   font-weight: 700;
 }
 
-@media (max-width: 700px) {
+.calendar-trigger-item ion-input,
+.calendar-trigger-item ion-textarea {
+  --color: white;
+  --placeholder-color: #8f9aaa;
+}
 
+/* CALENDARIO UGUALE A RICHIEDI INTERVENTO */
+
+ion-modal.dark-calendar-modal {
+  --width: max-content;
+  --height: max-content;
+  --background: transparent;
+  --box-shadow: none;
+  --border-radius: 24px;
+
+  align-items: center;
+  justify-content: center;
+
+  ion-datetime.custom-amber-calendar {
+    --background: #151b23;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+
+    color: #ffffff;
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255, 255, 255;
+
+    --ion-color-primary: #f5a623;
+    --ion-color-primary-rgb: 245, 166, 35;
+    --ion-color-primary-contrast: #0b0f14;
+    --ion-color-primary-contrast-rgb: 11, 15, 20;
+
+    &::part(month-year-button) {
+      pointer-events: none;
+      color: transparent;
+      text-shadow: 0 0 0 #f5a623;
+    }
+
+    &::part(prev-month-button),
+    &::part(next-month-button) {
+      color: #f5a623;
+      opacity: 1 !important;
+    }
+
+    &::part(prev-month-button):hover,
+    &::part(next-month-button):hover,
+    &::part(prev-month-button):active,
+    &::part(next-month-button):active {
+      background: #151b23 !important;
+      background-color: #151b23 !important;
+      opacity: 1 !important;
+    }
+  }
+}
+
+@media (max-width: 700px) {
   .detail-card {
     margin-left: 16px;
     margin-right: 16px;
@@ -122,8 +250,8 @@ ion-chip {
   .info-row strong {
     text-align: left;
   }
-    .info-row ion-chip {
+
+  .info-row ion-chip {
     justify-self: start;
   }
-
 }

@@ -60,4 +60,30 @@ router.get(
   authMiddleware.isAdmin,
   interventiController.getInterventoById
 );
+router.put(
+  '/admin/interventi/:id/proponi-data',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.adminProponeData
+);
+
+router.put(
+  '/admin/interventi/:id/rifiuta',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.adminRifiutaIntervento
+);
+
+router.put(
+  '/interventi/:id/risposta-cliente',
+  authMiddleware.verifyToken,
+  authMiddleware.isCliente,
+  interventiController.clienteRispondeData
+);
+router.get(
+  '/interventi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isCliente,
+  interventiController.getInterventoById
+);
 module.exports = router;

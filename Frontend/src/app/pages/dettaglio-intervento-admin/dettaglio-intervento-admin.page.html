@@ -167,14 +167,44 @@
 
         }
 
-        <div class="actions">
-          <ion-button
-            expand="block"
-            class="btn-glass-assign"
-            (click)="assegnaDipendente()">
-            Assegna dipendente
-          </ion-button>
-        </div>
+       
+          <div class="actions">
+              <ion-button
+    expand="block"
+    class="btn-glass-assign"
+    (click)="assegnaDipendente()">
+    Assegna dipendente
+  </ion-button>
+
+  @if (
+    intervento.stato_admin === 'Richiesto' ||
+    intervento.stato_admin === 'In attesa nuova valutazione'
+  ) {
+
+    <ion-button
+      expand="block"
+      class="btn-glass-assign"
+      (click)="accettaDataCliente()">
+      Accetta data proposta dal cliente
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      class="btn-glass-assign"
+      (click)="proponiAltraData()">
+      Proponi un'altra data
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      class="btn-glass-reject"
+      (click)="rifiutaIntervento()">
+      Rifiuta intervento
+    </ion-button>
+
+  }
+
+</div>
 
       </ion-card-content>
     </ion-card>

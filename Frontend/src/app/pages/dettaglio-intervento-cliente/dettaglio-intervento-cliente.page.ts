@@ -1,15 +1,39 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common'; 
+import { AlertController } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
 
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
-  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonChip,
+  IonModal,
+  IonDatetime,
+  IonItem,
+  IonLabel,
+  IonInput
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { arrowBackOutline } from 'ionicons/icons';
-import { InterventiService } from '../../services/interventi.service';
+
+import {
+  arrowBackOutline,
+  checkmarkCircleOutline,
+  calendarOutline,
+  closeCircleOutline
+} from 'ionicons/icons';
+
+import { Intervento } from 'src/app/models/intervento.model';
+import { InterventiService } from 'src/app/services/interventi.service';
 
 @Component({
   selector: 'app-dettaglio-intervento-cliente',
@@ -17,52 +41,173 @@ import { InterventiService } from '../../services/interventi.service';
   styleUrls: ['./dettaglio-intervento-cliente.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
-    IonButtons, IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle,
-    IonCardContent, IonChip
+    RouterLink,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonChip,
+    IonModal,
+    IonDatetime,
+    IonItem,
+    IonLabel,
+    IonInput
   ]
 })
 export class DettaglioInterventoClientePage implements OnInit {
 
   interventoId = '';
-  intervento: any = null; 
+
+  intervento: Intervento | null = null;
+
+  caricamento = true;
+
+  nuovaDataCliente = '';
+
+  dataMinima = '';
 
   constructor(
     private route: ActivatedRoute,
-    private interventiService: InterventiService 
+    private alertController: AlertController,
+    private interventiService: InterventiService
   ) {
-    addIcons({ arrowBackOutline });
-    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
+    addIcons({
+      arrowBackOutline,
+      checkmarkCircleOutline,
+      calendarOutline,
+      closeCircleOutline
+    });
+
+    const domani = new Date();
+    domani.setDate(domani.getDate() + 1);
+
+    const tzoffset = domani.getTimezoneOffset() * 60000;
+
+    this.dataMinima = new Date(
+      domani.getTime() - tzoffset
+    ).toISOString().split('T')[0];
   }
 
   ngOnInit() {
-    if (this.interventoId) {
-      this.caricaDettaglio();
-    }
+    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
+
+    this.caricaIntervento();
   }
 
-  caricaDettaglio() {
-    this.interventiService.getInterventiCliente().subscribe({
-      next: (tuttiGliInterventi) => {
-        this.intervento = tuttiGliInterventi.find(i => i.id.toString() === this.interventoId);
-        
-        if (this.intervento) {
-          // Mappatura date
-          this.intervento.dataOra = this.intervento.data_proposta_admin 
-            ? this.intervento.data_proposta_admin 
-            : 'In attesa di conferma';
+  caricaIntervento() {
+    this.caricamento = true;
 
-          this.intervento.dataPreferitaFormattata = this.intervento.data_proposta_cliente 
-            ? this.intervento.data_proposta_cliente 
-            : 'Nessuna preferenza indicata';
-            
-          // Mappatura dipendenti (gestione array)
-          this.intervento.tecnicoAssegnato = (this.intervento.dipendentiAssegnati && this.intervento.dipendentiAssegnati.length > 0)
-            ? this.intervento.dipendentiAssegnati.join(', ') 
-            : 'In attesa di assegnazione';
-        }
+    this.interventiService.getInterventoClienteById(this.interventoId).subscribe({
+      next: (intervento) => {
+        this.intervento = intervento;
+        this.caricamento = false;
       },
-      error: (err) => console.error('Errore durante il caricamento dell\'intervento:', err)
+      error: (err) => {
+        console.error('Errore caricamento dettaglio intervento cliente:', err);
+        this.caricamento = false;
+      }
     });
   }
-}
+
+  get puoRispondereAllaProposta(): boolean {
+    return (
+      !!this.intervento &&
+      this.intervento.stato_admin === 'Data proposta' &&
+      this.intervento.stato_risposta_cliente === 'In attesa' &&
+      !!this.intervento.data_proposta_admin
+    );
+  }
+
+  get nuovaDataFormattata(): string {
+    if (!this.nuovaDataCliente) {
+      return '';
+    }
+
+    const d = new Date(this.nuovaDataCliente);
+
+    return d.toLocaleDateString('it-IT');
+  }
+
+  accettaDataAdmin() {
+    if (!this.intervento) {
+      return;
+    }
+
+    this.interventiService.clienteRispondeData(this.interventoId, {
+      azione: 'accetta_data'
+    }).subscribe({
+      next: () => {
+        this.caricaIntervento();
+      },
+      error: (err) => {
+        console.error('Errore accettazione data:', err);
+      }
+    });
+  }
+
+  confermaNuovaData() {
+  if (!this.intervento || !this.nuovaDataCliente) {
+    return;
+  }
+
+  const dataPulita = this.nuovaDataCliente.split('T')[0];
+
+  this.interventiService.clienteRispondeData(this.interventoId, {
+    azione: 'proponi_nuova_data',
+    nuova_data: dataPulita
+  }).subscribe({
+    next: () => {
+      this.nuovaDataCliente = '';
+      this.caricaIntervento();
+    },
+    error: (err) => {
+      console.error('Errore proposta nuova data:', err);
+    }
+  });}
+
+  async annullaIntervento() {
+  if (!this.intervento) {
+    return;
+  }
+
+  const alert = await this.alertController.create({
+    header: 'Annulla intervento',
+    message: 'Vuoi annullare definitivamente questo intervento?',
+    cssClass: 'custom-dark-alert',
+    buttons: [
+      {
+        text: 'Indietro',
+        role: 'cancel'
+      },
+      {
+        text: 'Annulla intervento',
+        role: 'destructive',
+        handler: () => {
+          this.interventiService.clienteRispondeData(this.interventoId, {
+            azione: 'annulla_intervento'
+          }).subscribe({
+            next: () => {
+              this.caricaIntervento();
+            },
+            error: (err) => {
+              console.error('Errore annullamento intervento:', err);
+            }
+          });
+
+          return true;
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}}
+
