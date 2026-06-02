@@ -1,141 +1,88 @@
 <ion-header class="ion-no-border">
-
   <ion-toolbar color="dark">
-
     <ion-buttons slot="start">
-
       <ion-button routerLink="/dashboard-dipendente">
         <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
-
     </ion-buttons>
-
-    <ion-title>
-      Dashboard Dipendente
-    </ion-title>
-
+    <ion-title>Dashboard Dipendente</ion-title>
   </ion-toolbar>
-
 </ion-header>
 
 <ion-content>
-
   <section class="detail-header">
-
-    <h1>
-      Intervento #{{ interventoId }}
-    </h1>
-
-    <p>
-      Consulta i dettagli dell’intervento assegnato e aggiorna lo stato operativo.
-    </p>
-
+    <h1>Intervento #{{ interventoId }}</h1>
+    <p>Consulta i dettagli dell’intervento assegnato e aggiorna lo stato operativo.</p>
   </section>
 
-  <ion-card class="detail-card">
+  @if (intervento) {
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Informazioni Cliente</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-row">
+          <span>Cliente</span>
+          <strong>{{ intervento.cliente }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Email</span>
+          <strong>{{ intervento.emailCliente }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Telefono</span>
+          <strong>{{ intervento.telefonoCliente }}</strong>
+        </div>
+      </ion-card-content>
+    </ion-card>
 
-    <ion-card-header>
-      <ion-card-title>
-        Informazioni Cliente
-      </ion-card-title>
-    </ion-card-header>
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Dati Intervento</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-row">
+          <span>Descrizione</span>
+          <strong>{{ intervento.descrizione }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Luogo</span>
+          <strong>{{ intervento.luogo }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Priorità</span>
+          <strong>{{ intervento.priorita }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Data intervento</span>
+          <strong>{{ intervento.dataOra }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Stato lavorazione</span>
+          <ion-chip>{{ intervento.stato_lavorazione }}</ion-chip>
+        </div>
+      </ion-card-content>
+    </ion-card>
 
-    <ion-card-content>
-
-      <div class="info-row">
-        <span>Cliente</span>
-        <strong>{{ intervento.cliente }}</strong>
-      </div>
-
-      <div class="info-row">
-        <span>Email</span>
-        <strong>{{ intervento.emailCliente }}</strong>
-      </div>
-
-      <div class="info-row">
-        <span>Telefono</span>
-        <strong>{{ intervento.telefonoCliente }}</strong>
-      </div>
-
-    </ion-card-content>
-
-  </ion-card>
-
-  <ion-card class="detail-card">
-
-    <ion-card-header>
-      <ion-card-title>
-        Dati Intervento
-      </ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-
-      <div class="info-row">
-        <span>Descrizione</span>
-        <strong>{{ intervento.descrizione }}</strong>
-      </div>
-
-      <div class="info-row">
-        <span>Luogo</span>
-        <strong>{{ intervento.luogo }}</strong>
-      </div>
-
-      <div class="info-row">
-        <span>Priorità</span>
-        <strong>{{ intervento.priorita }}</strong>
-      </div>
-
-      <div class="info-row">
-        <span>Data intervento</span>
-        <strong>{{ intervento.dataOra }}</strong>
-      </div>
-
-      <div class="info-row">
-        <span>Stato attuale</span>
-        <ion-chip>
-          {{ intervento.stato }}
-        </ion-chip>
-      </div>
-
-      <div class="info-row">
-        <span>Note</span>
-        <strong>{{ intervento.note }}</strong>
-      </div>
-
-    </ion-card-content>
-
-  </ion-card>
-
-  <ion-card class="detail-card">
-
-  <ion-card-header>
-    <ion-card-title>
-      Aggiornamento Stato
-    </ion-card-title>
-  </ion-card-header>
-
-  <ion-card-content>
-
-    <div class="info-row">
-      <span>Stato attuale</span>
-
-      <ion-chip>
-        {{ intervento.stato }}
-      </ion-chip>
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Aggiornamento Stato</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-row">
+          <span>Stato attuale</span>
+          <ion-chip>{{ intervento.stato_lavorazione }}</ion-chip>
+        </div>
+        <div class="actions">
+          <ion-button expand="block" class="btn-glass-update" (click)="modificaStatoIntervento()">
+            Modifica stato intervento
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  } @else {
+    <div class="ion-padding ion-text-center">
+      <p>Caricamento dati in corso...</p>
     </div>
-
-    <div class="actions">
-        <ion-button
-          expand="block"
-          class="btn-glass-update" 
-          (click)="modificaStatoIntervento()">
-          Modifica stato intervento
-        </ion-button>
-      </div>
-
-  </ion-card-content>
-
-</ion-card>
-
+  }
 </ion-content>

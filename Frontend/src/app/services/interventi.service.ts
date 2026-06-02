@@ -7,7 +7,7 @@ export interface InterventoRichiesta {
   descrizione: string;
   luogo: string;
   priorita: string;
-  data_preferita?: string;
+  data_proposta_cliente?: string;
 }
 
 @Injectable({

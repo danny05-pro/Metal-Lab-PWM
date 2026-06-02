@@ -1,28 +1,13 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, RouterLink, Router} from '@angular/router';
-
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonChip
-} from '@ionic/angular/standalone';
-
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-
-import { addIcons } from 'ionicons';
-
 import {
-  arrowBackOutline
-} from 'ionicons/icons';
+  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
+  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { arrowBackOutline } from 'ionicons/icons';
+import { Intervento } from 'src/app/models/intervento.model';
 
 @Component({
   selector: 'app-dettaglio-intervento-admin',
@@ -30,63 +15,35 @@ import {
   styleUrls: ['./dettaglio-intervento-admin.page.scss'],
   standalone: true,
   imports: [
-    RouterLink,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonChip
+    RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons,
+    IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
   ]
 })
-export class DettaglioInterventoAdminPage {
+export class DettaglioInterventoAdminPage implements OnInit {
 
   interventoId = '';
-
-  intervento = {
-    id: 1,
-    cliente: 'Mario Rossi',
-    emailCliente: 'mario.rossi@email.it',
-    telefonoCliente: '+39 333 1234567',
-    descrizione: 'Riparazione impianto industriale',
-    luogo: 'Stabilimento Napoli',
-    priorita: 'Alta',
-    stato: 'Da assegnare',
-    dataRichiesta: '2026-05-20',
-    dataPreferita: '2026-05-25',
-    dipendenteAssegnato: null as string | null,
-    note: 'Il cliente segnala un blocco improvviso dell’impianto durante il ciclo produttivo.'
-  };
-
-  dipendentiDisponibili = [
-    'Luigi Ferri',
-    'Marco Bianchi',
-    'Antonio Russo',
-    'Giuseppe Romano'
-  ];
+  intervento: Intervento | null = null; // Inizializzato a null (dati reali dal DB)
+  
+  // Lista vuota, da popolare tramite service con i dipendenti reali dal DB
+  dipendentiDisponibili: string[] = []; 
 
   constructor(
-      private router: Router,
+    private router: Router,
     private route: ActivatedRoute,
     private alertController: AlertController
   ) {
+    addIcons({ arrowBackOutline });
+    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
+  }
 
-    addIcons({
-      arrowBackOutline
-    });
-
-    this.interventoId =
-      this.route.snapshot.paramMap.get('id') || '';
-
+  ngOnInit() {
+    // TODO: Qui devi chiamare il tuo service per caricare i dati reali dell'intervento
+    // e la lista dei dipendenti disponibili dal DB
   }
 
   async assegnaDipendente() {
+    if (!this.intervento) return;
+
     const alert = await this.alertController.create({
       header: 'Assegna dipendente',
       message: 'Seleziona il dipendente da assegnare a questo intervento.',
@@ -97,23 +54,27 @@ export class DettaglioInterventoAdminPage {
         value: dipendente
       })),
       buttons: [
-        {
-          text: 'Annulla',
-          role: 'cancel',
-          cssClass: 'dark-alert-btn-cancel' // <--- Aggiunto stile Grigio
-        },
+        { text: 'Annulla', role: 'cancel' },
         {
           text: 'Conferma',
-          cssClass: 'dark-alert-btn-confirm', // <--- Aggiunto stile Ambra
           handler: (dipendenteSelezionato: string) => {
-            if (!dipendenteSelezionato) {
-              return false;
+            if (!dipendenteSelezionato || !this.intervento) return false;
+
+            // Inizializza array se non esiste
+            if (!this.intervento.dipendentiAssegnati) {
+              this.intervento.dipendentiAssegnati = [];
             }
 
-            this.intervento.dipendenteAssegnato = dipendenteSelezionato;
-            this.intervento.stato = 'Assegnato';
-            this.router.navigate(['/dashboard-admin']);
+            // Aggiungi dipendente se non già presente
+            if (!this.intervento.dipendentiAssegnati.includes(dipendenteSelezionato)) {
+              this.intervento.dipendentiAssegnati.push(dipendenteSelezionato);
+            }
 
+            // Aggiorna lo stato admin nel database
+            this.intervento.stato_admin = 'Data proposta'; 
+            
+            // TODO: Inserire qui la chiamata al service per salvare sul DB
+            this.router.navigate(['/dashboard-admin']);
             return true;
           }
         }
@@ -122,5 +83,4 @@ export class DettaglioInterventoAdminPage {
 
     await alert.present();
   }
-
 }

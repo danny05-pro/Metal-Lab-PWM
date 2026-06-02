@@ -5,7 +5,7 @@
         <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Dashboard Cliente</ion-title>
+    <ion-title>Dettaglio Intervento</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -23,7 +23,7 @@
       <ion-card-content>
         <div class="info-row">
           <span>Stato</span>
-          <ion-chip>{{ intervento.stato }}</ion-chip>
+          <ion-chip>{{ intervento.stato_admin }}</ion-chip>
         </div>
         <div class="info-row">
           <span>Priorità</span>
@@ -31,12 +31,12 @@
         </div>
         <div class="info-row">
           <span>Data programmata</span>
-          <strong [style.color]="!intervento.data_intervento ? '#eb445a' : 'white'">
+          <strong [style.color]="!intervento.data_proposta_admin ? '#eb445a' : 'white'">
             {{ intervento.dataOra }}
           </strong>
         </div>
         <div class="info-row">
-          <span>Tecnico assegnato</span>
+          <span>Tecnici assegnati</span>
           <strong>{{ intervento.tecnicoAssegnato }}</strong>
         </div>
       </ion-card-content>
@@ -59,11 +59,6 @@
         <div class="info-row">
           <span>Data preferita richiesta</span>
           <strong>{{ intervento.dataPreferitaFormattata }}</strong>
-        </div>
-
-        <div class="info-row note-row">
-          <span>Note operative</span>
-          <strong>{{ intervento.note }}</strong>
         </div>
       </ion-card-content>
     </ion-card>

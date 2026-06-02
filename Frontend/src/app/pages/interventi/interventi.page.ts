@@ -112,7 +112,7 @@ export class InterventiPage {
       descrizione: this.descrizione,
       luogo: this.luogo,
       priorita: this.priorita,
-      data_preferita: this.dataIntervento ? this.dataIntervento.split('T')[0] : undefined
+      data_proposta_cliente: this.dataIntervento ? this.dataIntervento.split('T')[0] : undefined
     };
 
     this.interventiService.creaIntervento(dati).subscribe({

@@ -1,33 +1,15 @@
-import { Component } from '@angular/core';
-
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink
-} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonChip
+  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
+  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-
-import {
-  arrowBackOutline
-} from 'ionicons/icons';
-
+import { arrowBackOutline } from 'ionicons/icons';
 import { Intervento } from 'src/app/models/intervento.model';
+import { InterventiService } from '../../services/interventi.service'; // Importa il tuo service
 
 @Component({
   selector: 'app-dettaglio-intervento-dipendente',
@@ -35,125 +17,63 @@ import { Intervento } from 'src/app/models/intervento.model';
   styleUrls: ['./dettaglio-intervento-dipendente.page.scss'],
   standalone: true,
   imports: [
-    RouterLink,
-
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonChip
+    RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons,
+    IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
   ]
 })
-export class DettaglioInterventoDipendentePage {
+export class DettaglioInterventoDipendentePage implements OnInit {
 
   interventoId = '';
-
-  intervento: Intervento = {
-    id: 1,
-    cliente: 'Mario Rossi',
-    emailCliente: 'mario.rossi@email.it',
-    telefonoCliente: '+39 333 1234567',
-    descrizione: 'Riparazione impianto industriale',
-    luogo: 'Stabilimento Napoli',
-    priorita: 'Alta',
-    stato: 'Assegnato',
-    dataOra: '2026-05-25 09:30',
-    dataRichiesta: '2026-05-20',
-    dataPreferita: '2026-05-25',
-    dipendenteAssegnato: 'Luigi Ferri',
-    note: 'Il cliente segnala un blocco improvviso dell’impianto durante il ciclo produttivo.'
-  };
+  intervento: Intervento | null = null; // Inizializzato a null, nessun dato fittizio
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-      private alertController: AlertController
+    private alertController: AlertController,
+    private interventiService: InterventiService // Inietta il service
   ) {
+    addIcons({ arrowBackOutline });
+    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
+  }
 
-    addIcons({
-      arrowBackOutline
+  ngOnInit() {
+    // Qui chiamerai il metodo per caricare i dati reali
+    // this.caricaInterventoReale();
+  }
+
+  async modificaStatoIntervento() {
+    if (!this.intervento) return; // Controllo di sicurezza
+
+    const alert = await this.alertController.create({
+      header: 'Modifica stato intervento',
+      message: 'Seleziona il nuovo stato di lavorazione.',
+      cssClass: 'custom-dark-alert',
+      inputs: [
+        { type: 'radio', label: 'Programmato', value: 'Programmato', checked: this.intervento.stato_lavorazione === 'Programmato' },
+        { type: 'radio', label: 'In lavorazione', value: 'In lavorazione', checked: this.intervento.stato_lavorazione === 'In lavorazione' },
+        { type: 'radio', label: 'Terminato', value: 'Terminato', checked: this.intervento.stato_lavorazione === 'Terminato' }
+      ],
+      buttons: [
+        { text: 'Annulla', role: 'cancel' },
+        { 
+          text: 'Conferma', 
+          handler: (nuovoStato: any) => {
+            if (!nuovoStato || !this.intervento) return false;
+            
+            this.intervento.stato_lavorazione = nuovoStato;
+
+            if (nuovoStato === 'Terminato') {
+              this.intervento.dataOra = new Date().toLocaleDateString('it-IT');
+            }
+
+            // QUI aggiungerai la chiamata al backend per salvare il cambio stato
+            this.router.navigate(['/dashboard-dipendente']);
+            return true;
+          }
+        }
+      ]
     });
 
-    this.interventoId =
-      this.route.snapshot.paramMap.get('id') || '';
-
+    await alert.present();
   }
-
-  get statoAggiornabile(): boolean {
-
-    return (
-      this.intervento.stato === 'Assegnato' ||
-      this.intervento.stato === 'Programmato'
-    );
-
-  }
-
-async modificaStatoIntervento() {
-
-  const alert = await this.alertController.create({
-    header: 'Modifica stato intervento',
-    message: 'Seleziona il nuovo stato dell’intervento.',
-    cssClass: 'custom-dark-alert',
-    inputs: [
-      {
-        type: 'radio',
-        label: 'Assegnato',
-        value: 'Assegnato',
-        checked: this.intervento.stato === 'Assegnato'
-      },
-      {
-        type: 'radio',
-        label: 'Programmato',
-        value: 'Programmato',
-        checked: this.intervento.stato === 'Programmato'
-      },
-      {
-        type: 'radio',
-        label: 'Terminato',
-        value: 'Terminato',
-        checked: this.intervento.stato === 'Terminato'
-      }
-    ],
-    buttons: [
-      {
-        text: 'Annulla',
-        role: 'cancel'
-      },
-      {
-        text: 'Conferma',
-        handler: (nuovoStato: Intervento['stato']) => {
-
-          if (!nuovoStato) {
-            return false;
-          }
-
-          this.intervento.stato = nuovoStato;
-
-          if (nuovoStato === 'Terminato') {
-            this.intervento.dataOra =
-              new Date().toLocaleDateString('it-IT');
-          }
-
-          this.router.navigate([
-            '/dashboard-dipendente'
-          ]);
-
-          return true;
-
-        }
-      }
-    ]
-  });
-
-  await alert.present();
-
-}
-
 }

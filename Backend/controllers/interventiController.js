@@ -3,7 +3,7 @@ const Intervento = require('../models/interventiModel');
 exports.creaIntervento = async (req, res) => {
   try {
     const cliente_id = req.user.id; 
-    const { descrizione, luogo, priorita, data_preferita } = req.body;
+    const { descrizione, luogo, priorita, data_proposta_cliente } = req.body;
 
     if (!descrizione || !luogo || !priorita) {
       return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
@@ -18,7 +18,7 @@ exports.creaIntervento = async (req, res) => {
       luogo,
       priorita,
       data_richiesta,
-      data_preferita
+      data_proposta_cliente
     });
 
     res.status(201).json({ 

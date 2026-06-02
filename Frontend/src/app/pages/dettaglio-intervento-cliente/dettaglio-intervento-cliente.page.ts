@@ -1,25 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common'; // <-- Utile per gestire i dati asincroni nell'HTML
+import { CommonModule } from '@angular/common'; 
 
 import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonChip
+  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
+  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
 import { arrowBackOutline } from 'ionicons/icons';
-
 import { InterventiService } from '../../services/interventi.service';
 
 @Component({
@@ -28,64 +17,52 @@ import { InterventiService } from '../../services/interventi.service';
   styleUrls: ['./dettaglio-intervento-cliente.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, // <-- Aggiunto
-    RouterLink,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonChip
+    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
+    IonButtons, IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle,
+    IonCardContent, IonChip
   ]
 })
 export class DettaglioInterventoClientePage implements OnInit {
 
   interventoId = '';
-  // Lo inizializziamo a null. L'HTML si aggiornerà non appena i dati arriveranno dal backend.
   intervento: any = null; 
 
   constructor(
     private route: ActivatedRoute,
-    private interventiService: InterventiService // <-- Iniettiamo il service
+    private interventiService: InterventiService 
   ) {
     addIcons({ arrowBackOutline });
     this.interventoId = this.route.snapshot.paramMap.get('id') || '';
   }
 
-  // Eseguiamo la chiamata all'avvio della pagina
   ngOnInit() {
     if (this.interventoId) {
       this.caricaDettaglio();
     }
   }
 
- caricaDettaglio() {
+  caricaDettaglio() {
     this.interventiService.getInterventiCliente().subscribe({
       next: (tuttiGliInterventi) => {
         this.intervento = tuttiGliInterventi.find(i => i.id.toString() === this.interventoId);
         
         if (this.intervento) {
-          this.intervento.dataOra = this.intervento.data_intervento 
-            ? this.intervento.data_intervento 
+          // Mappatura date
+          this.intervento.dataOra = this.intervento.data_proposta_admin 
+            ? this.intervento.data_proposta_admin 
             : 'In attesa di conferma';
 
-          this.intervento.dataPreferitaFormattata = this.intervento.data_preferita 
-            ? this.intervento.data_preferita 
+          this.intervento.dataPreferitaFormattata = this.intervento.data_proposta_cliente 
+            ? this.intervento.data_proposta_cliente 
             : 'Nessuna preferenza indicata';
             
-          this.intervento.tecnicoAssegnato = this.intervento.dipendente_id 
-            ? `ID Tecnico: ${this.intervento.dipendente_id}` 
+          // Mappatura dipendenti (gestione array)
+          this.intervento.tecnicoAssegnato = (this.intervento.dipendentiAssegnati && this.intervento.dipendentiAssegnati.length > 0)
+            ? this.intervento.dipendentiAssegnati.join(', ') 
             : 'In attesa di assegnazione';
         }
       },
       error: (err) => console.error('Errore durante il caricamento dell\'intervento:', err)
     });
   }
-
 }

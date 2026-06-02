@@ -3,7 +3,7 @@ const db = require('../database/database');
 exports.create = (dati) => {
   return new Promise((resolve, reject) => {
     db.run(
-      `INSERT INTO interventi (cliente_id, descrizione, luogo, priorita, data_richiesta, data_preferita)
+      `INSERT INTO interventi (cliente_id, descrizione, luogo, priorita, data_richiesta, data_proposta_cliente)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [
         dati.cliente_id, 
@@ -11,7 +11,7 @@ exports.create = (dati) => {
         dati.luogo, 
         dati.priorita, 
         dati.data_richiesta, 
-        dati.data_preferita
+        dati.data_proposta_cliente
       ],
       function (err) {
         if (err) {

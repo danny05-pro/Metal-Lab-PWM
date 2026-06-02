@@ -76,18 +76,6 @@ db.serialize(() => {
 
       data_accettata TEXT,
 
-      motivo_rifiuto_admin TEXT,
-
-      motivo_rifiuto_cliente TEXT,
-
-      note_cliente TEXT,
-
-      note_admin TEXT,
-
-      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-
-      updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-
       FOREIGN KEY (cliente_id) REFERENCES users(id)
     )
   `);
@@ -96,7 +84,6 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS dipendenti_interventi (
       intervento_id INTEGER NOT NULL,
       dipendente_id INTEGER NOT NULL,
-      data_assegnazione TEXT DEFAULT CURRENT_TIMESTAMP,
 
       PRIMARY KEY (intervento_id, dipendente_id),
 

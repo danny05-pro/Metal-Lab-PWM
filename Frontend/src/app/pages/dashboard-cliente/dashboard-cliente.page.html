@@ -1,33 +1,23 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="dark"> 
-    
     <ion-buttons slot="start">
       <ion-button routerLink="/home">
         <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-
-    <ion-title>
-      Home
-    </ion-title>
-
+    <ion-title>Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
   <section class="dashboard-header">
     <h1>Area Personale</h1>
     <p>Benvenuto nel tuo pannello di controllo Metal Lab.</p>
   </section>
 
   <div class="dashboard-actions">
-    <ion-button expand="block" routerLink="/preventivi">
-      Richiedi Preventivo
-    </ion-button>
-    <ion-button expand="block" routerLink="/interventi">
-      Richiedi Intervento
-    </ion-button>
+    <ion-button expand="block" routerLink="/preventivi">Richiedi Preventivo</ion-button>
+    <ion-button expand="block" routerLink="/interventi">Richiedi Intervento</ion-button>
   </div>
 
   <ion-grid>
@@ -38,21 +28,18 @@
           <span class="summary-label">Preventivi</span>
         </div>
       </ion-col>
-
       <ion-col size="6" size-md="3">
         <div class="summary-card">
           <span class="summary-value">{{ tuttiGliInterventi.length }}</span>
           <span class="summary-label">Interventi</span>
         </div>
       </ion-col>
-
       <ion-col size="6" size-md="3">
         <div class="summary-card">
           <span class="summary-value">{{ ordini.length }}</span>
           <span class="summary-label">Ordini in corso</span>
         </div>
       </ion-col>
-
       <ion-col size="6" size-md="3">
         <div class="summary-card">
           <span class="summary-value">{{ storicoOrdini.length }}</span>
@@ -64,119 +51,57 @@
     <ion-row class="details-row">
       <ion-col size="12" size-md="6">
         <ion-card class="detail-section-card">
-          <ion-card-header>
-            <ion-card-title>I tuoi Preventivi</ion-card-title>
-          </ion-card-header>
+          <ion-card-header><ion-card-title>I tuoi Preventivi</ion-card-title></ion-card-header>
           <ion-card-content>
             @for (preventivo of preventivi; track preventivo.id) {
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]">
                 <div class="item-header">
                   <h3>{{ preventivo.descrizione }}</h3>
-                  <ion-chip [class.status-completed]="preventivo.stato === 'Completato'">
-                    {{ preventivo.stato }}
-                  </ion-chip>
+                  <ion-chip [class.status-completed]="preventivo.stato === 'Completato'">{{ preventivo.stato }}</ion-chip>
                 </div>
-                <p>
-                  Servizio: {{ preventivo.servizio }} |
-                  Materiale: {{ preventivo.materiale }}
-                </p>
+                <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
               </div>
-            } @empty {
-              <div class="empty-section">
-                Nessun preventivo presente
-              </div>
-            }
+            } @empty { <div class="empty-section">Nessun preventivo presente</div> }
           </ion-card-content>
         </ion-card>
       </ion-col>
 
       <ion-col size="12" size-md="6">
         <ion-card class="detail-section-card">
-          <ion-card-header>
-            <ion-card-title>Interventi Tecnici</ion-card-title>
-          </ion-card-header>
+          <ion-card-header><ion-card-title>Interventi Tecnici</ion-card-title></ion-card-header>
           <ion-card-content>
             @for (intervento of tuttiGliInterventi; track intervento.id) {
-              
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-cliente', intervento.id]">
-                
                 <div class="item-header">
                   <h3>{{ intervento.descrizione }}</h3>
-                  
-                  <ion-chip [color]="intervento.stato === 'Completato' ? 'success' : 'warning'">
-                    {{ intervento.stato }}
+                  <ion-chip [color]="intervento.stato_admin === 'Accettato' ? 'success' : 'warning'">
+                    {{ intervento.stato_admin }}
                   </ion-chip>
                 </div>
-
                 <p>Luogo: {{ intervento.luogo }} | Richiesto il: {{ intervento.data_richiesta }}</p>
               </div>
-              
             } @empty {
               <div class="empty-section">Nessun intervento richiesto</div>
             }
           </ion-card-content>
         </ion-card>
       </ion-col>
-
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header>
-            <ion-card-title>Ordini in Corso</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            @for (ordine of ordini; track ordine.id) {
-              <div class="dashboard-item">
-                <div class="item-header">
-                  <h3>{{ ordine.descrizione }}</h3>
-                  <ion-chip [class.status-completed]="ordine.stato === 'Pronto per il ritiro'">
-                    {{ ordine.stato }}
-                  </ion-chip>
-                </div>
-                <p>Consegna prevista: {{ ordine.dataConsegnaPrevista }}</p>
-              </div>
-            } @empty {
-              <div class="empty-section">Nessun ordine in corso</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header>
-            <ion-card-title>Storico Ordini</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            @for (storico of storicoOrdini; track storico.id) {
-              <div class="dashboard-item">
-                <div class="item-header">
-                  <h3>{{ storico.descrizione }}</h3>
-                  <ion-chip class="status-completed">{{ storico.stato }}</ion-chip>
-                </div>
-                <p>Data completamento: {{ storico.dataConsegnaPrevista }}</p>
-              </div>
-            } @empty {
-              <div class="empty-section">Nessun ordine archiviato</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
+      </ion-row>
 
     <ion-row>
       <ion-col size="12">
         <ion-card class="calendar-card">
-          <ion-card-header>
-            <ion-card-title>Calendario Attività</ion-card-title>
-          </ion-card-header>
+          <ion-card-header><ion-card-title>Calendario Attività</ion-card-title></ion-card-header>
           <ion-card-content>
             @for (evento of interventiFuturi; track evento.id) {
               <div class="calendar-item clickable" [routerLink]="['/dettaglio-intervento-cliente', evento.id]">
-                <div class="calendar-date">{{ evento.data_intervento }}</div>
+                <div class="calendar-date">{{ evento.data_proposta_admin || 'In attesa' }}</div>
                 <div class="calendar-info">
                   <h3>{{ evento.descrizione }}</h3>
                   <p>Luogo: {{ evento.luogo }}</p>
-                  <ion-chip>{{ evento.stato }}</ion-chip>
+                  <ion-chip [color]="evento.stato_lavorazione === 'Terminato' ? 'success' : 'warning'">
+                    {{ evento.stato_lavorazione }}
+                  </ion-chip>
                 </div>
               </div>
             } @empty {
@@ -187,5 +112,4 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
 </ion-content>

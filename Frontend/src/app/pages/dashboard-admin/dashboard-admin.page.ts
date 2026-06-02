@@ -20,11 +20,7 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
-  IonModal, 
-  IonItem,
-  IonInput,
-  IonSelect,
-  IonSelectOption
+  IonModal
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -39,7 +35,6 @@ import {
 
 import { Intervento } from 'src/app/models/intervento.model';
 import { Preventivo } from 'src/app/models/preventivo.model';
-
 
 interface VoceCatalogo {
   id: number;
@@ -81,77 +76,22 @@ interface EventoStorico {
     IonButton,
     IonButtons,
     IonIcon,
-    IonModal,
-    IonItem,
-    IonInput,
-    IonSelect,
-    IonSelectOption
+    IonModal
   ]
 })
 export class DashboardAdminPage implements OnInit {
 
-  // Metriche globali
-  totalePreventivi = 5;
-  ordiniAttivi = 12;
-  interventiAperti = 8;
-  vociCatalogo = 3; 
-  interventi: Intervento[] = [
-  {
-    id: 1,
-    cliente: 'Mario Rossi',
-    descrizione: 'Riparazione impianto industriale',
-    luogo: 'Stabilimento Napoli',
-    priorita: 'Alta',
-    stato: 'Da assegnare',
-    dataOra: '2026-05-20',
-    dataRichiesta: '2026-05-20',
-    dataPreferita: '2026-05-25',
-    dipendenteAssegnato: null,
-    note: 'Il cliente segnala un blocco improvviso dell’impianto durante il ciclo produttivo.'
-  }
-];
+  // Metriche globali (inizializzate a 0)
+  totalePreventivi = 0;
+  ordiniAttivi = 0;
+  interventiAperti = 0;
+  vociCatalogo = 0; 
 
-  preventivi: Preventivo[] = [
-  {
-    id: 1,
-    cliente: 'Mario Rossi',
-    emailCliente: 'mario.rossi@email.it',
-    descrizione: 'Realizzazione struttura metallica industriale per area produttiva.',
-    servizio: 'Carpenteria metallica',
-    materiale: 'Acciaio zincato',
-    dimensioni: '3x2m',
-    finitura: 'Zincatura',
-    stato: 'In attesa',
-    dataRichiesta: '2026-05-18',
-    allegato: 'disegno-struttura.pdf',
-    prezzoProposto: null
-  },
-  {
-    id: 2,
-    cliente: 'Tech S.p.A.',
-    emailCliente: 'ufficio.tecnico@techspa.it',
-    descrizione: 'Fornitura di piastre in acciaio tagliate su misura per macchinario industriale.',
-    servizio: 'Taglio laser',
-    materiale: 'Acciaio inox',
-    dimensioni: '50x30cm',
-    finitura: 'Satinatura',
-    stato: 'Prezzo proposto',
-    dataRichiesta: '2026-05-19',
-    allegato: 'piastre-macchinario.dwg',
-    prezzoProposto: 680
-  }];
-
-  catalogo: VoceCatalogo[] = [
-    { id: 101, nome: 'Taglio Laser Lamiere', categoria: 'Lavorazioni', prezzoBase: 'Da €50/mq' },
-    { id: 102, nome: 'Saldatura TIG', categoria: 'Carpenteria', prezzoBase: 'Da €40/ora' },
-    { id: 103, nome: 'Manutenzione Pressa', categoria: 'Interventi', prezzoBase: 'Su preventivo' }
-  ];
-
-  storicoGlobale: EventoStorico[] = [
-    { id: 1001, dataFormattata: '2026-05-20 - 10:30', descrizione: 'Completato Ordine #849', cliente: 'Industrie Verdi SRL', tipo: 'Ordine', stato: 'Consegnato' },
-    { id: 1002, dataFormattata: '2026-05-19 - 16:00', descrizione: 'Preventivo accettato dal cliente', cliente: 'Mario Rossi', tipo: 'Preventivo', stato: 'Approvato' },
-    { id: 1003, dataFormattata: '2026-05-18 - 09:15', descrizione: 'Manutenzione compressore completata', cliente: 'Autoofficina Bianchi', tipo: 'Intervento', stato: 'Risolto' }
-  ];
+  // Array pronti per il backend
+  interventi: Intervento[] = [];
+  preventivi: Preventivo[] = [];
+  catalogo: VoceCatalogo[] = [];
+  storicoGlobale: EventoStorico[] = [];
 
   isModalOpen = false;
   modalMode: 'crea' | 'modifica' = 'crea';
@@ -168,55 +108,50 @@ export class DashboardAdminPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Inizializza qui le chiamate ai tuoi Service (es: this.caricaDati())
+  }
 
-
+  // --- LOGICA CATALOGO ---
   modificaVoceCatalogo(id: number) {
     this.modalMode = 'modifica';
     const voce = this.catalogo.find(v => v.id === id);
     if (voce) {
-      this.formCatalogo = { ...voce }; // Copia di sicurezza
+      this.formCatalogo = { ...voce };
       this.isModalOpen = true;
     }
   }
 
-get formCatalogoValido(): boolean {
-  return (
-    (this.formCatalogo.nome?.trim() ?? '') !== '' &&
-    (this.formCatalogo.categoria?.trim() ?? '') !== ''
-  );
-}
+  get formCatalogoValido(): boolean {
+    return (
+      (this.formCatalogo.nome?.trim() ?? '') !== '' &&
+      (this.formCatalogo.categoria?.trim() ?? '') !== ''
+    );
+  }
 
-
-async eliminaVoceCatalogo(id: number) {
+  async eliminaVoceCatalogo(id: number) {
     const alert = await this.alertController.create({
       cssClass: 'custom-dark-alert', 
       header: 'Eliminare voce?',
-      message: 'Sei sicuro di voler eliminare questa voce dal catalogo? Questa azione è irreversibile.',
+      message: 'Sei sicuro di voler eliminare questa voce dal catalogo?',
       buttons: [
-        {
-          text: 'Annulla',
-          role: 'cancel',
-          cssClass: 'dark-alert-btn-cancel' // Stile grigio
-        },
+        { text: 'Annulla', role: 'cancel' },
         {
           text: 'Elimina',
           role: 'destructive',
-          cssClass: 'dark-alert-btn-danger', // Stile rosso
           handler: () => {
             this.catalogo = this.catalogo.filter(v => v.id !== id);
             this.vociCatalogo = this.catalogo.length; 
-            console.log(`Voce catalogo ${id} eliminata con successo.`);
           }
         }
       ]
     });
-
     await alert.present();
   }
+
   aggiungiVoceCatalogo() {
     this.modalMode = 'crea';
-    this.formCatalogo = {}; // Vuoto per mantenere il placeholder in trasparenza
+    this.formCatalogo = {}; 
     this.isModalOpen = true;
   }
 
@@ -225,9 +160,8 @@ async eliminaVoceCatalogo(id: number) {
   }
 
   salvaVoceCatalogo() {
-    if (!this.formCatalogoValido) {
-  return;
-}
+    if (!this.formCatalogoValido) return;
+
     if (this.modalMode === 'crea') {
       const nuovaVoce: VoceCatalogo = {
         id: Date.now(),
@@ -236,7 +170,6 @@ async eliminaVoceCatalogo(id: number) {
         prezzoBase: this.formCatalogo.prezzoBase || 'Su preventivo'
       };
       this.catalogo.push(nuovaVoce);
-      this.vociCatalogo = this.catalogo.length; // Aggiorna dinamicamente il contatore sopra!
     } else {
       const index = this.catalogo.findIndex(v => v.id === this.formCatalogo.id);
       if (index !== -1) {
@@ -248,6 +181,7 @@ async eliminaVoceCatalogo(id: number) {
         };
       }
     }
+    this.vociCatalogo = this.catalogo.length;
     this.chiudiModale();
   }
 }
