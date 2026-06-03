@@ -117,7 +117,7 @@ db.serialize(() => {
         'Da valutare',      -- Il cliente ha appena inviato la richiesta
         'Prezzo proposto',  -- L'admin ha valutato la fattibilità e ha inserito una cifra
         'Rifiutato'         -- L'admin scarta la richiesta (es. lavorazione non fattibile)
-      )
+        )
     ),
     
     -- 2. STATO LATO CLIENTE (Risposta all'offerta economica)

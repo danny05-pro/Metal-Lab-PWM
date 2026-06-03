@@ -91,28 +91,7 @@ exports.getInterventiAdmin = async (req, res) => {
   }
 };
 
-exports.getInterventoById = async (req, res) => {
-  try {
-    const { id } = req.params;
 
-    const intervento = await Intervento.findById(id);
-
-    if (!intervento) {
-      return res.status(404).json({
-        message: 'Intervento non trovato.'
-      });
-    }
-
-    return res.json(intervento);
-
-  } catch (error) {
-    console.error('Errore recupero dettaglio intervento:', error);
-
-    return res.status(500).json({
-      message: 'Errore durante il recupero del dettaglio intervento.'
-    });
-  }
-};
 
 exports.adminProponeData = async (req, res) => {
   try {
@@ -261,6 +240,30 @@ exports.clienteRispondeData = async (req, res) => {
 
     return res.status(500).json({
       message: 'Errore durante la risposta del cliente.'
+    });
+  }
+};
+
+
+exports.getInterventoById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    return res.json(intervento);
+
+  } catch (error) {
+    console.error('Errore recupero dettaglio intervento admin:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il recupero del dettaglio intervento.'
     });
   }
 };

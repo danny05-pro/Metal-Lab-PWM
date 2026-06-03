@@ -76,6 +76,20 @@ router.get(
   preventiviController.getPreventiviAdmin
 );
 
+router.get(
+  '/admin/interventi',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.getInterventiAdmin
+);
+
+router.get(
+  '/admin/interventi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.getInterventoById
+);
+
 router.put(
   '/admin/interventi/:id/proponi-data',
   authMiddleware.verifyToken,
@@ -96,6 +110,9 @@ router.put(
   authMiddleware.isCliente,
   interventiController.clienteRispondeData
 );
+
+
+
 router.get(
   '/interventi/:id',
   authMiddleware.verifyToken,

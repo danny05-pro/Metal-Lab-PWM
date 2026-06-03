@@ -205,125 +205,6 @@ Frontend/
 <files>
 This section contains the contents of the repository's files.
 
-<file path="Backend/controllers/preventiviController.js">
-const Preventivo = require('../models/preventiviModel');
-
-exports.creaPreventivo = async (req, res) => {
-  try {
-    // req.user è iniettato dal middleware authMiddleware.verifyToken
-    const cliente_id = req.user.id; 
-    
-    const { descrizione, servizio, materiale, dimensioni, finitura, allegato } = req.body;
-
-    // Controllo campi obbligatori
-    if (!descrizione || !servizio || !materiale || !dimensioni) {
-      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
-    }
-
-    const nuovoPreventivo = await Preventivo.create({
-      cliente_id,
-      descrizione,
-      servizio,
-      materiale,
-      dimensioni,
-      finitura: finitura || null,
-      allegato: allegato || null
-    });
-
-    res.status(201).json({ 
-      message: 'Preventivo inviato con successo!',
-      preventivo: nuovoPreventivo 
-    });
-
-  } catch (error) {
-    console.error('Errore durante la creazione del preventivo:', error);
-    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
-  }
-};
-
-exports.getPreventiviCliente = async (req, res) => {
-  try {
-    const preventivi = await Preventivo.findByClienteId(req.user.id);
-    res.json(preventivi);
-  } catch (error) {
-    res.status(500).json({ message: 'Errore nel recupero preventivi.' });
-  }
-};
-</file>
-
-<file path="Backend/models/preventiviModel.js">
-const db = require('../database/database');
-
-exports.create = (dati) => {
-  return new Promise((resolve, reject) => {
-    db.run(
-      `INSERT INTO preventivi (cliente_id, descrizione, servizio, materiale, dimensioni, finitura, allegato)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [dati.cliente_id, dati.descrizione, dati.servizio, dati.materiale, dati.dimensioni, dati.finitura, dati.allegato],
-      function (err) {
-        if (err) reject(err);
-        else resolve({ id: this.lastID, ...dati });
-      }
-    );
-  });
-};
-
-exports.findByClienteId = (cliente_id) => {
-  return new Promise((resolve, reject) => {
-    db.all(
-      `SELECT * FROM preventivi WHERE cliente_id = ? ORDER BY id DESC`,
-      [cliente_id],
-      (err, rows) => {
-        if (err) reject(err);
-        else resolve(rows);
-      }
-    );
-  });
-};
-</file>
-
-<file path="Frontend/src/app/services/preventivi.service.ts">
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Preventivo } from '../models/preventivo.model';
-
-export interface PreventivoRichiesta {
-  descrizione: string;
-  servizio: string;
-  materiale: string;
-  dimensioni: string;
-  finitura?: string;
-  allegato?: string;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
-export class PreventiviService {
-
-  private apiUrl = 'http://localhost:3000/api/preventivi';
-
-  constructor(private http: HttpClient) {}
-
-  private getHeaders(): HttpHeaders {
-    const token = sessionStorage.getItem('token');
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    });
-  }
-
-  creaPreventivo(dati: PreventivoRichiesta): Observable<any> {
-    return this.http.post(this.apiUrl, dati, { headers: this.getHeaders() });
-  }
-
-  getPreventivi(): Observable<Preventivo[]> {
-    return this.http.get<Preventivo[]>(this.apiUrl, { headers: this.getHeaders() });
-  }
-}
-</file>
-
 <file path="Backend/controllers/dipendentiController.js">
 const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
@@ -398,87 +279,6 @@ exports.delete = async (req, res) => {
     res.status(500).json({ message: 'Errore durante l\'eliminazione' });
   }
 };
-</file>
-
-<file path="Backend/routes/routes.js">
-const express = require('express');
-
-// Controllers
-const authController = require('../controllers/authController');
-const dipendentiController = require('../controllers/dipendentiController');
-// 1. IMPORTIAMO IL NUOVO CONTROLLER
-const interventiController = require('../controllers/interventiController'); 
-const preventiviController = require('../controllers/preventiviController');
-// Middlewares
-const authMiddleware = require('../middlewares/authMiddleware');
-
-const router = express.Router();
-
-// ==========================================
-// AREA AUTENTICAZIONE
-// ==========================================
-router.post('/auth/register', authController.register);
-router.post('/auth/login', authController.login);
-router.get('/auth/profile', authMiddleware.verifyToken, authController.profile);
-
-// ==========================================
-// AREA CLIENTI
-// ==========================================
-// 2. LA NUOVA ROTTA PER LA RICHIESTA INTERVENTO
-router.post(
-  '/interventi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  interventiController.creaIntervento
-);
-
-router.get(
-  '/interventi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  interventiController.getInterventiCliente
-);
-
-router.post(
-  '/preventivi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  preventiviController.creaPreventivo
-);
-
-// Aggiungi questa rotta sotto la POST /preventivi
-router.get(
-  '/preventivi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  preventiviController.getPreventiviCliente
-);
-
-// ==========================================
-// AREA ADMIN: GESTIONE DIPENDENTI
-// ==========================================
-router.get('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.getAll);
-router.post('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.create);
-router.put('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.update);
-router.delete('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.delete);
-// ==========================================
-// AREA ADMIN: GESTIONE INTERVENTI
-// ==========================================
-
-router.get(
-  '/admin/interventi',
-  authMiddleware.verifyToken,
-  authMiddleware.isAdmin,
-  interventiController.getInterventiAdmin
-);
-
-router.get(
-  '/admin/interventi/:id',
-  authMiddleware.verifyToken,
-  authMiddleware.isAdmin,
-  interventiController.getInterventoById
-);
-module.exports = router;
 </file>
 
 <file path="Frontend/src/app/components/header/header.component.html">
@@ -963,51 +763,6 @@ export interface Ordine {
   importoTotale?: number;
 
   note?: string;
-}
-</file>
-
-<file path="Frontend/src/app/models/preventivo.model.ts">
-export interface Preventivo {
-  id: number;
-
-  cliente_id?: number;
-
-  descrizione: string;
-
-  servizio: string;
-
-  materiale: string;
-
-  dimensioni: string;
-
-  finitura: string;
-
-  // --- STATO LATO ADMIN ---
-  stato_admin:
-    | 'Da valutare'
-    | 'Prezzo proposto'
-    | 'Rifiutato';
-
-  // --- STATO LATO CLIENTE ---
-  stato_risposta_cliente:
-    | 'In attesa'
-    | 'Accettato'
-    | 'Rifiutato';
-
-  // I campi uniti tramite JOIN (quando l'admin legge i dati)
-  cliente?: string; 
-
-  emailCliente?: string;
-
-  cliente_nome?: string;
-
-  cliente_cognome?: string;
-
-  cliente_telefono?: string;
-
-  allegato?: string;
-
-  prezzoProposto?: number | null;
 }
 </file>
 
@@ -2027,177 +1782,6 @@ describe('DashboardDipendentePage', () => {
 });
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.scss">
-ion-content {
-  --background: #0b0f14;
-}
-
-.detail-header {
-  padding: 42px 22px 20px;
-  text-align: center;
-  color: white;
-}
-
-.detail-header h1 {
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 900;
-  margin: 0;
-}
-
-.detail-header p {
-  max-width: 760px;
-  margin: 14px auto 0;
-  color: #b7c0cc;
-  line-height: 1.6;
-}
-
-.detail-card {
-  max-width: 900px;
-  margin: 22px auto;
-  --background: #151b23;
-
-  border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  overflow: hidden;
-}
-
-ion-card-header {
-  padding: 24px 24px 8px;
-}
-
-ion-card-content {
-  padding: 8px 24px 24px;
-}
-
-ion-card-title {
-  color: #f5a623;
-  font-weight: 800;
-  font-size: 1.2rem;
-}
-
-.info-row {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 24px;
-
-  align-items: center;
-
-  padding: 18px 0;
-
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.info-row:last-child {
-  border-bottom: none;
-}
-
-.info-row span {
-  color: #b7c0cc;
-  font-weight: 700;
-}
-
-.info-row strong {
-  color: white;
-  text-align: right;
-  font-weight: 800;
-  line-height: 1.5;
-}
-
-.info-row ion-chip {
-  width: fit-content;
-  justify-self: end;
-  margin: 0;
-
-  background: rgba(245, 166, 35, 0.12);
-  color: #f5a623;
-  font-weight: 800;
-}
-
-.assignment-box {
-  padding: 18px;
-  border-radius: 16px;
-
-  background: rgba(245, 166, 35, 0.12);
-
-  color: #f5a623;
-  font-weight: 800;
-  text-align: center;
-
-  border: 1px solid rgba(245, 166, 35, 0.18);
-}
-
-.assignment-box strong {
-  color: white;
-}
-
-.assignment-box.empty {
-  color: #b7c0cc;
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.actions {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.btn-glass-assign {
-  margin: 0;
-  height: 52px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
-
-  --border-radius: 16px;
-  --border-width: 1px;
-  --border-style: solid;
-  --box-shadow: none;
-
-  /* Effetto vetro sfocato */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 16px;
-  overflow: hidden;
-  transform: translateZ(0);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Colori Ambra Translucidi */
-  --background: rgba(245, 166, 35, 0.12);
-  --color: #f5a623;
-  --border-color: rgba(245, 166, 35, 0.2);
-
-  &:hover {
-    --background: #f5a623;
-    --border-color: #f5a623;
-    --color: #0b0f14;
-    transform: translateY(-2px);
-  }
-}
-
-@media (max-width: 700px) {
-  .detail-card {
-    margin-left: 16px;
-    margin-right: 16px;
-  }
-
-  .info-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    align-items: start;
-  }
-
-  .info-row strong {
-    text-align: left;
-  }
-
-  .info-row ion-chip {
-    justify-self: start;
-  }
-}
-</file>
-
 <file path="Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.spec.ts">
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DettaglioInterventoAdminPage } from './dettaglio-intervento-admin.page';
@@ -2897,113 +2481,6 @@ export class DettaglioPreventivoAdminPage {
 }
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-cliente">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Dettaglio Preventivo</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  @if (preventivo) {
-    <section class="detail-header">
-      <h1>Preventivo #{{ preventivoId }}</h1>
-      <p>Riepilogo della tua richiesta e stato di avanzamento.</p>
-    </section>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>Stato Preventivo</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="info-row">
-          <span>Stato Amministrazione</span>
-          <ion-chip>{{ preventivo.stato_admin }}</ion-chip>
-        </div>
-        
-        <div class="info-row">
-          <span>La tua risposta</span>
-          <ion-chip>{{ preventivo.stato_risposta_cliente }}</ion-chip>
-        </div>
-
-        @if (preventivo.prezzoProposto) {
-          <div class="price-box">
-            Prezzo proposto da Metal Lab:
-            <strong>€ {{ preventivo.prezzoProposto }}</strong>
-          </div>
-        } @else {
-          <div class="price-box empty">
-            Nessun prezzo ancora proposto.
-          </div>
-        }
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>Dati Tecnici Richiesta</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="description-box">
-          <h3>Descrizione</h3>
-          <p>{{ preventivo.descrizione }}</p>
-        </div>
-        <div class="info-row">
-          <span>Servizio richiesto</span>
-          <strong>{{ preventivo.servizio }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Materiale</span>
-          <strong>{{ preventivo.materiale }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Dimensioni</span>
-          <strong>{{ preventivo.dimensioni }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Finitura</span>
-          <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Allegato tecnico</span>
-          <strong>{{ preventivo.allegato || 'Nessun allegato' }}</strong>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    @if (preventivo.stato_admin === 'Prezzo proposto' && preventivo.stato_risposta_cliente === 'In attesa') {
-      <ion-card class="detail-card">
-        <ion-card-header>
-          <ion-card-title>Risposta alla proposta</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <p class="response-text">
-            Puoi accettare o rifiutare il prezzo proposto da Metal Lab.
-          </p>
-          <div class="actions">
-            <ion-button expand="block" class="btn-glass-accept" (click)="accettaPreventivo()">
-              Accetta preventivo
-            </ion-button>
-            <ion-button expand="block" class="btn-glass-reject" (click)="rifiutaPreventivo()">
-              Rifiuta preventivo
-            </ion-button>
-          </div>
-        </ion-card-content>
-      </ion-card>
-    }
-  } @else {
-    <div class="ion-padding ion-text-center">
-      <p>Caricamento preventivo in corso...</p>
-    </div>
-  }
-</ion-content>
-</file>
-
 <file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.scss">
 ion-content {
   --background: #0b0f14;
@@ -3181,75 +2658,6 @@ describe('DettaglioPreventivoClientePage', () => {
     expect(component).toBeTruthy();
   });
 });
-</file>
-
-<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.ts">
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Necessario per @if, @for
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // CORRETTO: import da @angular/router
-
-import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
-  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
-} from '@ionic/angular/standalone';
-
-import { addIcons } from 'ionicons';
-import { arrowBackOutline } from 'ionicons/icons';
-import { Preventivo } from '../../models/preventivo.model';
-
-@Component({
-  selector: 'app-dettaglio-preventivo-cliente',
-  templateUrl: './dettaglio-preventivo-cliente.page.html',
-  styleUrls: ['./dettaglio-preventivo-cliente.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonChip
-  ]
-})
-export class DettaglioPreventivoClientePage implements OnInit {
-
-  preventivoId = '';
-  preventivo: Preventivo | null = null; 
-
-  constructor(
-    private route: ActivatedRoute, 
-    private router: Router
-  ) {
-    addIcons({ arrowBackOutline });
-    this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
-  }
-
-  ngOnInit() {
-    // Qui in futuro caricherai i dati reali.
-    // Per ora, se vuoi vedere la pagina renderizzata, 
-    // potresti inizializzare preventivo con dati mock.
-  }
-
-  accettaPreventivo() {
-    if (!this.preventivo) return;
-    this.preventivo.stato_risposta_cliente = 'Accettato';
-    this.router.navigate(['/dashboard-cliente']);
-  }
-
-  rifiutaPreventivo() {
-    if (!this.preventivo) return;
-    this.preventivo.stato_risposta_cliente = 'Rifiutato';
-    this.router.navigate(['/dashboard-cliente']);
-  }
-}
 </file>
 
 <file path="Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.spec.ts">
@@ -4850,159 +4258,6 @@ describe('PreventiviPage', () => {
 });
 </file>
 
-<file path="Frontend/src/app/pages/preventivi/preventivi.page.ts">
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
-
-// 1. Aggiungiamo l'AlertController per la gestione visiva degli errori
-import { AlertController } from '@ionic/angular';
-
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonButton,
-  IonButtons,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonInput,
-  IonTextarea,
-  IonSelect,
-  IonSelectOption,
-  IonCard,
-  IonCardContent
-} from '@ionic/angular/standalone';
-
-import { addIcons } from 'ionicons';
-import { arrowBackOutline, documentAttachOutline, trashOutline } from 'ionicons/icons';
-
-// 2. Importiamo il nostro nuovo Service
-import { PreventiviService, PreventivoRichiesta } from '../../services/preventivi.service';
-
-@Component({
-  selector: 'app-preventivi',
-  templateUrl: './preventivi.page.html',
-  styleUrls: ['./preventivi.page.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    RouterLink,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonButton,
-    IonButtons,
-    IonIcon,
-    IonItem,
-    IonLabel,
-    IonInput,
-    IonTextarea,
-    IonSelect,
-    IonSelectOption,
-    IonCard,
-    IonCardContent
-  ]
-})
-export class PreventiviPage {
-
-  // RIGOROSAMENTE NESSUN DATO FITTIZIO: solo contenitori vuoti per il form
-  descrizione: string = '';
-  servizio: string = '';
-  materiale: string = '';
-  dimensioni: string = '';
-  finitura: string = '';
-  allegatiNomi: string[] = [];
-
-  preventivoInviato: boolean = false;
-  isMac: boolean = false;
-
-  get formValido(): boolean {
-    return (
-      this.descrizione.trim() !== '' &&
-      this.servizio.trim() !== '' &&
-      this.materiale.trim() !== '' &&
-      this.dimensioni.trim() !== ''
-    );
-  }
-
-  // 3. Iniettiamo il service e l'alert controller
-  constructor(
-    private router: Router,
-    private preventiviService: PreventiviService,
-    private alertController: AlertController
-  ) {
-    addIcons({
-      arrowBackOutline,
-      documentAttachOutline,
-      trashOutline
-    });
-
-    this.isMac = navigator.userAgent.toLowerCase().includes('mac');
-  }
-
-  selezionaFile(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.allegatiNomi = []; 
-
-    if (input.files && input.files.length > 0) {
-      for (let i = 0; i < input.files.length; i++) {
-        this.allegatiNomi.push(input.files[i].name);
-      }
-    }
-  }
-
-  svuotaAllegati() {
-    this.allegatiNomi = [];
-  }
-
-  // 4. Invio REALE al database
-  inviaPreventivo() {
-    if (!this.formValido) return;
-
-    // Convertiamo l'array di file in una stringa separata da virgole per rispettare la colonna SQLite
-    const stringaAllegati = this.allegatiNomi.length > 0 
-      ? this.allegatiNomi.join(', ') 
-      : undefined;
-
-    const payload: PreventivoRichiesta = {
-      descrizione: this.descrizione,
-      servizio: this.servizio,
-      materiale: this.materiale,
-      dimensioni: this.dimensioni,
-      finitura: this.finitura || undefined, // Evitiamo stringhe vuote, passiamo undefined per generare NULL
-      allegato: stringaAllegati
-    };
-
-    // Chiamata HTTP
-    this.preventiviService.creaPreventivo(payload).subscribe({
-      next: () => {
-        this.preventivoInviato = true;
-
-        setTimeout(() => {
-          this.router.navigate(['/dashboard-cliente']);
-        }, 1500);
-      },
-      error: async (err: any) => {
-        console.error('Errore invio preventivo:', err);
-        const messaggio = err.error?.message || 'Errore di connessione al server.';
-
-        const alert = await this.alertController.create({
-          cssClass: 'custom-dark-alert',
-          header: 'Errore',
-          message: messaggio,
-          buttons: ['OK']
-        });
-        await alert.present();
-      }
-    });
-  }
-}
-</file>
-
 <file path="Frontend/src/app/pages/register/register.page.html">
 <ion-header class="ion-no-border">
   <ion-toolbar color="dark"> 
@@ -5465,108 +4720,6 @@ import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 export class AppComponent {
   constructor() {}
 }
-</file>
-
-<file path="Frontend/src/app/app.routes.ts">
-import { Routes } from '@angular/router';
-
-export const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
-  },
-  {
-    path: 'home',
-    loadComponent: () =>
-      import('./pages/home/home.page').then(m => m.HomePage)
-  },
-  {
-    path: 'login',
-    loadComponent: () =>
-      import('./pages/login/login.page').then(m => m.LoginPage)
-  },
-  {
-    path: 'register',
-    loadComponent: () =>
-      import('./pages/register/register.page').then(m => m.RegisterPage)
-  },
-  {
-    path: 'catalogo',
-    loadComponent: () =>
-      import('./pages/catalogo/catalogo.page').then(m => m.CatalogoPage)
-  },
-  {
-    path: 'preventivi',
-    loadComponent: () =>
-      import('./pages/preventivi/preventivi.page').then(m => m.PreventiviPage)
-  },
-  {
-    path: 'dashboard-cliente',
-    loadComponent: () =>
-      import('./pages/dashboard-cliente/dashboard-cliente.page')
-    .then(m => m.DashboardClientePage)
-  },
-  {
-    path: 'dashboard-dipendente',
-    loadComponent: () =>
-      import('./pages/dashboard-dipendente/dashboard-dipendente.page')
-    .then(m => m.DashboardDipendentePage)
-  },
-  {
-    path: 'dashboard-admin',
-    loadComponent: () =>
-      import('./pages/dashboard-admin/dashboard-admin.page')
-    .then(m => m.DashboardAdminPage)
-  },
-  {
-    path: 'interventi',
-    loadComponent: () => import('./pages/interventi/interventi.page')
-    .then( m => m.InterventiPage)
-  },
- {
-  path: 'dettaglio-preventivo-admin/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page')
-      .then(m => m.DettaglioPreventivoAdminPage)
-},
-  
-  {
-    path: 'gestione-dipendenti',
-    loadComponent: () => import('./pages/gestione-dipendenti/gestione-dipendenti.page')
-    .then( m => m.GestioneDipendentiPage)
-  },
-  {
-  path: 'dettaglio-preventivo-cliente/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page')
-      .then(m => m.DettaglioPreventivoClientePage)
-},
-{
-  path: 'dettaglio-intervento-cliente/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page')
-      .then(m => m.DettaglioInterventoClientePage)
-},
-{
-  path: 'dettaglio-intervento-admin/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page')
-      .then(m => m.DettaglioInterventoAdminPage)
-},
-{
-  path: 'dettaglio-intervento-dipendente/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page')
-      .then(m => m.DettaglioInterventoDipendentePage)
-},
-  {
-    path: '**',
-    redirectTo: 'home'
-  }
-
-
-];
 </file>
 
 <file path="Frontend/src/assets/shapes.svg">
@@ -6358,6 +5511,123 @@ Progetto universitario per la materia "Programmazione web e mobile"
 }
 </file>
 
+<file path="Backend/controllers/preventiviController.js">
+const Preventivo = require('../models/preventiviModel');
+
+exports.creaPreventivo = async (req, res) => {
+  try {
+    // req.user è iniettato dal middleware authMiddleware.verifyToken
+    const cliente_id = req.user.id; 
+    
+    const { descrizione, servizio, materiale, dimensioni, finitura, allegato } = req.body;
+
+    // Controllo campi obbligatori
+    if (!descrizione || !servizio || !materiale || !dimensioni) {
+      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
+    }
+
+    const nuovoPreventivo = await Preventivo.create({
+      cliente_id,
+      descrizione,
+      servizio,
+      materiale,
+      dimensioni,
+      finitura: finitura || null,
+      allegato: allegato || null
+    });
+
+    res.status(201).json({ 
+      message: 'Preventivo inviato con successo!',
+      preventivo: nuovoPreventivo 
+    });
+
+  } catch (error) {
+    console.error('Errore durante la creazione del preventivo:', error);
+    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
+  }
+};
+
+exports.getPreventiviCliente = async (req, res) => {
+  try {
+    const preventivi = await Preventivo.findByClienteId(req.user.id);
+    res.json(preventivi);
+  } catch (error) {
+    res.status(500).json({ message: 'Errore nel recupero preventivi.' });
+  }
+};
+
+
+
+exports.getPreventiviAdmin = async (req, res) => {
+  try {
+    const preventivi = await Preventivo.findAllForAdmin();
+    return res.json(preventivi);
+  } catch (error) {
+    console.error('Errore nel recupero preventivi per admin:', error);
+    return res.status(500).json({ message: 'Errore nel caricamento dei dati.' });
+  }
+};
+</file>
+
+<file path="Backend/models/preventiviModel.js">
+const db = require('../database/database');
+
+exports.create = (dati) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `INSERT INTO preventivi (cliente_id, descrizione, servizio, materiale, dimensioni, finitura, allegato)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [dati.cliente_id, dati.descrizione, dati.servizio, dati.materiale, dati.dimensioni, dati.finitura, dati.allegato],
+      function (err) {
+        if (err) reject(err);
+        else resolve({ id: this.lastID, ...dati });
+      }
+    );
+  });
+};
+
+exports.findByClienteId = (cliente_id) => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `SELECT * FROM preventivi WHERE cliente_id = ? ORDER BY id DESC`,
+      [cliente_id],
+      (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      }
+    );
+  });
+};
+
+
+
+exports.findAllForAdmin = () => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `
+        SELECT
+          preventivi.*,
+          users.nome AS cliente_nome,
+          users.cognome AS cliente_cognome,
+          users.email AS cliente_email,
+          users.telefono AS cliente_telefono
+        FROM preventivi
+        JOIN users ON users.id = preventivi.cliente_id
+        ORDER BY preventivi.id DESC
+      `,
+      [],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      }
+    );
+  });
+};
+</file>
+
 <file path="Backend/server.js">
 const express = require('express');
 const cors = require('cors');
@@ -6389,124 +5659,49 @@ app.listen(PORT, () => {
 });
 </file>
 
-<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark"> 
-    <ion-buttons slot="start">
-      <ion-button routerLink="/home">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Home</ion-title>
-  </ion-toolbar>
-</ion-header>
+<file path="Frontend/src/app/models/preventivo.model.ts">
+export interface Preventivo {
+  id: number;
 
-<ion-content>
-  <section class="dashboard-header">
-    <h1>Area Personale</h1>
-    <p>Benvenuto nel tuo pannello di controllo Metal Lab.</p>
-  </section>
+  cliente_id?: number;
 
-  <div class="dashboard-actions">
-    <ion-button expand="block" routerLink="/preventivi">Richiedi Preventivo</ion-button>
-    <ion-button expand="block" routerLink="/interventi">Richiedi Intervento</ion-button>
-  </div>
+  descrizione: string;
 
-  <ion-grid>
-    <ion-row class="summary-row">
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ preventivi.length }}</span>
-          <span class="summary-label">Preventivi</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ tuttiGliInterventi.length }}</span>
-          <span class="summary-label">Interventi</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ ordini.length }}</span>
-          <span class="summary-label">Ordini in corso</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ storicoOrdini.length }}</span>
-          <span class="summary-label">Storico Ordini</span>
-        </div>
-      </ion-col>
-    </ion-row>
+  servizio: string;
 
-    <ion-row class="details-row">
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header><ion-card-title>I tuoi Preventivi</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (preventivo of preventivi; track preventivo.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]">
-                <div class="item-header">
-                  <h3>{{ preventivo.descrizione }}</h3>
-                  <ion-chip>
-                    {{ preventivo.stato_admin }} | {{ preventivo.stato_risposta_cliente }}
-                  </ion-chip>
-                </div>
-                <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
-              </div>
-            } @empty { <div class="empty-section">Nessun preventivo presente</div> }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+  materiale: string;
 
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header><ion-card-title>Interventi Tecnici</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (intervento of tuttiGliInterventi; track intervento.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-cliente', intervento.id]">
-                <div class="item-header">
-                  <h3>{{ intervento.descrizione }}</h3>
-                  <ion-chip [color]="intervento.stato_admin === 'Accettato' ? 'success' : 'warning'">
-                    {{ intervento.stato_admin }}
-                  </ion-chip>
-                </div>
-                <p>Luogo: {{ intervento.luogo }} | Richiesto il: {{ intervento.data_richiesta }}</p>
-              </div>
-            } @empty {
-              <div class="empty-section">Nessun intervento richiesto</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      </ion-row>
+  dimensioni: string;
 
-    <ion-row>
-      <ion-col size="12">
-        <ion-card class="calendar-card">
-          <ion-card-header><ion-card-title>Calendario Attività</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (evento of interventiFuturi; track evento.id) {
-              <div class="calendar-item clickable" [routerLink]="['/dettaglio-intervento-cliente', evento.id]">
-                <div class="calendar-date">{{ evento.data_proposta_admin || 'In attesa' }}</div>
-                <div class="calendar-info">
-                  <h3>{{ evento.descrizione }}</h3>
-                  <p>Luogo: {{ evento.luogo }}</p>
-                  <ion-chip [color]="evento.stato_lavorazione === 'Terminato' ? 'success' : 'warning'">
-                    {{ evento.stato_lavorazione }}
-                  </ion-chip>
-                </div>
-              </div>
-            } @empty {
-              <div class="empty-section">Nessuna attività pianificata.</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-content>
+  finitura: string;
+
+  // --- STATO LATO ADMIN ---
+  stato_admin:
+    | 'Da valutare'
+    | 'Prezzo proposto'
+    | 'Rifiutato';
+
+  // --- STATO LATO CLIENTE ---
+  stato_risposta_cliente:
+    | 'In attesa'
+    | 'Accettato'
+    | 'Rifiutato';
+
+  // I campi uniti tramite JOIN (quando l'admin legge i dati)
+  cliente?: string; 
+
+  emailCliente?: string;
+
+  cliente_nome?: string;
+
+  cliente_cognome?: string;
+
+  cliente_telefono?: string;
+
+  allegato?: string;
+
+  prezzoProposto?: number | null;
+}
 </file>
 
 <file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.scss">
@@ -6952,10 +6147,9 @@ export class DashboardDipendentePage implements OnInit {
 }
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.scss">
+<file path="Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.scss">
 ion-content {
   --background: #0b0f14;
-  --padding-bottom: 60px;
 }
 
 .detail-header {
@@ -6971,8 +6165,10 @@ ion-content {
 }
 
 .detail-header p {
+  max-width: 760px;
+  margin: 14px auto 0;
   color: #b7c0cc;
-  margin-top: 12px;
+  line-height: 1.6;
 }
 
 .detail-card {
@@ -6980,20 +6176,10 @@ ion-content {
   margin: 22px auto;
   --background: #151b23;
 
-.detail-card:last-of-type {
-  margin-bottom: 60px; 
-}
-
   border-radius: 22px;
-
   border: 1px solid rgba(255, 255, 255, 0.08);
 
   overflow: hidden;
-}
-
-ion-card-title {
-  color: #f5a623;
-  font-weight: 800;
 }
 
 ion-card-header {
@@ -7002,6 +6188,12 @@ ion-card-header {
 
 ion-card-content {
   padding: 8px 24px 24px;
+}
+
+ion-card-title {
+  color: #f5a623;
+  font-weight: 800;
+  font-size: 1.2rem;
 }
 
 .info-row {
@@ -7015,7 +6207,6 @@ ion-card-content {
 
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-
 
 .info-row:last-child {
   border-bottom: none;
@@ -7032,37 +6223,109 @@ ion-card-content {
   font-weight: 800;
   line-height: 1.5;
 }
+
 .info-row ion-chip {
   width: fit-content;
   justify-self: end;
   margin: 0;
-}
-.note-row {
-  align-items: start;
-}
 
-.description-box {
-  margin-bottom: 18px;
-}
-
-.description-box h3 {
-  color: white;
-  margin-bottom: 8px;
-}
-
-.description-box p {
-  color: #b7c0cc;
-  line-height: 1.6;
-}
-
-ion-chip {
-  background: rgba(245,166,35,0.12);
+  background: rgba(245, 166, 35, 0.12);
   color: #f5a623;
-  font-weight: 700;
+  font-weight: 800;
+}
+
+.assignment-box {
+  padding: 18px;
+  border-radius: 16px;
+
+  background: rgba(245, 166, 35, 0.12);
+
+  color: #f5a623;
+  font-weight: 800;
+  text-align: center;
+
+  border: 1px solid rgba(245, 166, 35, 0.18);
+}
+
+.assignment-box strong {
+  color: white;
+}
+
+.assignment-box.empty {
+  color: #b7c0cc;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.btn-glass-assign {
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  /* Effetto vetro sfocato */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Colori Ambra Translucidi */
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px);
+  }
+}
+.btn-glass-reject {
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --background: rgba(235, 68, 90, 0.12);
+  --color: #eb445a;
+  --border-color: rgba(235, 68, 90, 0.2);
+
+  &:hover {
+    --background: #eb445a;
+    --border-color: #eb445a;
+    --color: #ffffff;
+    transform: translateY(-2px);
+  }
 }
 
 @media (max-width: 700px) {
-
   .detail-card {
     margin-left: 16px;
     margin-right: 16px;
@@ -7077,10 +6340,10 @@ ion-chip {
   .info-row strong {
     text-align: left;
   }
-    .info-row ion-chip {
+
+  .info-row ion-chip {
     justify-self: start;
   }
-
 }
 </file>
 
@@ -7253,6 +6516,182 @@ export class DettaglioInterventoDipendentePage implements OnInit {
     });
 
     await alert.present();
+  }
+}
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-cliente">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Dettaglio Preventivo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (preventivo) {
+    <section class="detail-header">
+      <h1>Preventivo #{{ preventivoId }}</h1>
+      <p>Riepilogo della tua richiesta e stato di avanzamento.</p>
+    </section>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Stato Preventivo</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-row">
+          <span>Stato Amministrazione</span>
+          <ion-chip>{{ preventivo.stato_admin }}</ion-chip>
+        </div>
+        
+        <div class="info-row">
+          <span>La tua risposta</span>
+          <ion-chip>{{ preventivo.stato_risposta_cliente }}</ion-chip>
+        </div>
+
+        @if (preventivo.prezzoProposto) {
+          <div class="price-box">
+            Prezzo proposto da Metal Lab:
+            <strong>€ {{ preventivo.prezzoProposto }}</strong>
+          </div>
+        } @else {
+          <div class="price-box empty">
+            Nessun prezzo ancora proposto.
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Dati Tecnici Richiesta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="description-box">
+          <h3>Descrizione</h3>
+          <p>{{ preventivo.descrizione }}</p>
+        </div>
+        <div class="info-row">
+          <span>Servizio richiesto</span>
+          <strong>{{ preventivo.servizio }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Materiale</span>
+          <strong>{{ preventivo.materiale }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Dimensioni</span>
+          <strong>{{ preventivo.dimensioni }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Finitura</span>
+          <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Allegato tecnico</span>
+          <strong>{{ preventivo.allegato || 'Nessun allegato' }}</strong>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    @if (preventivo.stato_admin === 'Prezzo proposto' && preventivo.stato_risposta_cliente === 'In attesa') {
+      <ion-card class="detail-card">
+        <ion-card-header>
+          <ion-card-title>Risposta alla proposta</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p class="response-text">
+            Puoi accettare o rifiutare il prezzo proposto da Metal Lab.
+          </p>
+          <div class="actions">
+            <ion-button expand="block" class="btn-glass-accept" (click)="accettaPreventivo()">
+              Accetta preventivo
+            </ion-button>
+            <ion-button expand="block" class="btn-glass-reject" (click)="rifiutaPreventivo()">
+              Rifiuta preventivo
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+  } @else {
+    <div class="ion-padding ion-text-center">
+      <p>Caricamento preventivo in corso...</p>
+    </div>
+  }
+</ion-content>
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.ts">
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Necessario per @if, @for
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // CORRETTO: import da @angular/router
+
+import {
+  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
+  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+import { arrowBackOutline } from 'ionicons/icons';
+import { Preventivo } from '../../models/preventivo.model';
+
+@Component({
+  selector: 'app-dettaglio-preventivo-cliente',
+  templateUrl: './dettaglio-preventivo-cliente.page.html',
+  styleUrls: ['./dettaglio-preventivo-cliente.page.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonChip
+  ]
+})
+export class DettaglioPreventivoClientePage implements OnInit {
+
+  preventivoId = '';
+  preventivo: Preventivo | null = null; 
+
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router
+  ) {
+    addIcons({ arrowBackOutline });
+    this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
+  }
+
+  ngOnInit() {
+    // Qui in futuro caricherai i dati reali.
+    // Per ora, se vuoi vedere la pagina renderizzata, 
+    // potresti inizializzare preventivo con dati mock.
+  }
+
+  accettaPreventivo() {
+    if (!this.preventivo) return;
+    this.preventivo.stato_risposta_cliente = 'Accettato';
+    this.router.navigate(['/dashboard-cliente']);
+  }
+
+  rifiutaPreventivo() {
+    if (!this.preventivo) return;
+    this.preventivo.stato_risposta_cliente = 'Rifiutato';
+    this.router.navigate(['/dashboard-cliente']);
   }
 }
 </file>
@@ -7631,15 +7070,13 @@ ion-input.has-focus ion-input-password-toggle,
 }
 </file>
 
-<file path="Frontend/src/app/pages/login/login.page.ts">
+<file path="Frontend/src/app/pages/preventivi/preventivi.page.ts">
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink, Router } from '@angular/router';
 
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink
-} from '@angular/router';
+// 1. Aggiungiamo l'AlertController per la gestione visiva degli errori
+import { AlertController } from '@ionic/angular';
 
 import {
   IonHeader,
@@ -7649,28 +7086,26 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
-  IonCard,
-  IonCardContent,
   IonItem,
   IonLabel,
   IonInput,
-  IonText,
-  IonInputPasswordToggle
+  IonTextarea,
+  IonSelect,
+  IonSelectOption,
+  IonCard,
+  IonCardContent
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import {
-  arrowBackOutline,
-  alertCircleOutline
-} from 'ionicons/icons';
+import { arrowBackOutline, documentAttachOutline, trashOutline } from 'ionicons/icons';
 
-// 1. Importiamo il Service di Autenticazione
-import { AuthService } from '../../services/auth.service';
+// 2. Importiamo il nostro nuovo Service
+import { PreventiviService, PreventivoRichiesta } from '../../services/preventivi.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-preventivi',
+  templateUrl: './preventivi.page.html',
+  styleUrls: ['./preventivi.page.scss'],
   standalone: true,
   imports: [
     FormsModule,
@@ -7682,86 +7117,108 @@ import { AuthService } from '../../services/auth.service';
     IonButton,
     IonButtons,
     IonIcon,
-    IonCard,
-    IonCardContent,
     IonItem,
     IonLabel,
     IonInput,
-    IonText,
-    IonInputPasswordToggle
+    IonTextarea,
+    IonSelect,
+    IonSelectOption,
+    IonCard,
+    IonCardContent
   ]
 })
-export class LoginPage {
+export class PreventiviPage {
 
-  modalita: 'login' | 'register' = 'login';
-  email = '';
-  password = '';
-  returnUrl = '/home';
-  
-  erroreLogin = ''; 
+  // RIGOROSAMENTE NESSUN DATO FITTIZIO: solo contenitori vuoti per il form
+  descrizione: string = '';
+  servizio: string = '';
+  materiale: string = '';
+  dimensioni: string = '';
+  finitura: string = '';
+  allegatiNomi: string[] = [];
 
-  // 2. Iniettiamo l'AuthService invece di HttpClient
+  preventivoInviato: boolean = false;
+  isMac: boolean = false;
+
+  get formValido(): boolean {
+    return (
+      this.descrizione.trim() !== '' &&
+      this.servizio.trim() !== '' &&
+      this.materiale.trim() !== '' &&
+      this.dimensioni.trim() !== ''
+    );
+  }
+
+  // 3. Iniettiamo il service e l'alert controller
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
-    private authService: AuthService 
+    private preventiviService: PreventiviService,
+    private alertController: AlertController
   ) {
     addIcons({
       arrowBackOutline,
-      alertCircleOutline
+      documentAttachOutline,
+      trashOutline
     });
 
-    this.returnUrl =
-      this.route.snapshot.queryParamMap.get('returnUrl')
-      || '/home';
+    this.isMac = navigator.userAgent.toLowerCase().includes('mac');
   }
-  
-  accedi() {
-    if (!this.loginValido) {
-      return;
+
+  selezionaFile(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.allegatiNomi = []; 
+
+    if (input.files && input.files.length > 0) {
+      for (let i = 0; i < input.files.length; i++) {
+        this.allegatiNomi.push(input.files[i].name);
+      }
     }
+  }
 
-    this.erroreLogin = ''; 
+  svuotaAllegati() {
+    this.allegatiNomi = [];
+  }
 
-    const body = {
-      email: this.email,
-      password: this.password
+  // 4. Invio REALE al database
+  inviaPreventivo() {
+    if (!this.formValido) return;
+
+    // Convertiamo l'array di file in una stringa separata da virgole per rispettare la colonna SQLite
+    const stringaAllegati = this.allegatiNomi.length > 0 
+      ? this.allegatiNomi.join(', ') 
+      : undefined;
+
+    const payload: PreventivoRichiesta = {
+      descrizione: this.descrizione,
+      servizio: this.servizio,
+      materiale: this.materiale,
+      dimensioni: this.dimensioni,
+      finitura: this.finitura || undefined, // Evitiamo stringhe vuote, passiamo undefined per generare NULL
+      allegato: stringaAllegati
     };
 
-    // 3. Usiamo il service per fare la chiamata
-    this.authService.login(body).subscribe({
-      next: (response: any) => {
-        console.log('Login riuscito:', response);
+    // Chiamata HTTP
+    this.preventiviService.creaPreventivo(payload).subscribe({
+      next: () => {
+        this.preventivoInviato = true;
 
-        if (response.token) {
-          sessionStorage.setItem('token', response.token);
-        }
-        
-        sessionStorage.setItem('utenteLoggato', 'true');
-        
-        // Estraiamo il ruolo (supporta sia che dal server arrivi come 'user' o come 'utente')
-        const ruolo = response.utente?.ruolo || response.user?.ruolo || '';
-        sessionStorage.setItem('ruoloUtente', ruolo);
-
-        this.router.navigate([this.returnUrl]);
+        setTimeout(() => {
+          this.router.navigate(['/dashboard-cliente']);
+        }, 1500);
       },
-      error: (err: any) => {
-        console.error('Errore login:', err);
-        
-        if (err.status === 401 || err.status === 400) {
-          this.erroreLogin = err.error.message;
-        } else {
-          this.erroreLogin = 'Errore di connessione al server.';
-        }
+      error: async (err: any) => {
+        console.error('Errore invio preventivo:', err);
+        const messaggio = err.error?.message || 'Errore di connessione al server.';
+
+        const alert = await this.alertController.create({
+          cssClass: 'custom-dark-alert',
+          header: 'Errore',
+          message: messaggio,
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     });
-  }
-  
-  get loginValido(): boolean {
-    return (
-      this.email.trim() !== '' &&
-      this.password.trim() !== ''
-    );
   }
 }
 </file>
@@ -7970,6 +7427,151 @@ export class DipendentiService {
 }
 </file>
 
+<file path="Frontend/src/app/services/preventivi.service.ts">
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Preventivo } from '../models/preventivo.model';
+
+export interface PreventivoRichiesta {
+  descrizione: string;
+  servizio: string;
+  materiale: string;
+  dimensioni: string;
+  finitura?: string;
+  allegato?: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PreventiviService {
+
+  private apiUrl = 'http://localhost:3000/api/preventivi';
+
+  constructor(private http: HttpClient) {}
+
+  private getHeaders(): HttpHeaders {
+    const token = sessionStorage.getItem('token');
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+  }
+
+  creaPreventivo(dati: PreventivoRichiesta): Observable<any> {
+    return this.http.post(this.apiUrl, dati, { headers: this.getHeaders() });
+  }
+
+  getPreventivi(): Observable<Preventivo[]> {
+    return this.http.get<Preventivo[]>(this.apiUrl, { headers: this.getHeaders() });
+  }
+  getPreventiviAdmin(): Observable<Preventivo[]> {
+    const adminUrl = 'http://localhost:3000/api/admin/preventivi';
+    return this.http.get<Preventivo[]>(adminUrl, { headers: this.getHeaders() });
+  }
+}
+</file>
+
+<file path="Frontend/src/app/app.routes.ts">
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    loadComponent: () =>
+      import('./pages/home/home.page').then(m => m.HomePage)
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./pages/login/login.page').then(m => m.LoginPage)
+  },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./pages/register/register.page').then(m => m.RegisterPage)
+  },
+  {
+    path: 'catalogo',
+    loadComponent: () =>
+      import('./pages/catalogo/catalogo.page').then(m => m.CatalogoPage)
+  },
+  {
+    path: 'preventivi',
+    loadComponent: () =>
+      import('./pages/preventivi/preventivi.page').then(m => m.PreventiviPage)
+  },
+  {
+    path: 'dashboard-cliente',
+    loadComponent: () =>
+      import('./pages/dashboard-cliente/dashboard-cliente.page')
+    .then(m => m.DashboardClientePage)
+  },
+  {
+    path: 'dashboard-dipendente',
+    loadComponent: () =>
+      import('./pages/dashboard-dipendente/dashboard-dipendente.page')
+    .then(m => m.DashboardDipendentePage)
+  },
+  {
+    path: 'dashboard-admin',
+    loadComponent: () =>
+      import('./pages/dashboard-admin/dashboard-admin.page')
+    .then(m => m.DashboardAdminPage)
+  },
+  {
+    path: 'interventi',
+    loadComponent: () => import('./pages/interventi/interventi.page')
+    .then( m => m.InterventiPage)
+  },
+  {
+    path: 'dettaglio-preventivo-admin/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page')
+        .then(m => m.DettaglioPreventivoAdminPage)
+  },
+  {
+    path: 'gestione-dipendenti',
+    loadComponent: () => import('./pages/gestione-dipendenti/gestione-dipendenti.page')
+    .then( m => m.GestioneDipendentiPage)
+  },
+  {
+    path: 'dettaglio-preventivo-cliente/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page')
+        .then(m => m.DettaglioPreventivoClientePage)
+  },
+  {
+    path: 'dettaglio-intervento-cliente/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page')
+        .then(m => m.DettaglioInterventoClientePage)
+  },
+  {
+    path: 'dettaglio-intervento-admin/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page')
+        .then(m => m.DettaglioInterventoAdminPage)
+  },
+  {
+    path: 'dettaglio-intervento-dipendente/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page')
+        .then(m => m.DettaglioInterventoDipendentePage)
+  },
+  {
+    path: '**',
+    redirectTo: 'home'
+  }
+];
+</file>
+
 <file path="Frontend/.gitignore">
 # Angular specific
 /dist/
@@ -8039,166 +7641,6 @@ ng-serve-current.log
     "strictTemplates": true
   }
 }
-</file>
-
-<file path="Backend/controllers/interventiController.js">
-const Intervento = require('../models/interventiModel');
-
-exports.creaIntervento = async (req, res) => {
-  try {
-    const cliente_id = req.user.id; 
-    const { descrizione, luogo, priorita, data_proposta_cliente } = req.body;
-
-    if (!descrizione || !luogo || !priorita) {
-      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
-    }
-
-    const data_richiesta = new Date().toISOString().split('T')[0];
-
-    const nuovoIntervento = await Intervento.create({
-      cliente_id,
-      descrizione,
-      luogo,
-      priorita,
-      data_richiesta,
-      data_proposta_cliente
-    });
-
-    res.status(201).json({ 
-      message: 'Richiesta di intervento inviata con successo!',
-      intervento: nuovoIntervento 
-    });
-  } catch (error) {
-    console.error('Errore durante la creazione dell\'intervento:', error);
-    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
-  }
-};
-
-exports.getInterventiCliente = async (req, res) => {
-  try {
-    const interventi = await Intervento.findByClienteId(req.user.id);
-    return res.json(interventi);
-  } catch (error) {
-    return res.status(500).json({ message: 'Errore lettura interventi.' });
-  }
-};
-
-exports.getInterventiAdmin = async (req, res) => {
-  try {
-    const interventi = await Intervento.findAllForAdmin();
-    return res.json(interventi);
-  } catch (error) {
-    return res.status(500).json({ message: 'Errore lettura interventi admin.' });
-  }
-};
-
-exports.getInterventoById = async (req, res) => {
-  try {
-    const intervento = await Intervento.findById(req.params.id);
-    if (!intervento) return res.status(404).json({ message: 'Non trovato.' });
-    return res.json(intervento);
-  } catch (error) {
-    return res.status(500).json({ message: 'Errore lettura dettaglio.' });
-  }
-};
-</file>
-
-<file path="Backend/models/interventiModel.js">
-const db = require('../database/database');
-
-exports.create = (dati) => {
-  return new Promise((resolve, reject) => {
-    db.run(
-      `INSERT INTO interventi (cliente_id, descrizione, luogo, priorita, data_richiesta, data_proposta_cliente)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        dati.cliente_id, 
-        dati.descrizione, 
-        dati.luogo, 
-        dati.priorita, 
-        dati.data_richiesta, 
-        dati.data_proposta_cliente
-      ],
-      function (err) {
-        if (err) {
-          reject(err);
-        } else {
-          // this.lastID contiene l'ID appena generato da SQLite
-          resolve({ id: this.lastID, ...dati });
-        }
-      }
-    );
-  });
-};
-
-
-exports.findByClienteId = (cliente_id) => {
-  return new Promise((resolve, reject) => {
-    db.all(
-      `SELECT * FROM interventi WHERE cliente_id = ? ORDER BY data_richiesta DESC`,
-      [cliente_id],
-      (err, rows) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(rows);
-        }
-      }
-    );
-  });
-};
-
-exports.findAllForAdmin = () => {
-  return new Promise((resolve, reject) => {
-    db.all(
-      `
-        SELECT
-          interventi.*,
-          users.nome AS cliente_nome,
-          users.cognome AS cliente_cognome,
-          users.email AS cliente_email,
-          users.telefono AS cliente_telefono
-        FROM interventi
-        JOIN users ON users.id = interventi.cliente_id
-        ORDER BY interventi.data_richiesta DESC
-      `,
-      [],
-      (err, rows) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(rows);
-        }
-      }
-    );
-  });
-};
-
-exports.findById = (id) => {
-  return new Promise((resolve, reject) => {
-    db.get(
-      `
-        SELECT
-          interventi.*,
-          users.nome AS cliente_nome,
-          users.cognome AS cliente_cognome,
-          users.email AS cliente_email,
-          users.telefono AS cliente_telefono
-        FROM interventi
-        JOIN users ON users.id = interventi.cliente_id
-        WHERE interventi.id = ?
-      `,
-      [id],
-      (err, row) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(row);
-        }
-      }
-    );
-  });
-};
 </file>
 
 <file path="Backend/models/userModel.js">
@@ -8324,746 +7766,264 @@ exports.delete = (id) => {
 };
 </file>
 
-<file path="Frontend/src/app/models/intervento.model.ts">
-export interface Intervento {
-  id: number;
-
-  cliente_id?: number;
-
-  descrizione: string;
-
-  luogo: string;
-
-  priorita: 'Bassa' | 'Media' | 'Alta';
-
-  stato_admin:
-    | 'Richiesto'
-    | 'Rifiutato'
-    | 'Data proposta'
-    | 'In attesa nuova valutazione';
-
-  stato_risposta_cliente:
-    | 'In attesa'
-    | 'Data accettata'
-    | 'Nuova data proposta'
-    | 'Intervento annullato';
-
-  stato_lavorazione:
-    | 'Da programmare'
-    | 'Programmato'
-    | 'In lavorazione'
-    | 'Terminato';
-
-  // Campo di comodo usato in alcune viste frontend
-  dataOra?: string;
-
-  // Vecchi campi usati nei mock/pagine già esistenti
-  cliente?: string;
-
-  emailCliente?: string;
-
-  telefonoCliente?: string;
-
-  // Campi reali restituiti dal backend nelle query admin con JOIN users
-  cliente_nome?: string;
-
-  cliente_cognome?: string;
-
-  cliente_email?: string;
-
-  cliente_telefono?: string;
-
-  // Date del database
-  data_richiesta?: string;
-
-  data_proposta_cliente?: string;
-
-  data_proposta_admin?: string;
-
-  data_accettata?: string;
-
-  // Motivi/note del flusso cliente-admin
-  motivo_rifiuto_admin?: string;
-
-  motivo_rifiuto_cliente?: string;
-
-  note_cliente?: string;
-
-  note_admin?: string;
-
-  created_at?: string;
-
-  updated_at?: string;
-
-  // Tabella ponte dipendenti_interventi
-  dipendentiAssegnati?: string[];
-}
-</file>
-
-<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.ts">
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms'; 
-import { AlertController } from '@ionic/angular';
-
-import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonCard,
-  IonCardContent, IonCardHeader, IonCardTitle, IonGrid,
-  IonRow, IonCol, IonChip, IonButton, IonButtons, IonIcon, IonModal
-} from '@ionic/angular/standalone';
-
-import { addIcons } from 'ionicons';
-import {
-  arrowBackOutline, createOutline, addOutline,
-  peopleOutline, saveOutline, trashOutline
-} from 'ionicons/icons';
-
-import { Intervento } from 'src/app/models/intervento.model';
-import { Preventivo } from 'src/app/models/preventivo.model';
-import { InterventiService } from 'src/app/services/interventi.service';
-
-interface VoceCatalogo {
-  id: number;
-  nome: string;
-  categoria: string;
-  prezzoBase: string;
+<file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.scss">
+ion-content {
+  --background: #0b0f14;
 }
 
-interface EventoStorico {
-  id: number;
-  dataFormattata: string;
-  descrizione: string;
-  cliente: string;
-  tipo: 'Ordine' | 'Intervento' | 'Preventivo';
-  stato: string;
+.detail-header {
+  padding: 42px 22px 20px;
+  text-align: center;
+  color: white;
 }
 
-@Component({
-  selector: 'app-dashboard-admin',
-  templateUrl: './dashboard-admin.page.html',
-  styleUrls: ['./dashboard-admin.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule, RouterLink, FormsModule, IonContent, IonHeader,
-    IonTitle, IonToolbar, IonCard, IonCardContent, IonCardHeader,
-    IonCardTitle, IonGrid, IonRow, IonCol, IonChip, IonButton,
-    IonButtons, IonIcon, IonModal
-  ]
-})
-export class DashboardAdminPage implements OnInit {
-
-  // Metriche globali
-  totalePreventivi = 0;
-  ordiniAttivi = 0;
-  interventiAperti = 0;
-  vociCatalogo = 0; 
-
-  // --- VARIABILI CHE MANCAVANO (quelle che causavano il crash) ---
-  tuttiGliInterventi: any[] = [];
-  interventiFuturi: any[] = [];
-  ordini: any[] = [];
-  storicoOrdini: any[] = [];
-  // -------------------------------------------------------------
-
-  interventi: Intervento[] = [];
-  preventivi: Preventivo[] = [{
-      id: 1,
-      cliente_id: 1,
-      descrizione: 'Struttura metallica industriale',
-      servizio: 'Saldatura',
-      materiale: 'Acciaio',
-      dimensioni: '3x2m',
-      finitura: 'Zincatura',
-      stato_admin: 'Da valutare',
-      stato_risposta_cliente: 'In attesa'
-    },
-    {
-      id: 2,
-      cliente_id: 2,
-      descrizione: 'Cancello automatico',
-      servizio: 'Taglio laser',
-      materiale: 'Alluminio',
-      dimensioni: '2x1m',
-      finitura: 'Verniciatura',
-      stato_admin: 'Prezzo proposto',
-      stato_risposta_cliente: 'In attesa'
-    }];
-  catalogo: VoceCatalogo[] = [];
-  storicoGlobale: EventoStorico[] = [];
-
-  isModalOpen = false;
-  modalMode: 'crea' | 'modifica' = 'crea';
-  formCatalogo: Partial<VoceCatalogo> = {};
-
-  constructor(
-    private alertController: AlertController,
-    private interventiService: InterventiService
-  ) {
-    addIcons({
-      arrowBackOutline, createOutline, addOutline,
-      peopleOutline, saveOutline, trashOutline
-    });
-  }
-
-  ngOnInit() {
-    this.caricaInterventiAdmin();
-  }
-
-  caricaInterventiAdmin() {
-    this.interventiService.getInterventiAdmin().subscribe({
-      next: (interventi) => {
-        // Sincronizziamo le variabili per l'HTML
-        this.interventi = interventi;
-        this.tuttiGliInterventi = interventi; 
-        
-        this.interventiAperti = interventi.filter(
-          intervento =>
-            intervento.stato_admin !== 'Rifiutato' &&
-            intervento.stato_risposta_cliente !== 'Intervento annullato' &&
-            intervento.stato_lavorazione !== 'Terminato'
-        ).length;
-      },
-      error: (err) => {
-        console.error('Errore caricamento interventi admin:', err);
-      }
-    });
-  }
-
-  // --- LOGICA CATALOGO INVARIATA ---
-  modificaVoceCatalogo(id: number) { /* ... */ }
-  get formCatalogoValido(): boolean { /* ... */ return true; }
-  async eliminaVoceCatalogo(id: number) { /* ... */ }
-  aggiungiVoceCatalogo() { /* ... */ }
-  chiudiModale() { /* ... */ }
-  salvaVoceCatalogo() { /* ... */ }
+.detail-header h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  margin: 0;
 }
-</file>
 
-<file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark"> 
-    <ion-buttons slot="start">
-      <ion-button routerLink="/home">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Home</ion-title>
-  </ion-toolbar>
-</ion-header>
+.detail-header p {
+  max-width: 760px;
+  margin: 14px auto 0;
+  color: #b7c0cc;
+  line-height: 1.6;
+}
 
-<ion-content>
-  <section class="dashboard-header">
-    <h1>Area Personale</h1>
-    <p>Benvenuto nel tuo pannello di controllo Metal Lab.</p>
-  </section>
+.detail-card {
+  max-width: 900px;
+  margin: 22px auto;
+  --background: #151b23;
 
-  <div class="dashboard-actions">
-    <ion-button expand="block" routerLink="/preventivi">Richiedi Preventivo</ion-button>
-    <ion-button expand="block" routerLink="/interventi">Richiedi Intervento</ion-button>
-  </div>
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
-  <ion-grid>
-    <ion-row class="summary-row">
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ preventivi.length }}</span>
-          <span class="summary-label">Preventivi</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ tuttiGliInterventi.length }}</span>
-          <span class="summary-label">Interventi</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ ordini.length }}</span>
-          <span class="summary-label">Ordini in corso</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ storicoOrdini.length }}</span>
-          <span class="summary-label">Storico Ordini</span>
-        </div>
-      </ion-col>
-    </ion-row>
+  overflow: hidden;
+}
 
-    <ion-row class="details-row">
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header><ion-card-title>I tuoi Preventivi</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (preventivo of preventivi; track preventivo.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]">
-                <div class="item-header">
-                  <h3>{{ preventivo.descrizione }}</h3>
-                  <ion-chip>
-                    {{ preventivo.stato_admin }} | {{ preventivo.stato_risposta_cliente }}
-                  </ion-chip>
-                </div>
-                <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
-              </div>
-            } @empty { <div class="empty-section">Nessun preventivo presente</div> }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+ion-card-header {
+  padding: 24px 24px 8px;
+}
 
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header><ion-card-title>Interventi Tecnici</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (intervento of tuttiGliInterventi; track intervento.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-cliente', intervento.id]">
-                <div class="item-header">
-                  <h3>{{ intervento.descrizione }}</h3>
-                  <ion-chip [color]="intervento.stato_admin === 'Accettato' ? 'success' : 'warning'">
-                    {{ intervento.stato_admin }}
-                  </ion-chip>
-                </div>
-                <p>Luogo: {{ intervento.luogo }} | Richiesto il: {{ intervento.data_richiesta }}</p>
-              </div>
-            } @empty {
-              <div class="empty-section">Nessun intervento richiesto</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      </ion-row>
+ion-card-content {
+  padding: 8px 24px 24px;
+}
 
-    <ion-row>
-      <ion-col size="12">
-        <ion-card class="calendar-card">
-          <ion-card-header><ion-card-title>Calendario Attività</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (evento of interventiFuturi; track evento.id) {
-              <div class="calendar-item clickable" [routerLink]="['/dettaglio-intervento-cliente', evento.id]">
-                <div class="calendar-date">{{ evento.data_proposta_admin || 'In attesa' }}</div>
-                <div class="calendar-info">
-                  <h3>{{ evento.descrizione }}</h3>
-                  <p>Luogo: {{ evento.luogo }}</p>
-                  <ion-chip [color]="evento.stato_lavorazione === 'Terminato' ? 'success' : 'warning'">
-                    {{ evento.stato_lavorazione }}
-                  </ion-chip>
-                </div>
-              </div>
-            } @empty {
-              <div class="empty-section">Nessuna attività pianificata.</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-content>
-</file>
+ion-card-title {
+  color: #f5a623;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
 
-<file path="Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-admin">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+.info-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
 
-    <ion-title>
-      Dashboard Admin
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+  align-items: center;
 
-<ion-content>
+  padding: 18px 0;
 
-  <section class="detail-header">
-    <h1>
-      Intervento #{{ interventoId }}
-    </h1>
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
 
-    <p>
-      Riepilogo della richiesta tecnica e assegnazione al personale operativo.
-    </p>
-  </section>
+.info-row:last-child {
+  border-bottom: none;
+}
 
-  @if (intervento) {
+.info-row span {
+  color: #b7c0cc;
+  font-weight: 700;
+}
 
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Informazioni Cliente
-        </ion-card-title>
-      </ion-card-header>
+.info-row strong {
+  color: white;
+  text-align: right;
+  font-weight: 800;
+  line-height: 1.5;
+}
 
-      <ion-card-content>
+.info-row ion-chip {
+  width: fit-content;
+  justify-self: end;
+  margin: 0;
 
-        <div class="info-row">
-          <span>Cliente</span>
-          <strong>
-            {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }}
-          </strong>
-        </div>
+  background: rgba(245, 166, 35, 0.12);
+  color: #f5a623;
+  font-weight: 800;
 
-        <div class="info-row">
-          <span>Email</span>
-          <strong>
-            {{ intervento.cliente_email }}
-          </strong>
-        </div>
+  --border-radius: 30px;
+  border-radius: 30px;
+}
 
-        <div class="info-row">
-          <span>Telefono</span>
-          <strong>
-            {{ intervento.cliente_telefono }}
-          </strong>
-        </div>
+.proposal-box {
+  padding: 18px;
+  border-radius: 16px;
 
-      </ion-card-content>
-    </ion-card>
+  background: rgba(245, 166, 35, 0.12);
 
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Dati Intervento
-        </ion-card-title>
-      </ion-card-header>
+  color: #f5a623;
+  font-weight: 800;
+  text-align: center;
 
-      <ion-card-content>
+  border: 1px solid rgba(245, 166, 35, 0.18);
+}
 
-        <div class="info-row">
-          <span>Descrizione</span>
-          <strong>
-            {{ intervento.descrizione }}
-          </strong>
-        </div>
+.proposal-box strong {
+  color: white;
+}
 
-        <div class="info-row">
-          <span>Luogo</span>
-          <strong>
-            {{ intervento.luogo }}
-          </strong>
-        </div>
+.proposal-box.empty {
+  color: #b7c0cc;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
 
-        <div class="info-row">
-          <span>Priorità</span>
-          <strong>
-            {{ intervento.priorita }}
-          </strong>
-        </div>
+.actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
-        <div class="info-row">
-          <span>Data richiesta</span>
-          <strong>
-            {{ intervento.data_richiesta }}
-          </strong>
-        </div>
+.btn-glass-accept,
+.btn-glass-propose,
+.btn-glass-reject {
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
 
-        <div class="info-row">
-          <span>Data proposta dal cliente</span>
-          <strong>
-            {{ intervento.data_proposta_cliente || 'Nessuna data proposta' }}
-          </strong>
-        </div>
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
 
-        <div class="info-row">
-          <span>Data proposta dall'admin</span>
-          <strong>
-            {{ intervento.data_proposta_admin || 'Nessuna data proposta' }}
-          </strong>
-        </div>
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-        <div class="info-row">
-          <span>Data accettata</span>
-          <strong>
-            {{ intervento.data_accettata || 'Non ancora accettata' }}
-          </strong>
-        </div>
+.btn-glass-accept,
+.btn-glass-propose {
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+}
 
-        <div class="info-row">
-          <span>Stato admin</span>
-          <ion-chip>
-            {{ intervento.stato_admin }}
-          </ion-chip>
-        </div>
+.btn-glass-accept:hover,
+.btn-glass-propose:hover {
+  --background: #f5a623;
+  --border-color: #f5a623;
+  --color: #0b0f14;
+  transform: translateY(-2px);
+}
 
-        <div class="info-row">
-          <span>Risposta cliente</span>
-          <ion-chip>
-            {{ intervento.stato_risposta_cliente }}
-          </ion-chip>
-        </div>
+.btn-glass-reject {
+  --background: rgba(235, 68, 90, 0.12);
+  --color: #eb445a;
+  --border-color: rgba(235, 68, 90, 0.2);
+}
 
-        <div class="info-row">
-          <span>Stato lavorazione</span>
-          <ion-chip>
-            {{ intervento.stato_lavorazione }}
-          </ion-chip>
-        </div>
+.btn-glass-reject:hover {
+  --background: #eb445a;
+  --border-color: #eb445a;
+  --color: #ffffff;
+  transform: translateY(-2px);
+}
 
-      </ion-card-content>
-    </ion-card>
+/* CAMPO CALENDARIO UGUALE A RICHIEDI INTERVENTO */
 
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Gestione Admin
-        </ion-card-title>
-      </ion-card-header>
+.calendar-trigger-item {
+  --background: transparent;
+  --color: white;
+  --border-color: rgba(255, 255, 255, 0.12);
+  margin-bottom: 16px;
+}
 
-      <ion-card-content>
+.calendar-trigger-item ion-label {
+  color: #f5a623 !important;
+  font-weight: 700;
+}
 
-        @if (intervento.dipendentiAssegnati && intervento.dipendentiAssegnati.length > 0) {
+.calendar-trigger-item ion-input,
+.calendar-trigger-item ion-textarea {
+  --color: white;
+  --placeholder-color: #8f9aaa;
+}
 
-          <div class="assignment-box">
-            Dipendenti assegnati:
-            <strong>
-              {{ intervento.dipendentiAssegnati.join(', ') }}
-            </strong>
-          </div>
+/* CALENDARIO UGUALE A RICHIEDI INTERVENTO */
 
-        } @else {
+ion-modal.dark-calendar-modal {
+  --width: max-content;
+  --height: max-content;
+  --background: transparent;
+  --box-shadow: none;
+  --border-radius: 24px;
 
-          <div class="assignment-box empty">
-            Nessun dipendente ancora assegnato.
-          </div>
+  align-items: center;
+  justify-content: center;
 
-        }
+  ion-datetime.custom-amber-calendar {
+    --background: #151b23;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
 
-        <div class="actions">
-          <ion-button
-            expand="block"
-            class="btn-glass-assign"
-            (click)="assegnaDipendente()">
-            Assegna dipendente
-          </ion-button>
-        </div>
+    color: #ffffff;
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255, 255, 255;
 
-      </ion-card-content>
-    </ion-card>
+    --ion-color-primary: #f5a623;
+    --ion-color-primary-rgb: 245, 166, 35;
+    --ion-color-primary-contrast: #0b0f14;
+    --ion-color-primary-contrast-rgb: 11, 15, 20;
 
-  } @else {
-
-    <div class="ion-padding ion-text-center">
-      @if (caricamento) {
-        <p>
-          Caricamento dati...
-        </p>
-      } @else {
-        <p>
-          Intervento non trovato.
-        </p>
-      }
-    </div>
-
-  }
-
-</ion-content>
-</file>
-
-<file path="Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.ts">
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonChip
-} from '@ionic/angular/standalone';
-
-import { addIcons } from 'ionicons';
-import { arrowBackOutline } from 'ionicons/icons';
-
-import { Intervento } from 'src/app/models/intervento.model';
-import { InterventiService } from 'src/app/services/interventi.service';
-
-@Component({
-  selector: 'app-dettaglio-intervento-admin',
-  templateUrl: './dettaglio-intervento-admin.page.html',
-  styleUrls: ['./dettaglio-intervento-admin.page.scss'],
-  standalone: true,
-  imports: [
-    RouterLink,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonChip
-  ]
-})
-export class DettaglioInterventoAdminPage implements OnInit {
-
-  interventoId = '';
-
-  intervento: Intervento | null = null;
-
-  caricamento = true;
-
-  dipendentiDisponibili: string[] = [];
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private alertController: AlertController,
-    private interventiService: InterventiService
-  ) {
-    addIcons({
-      arrowBackOutline
-    });
-  }
-
-  ngOnInit() {
-    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
-
-    this.caricaIntervento();
-  }
-
-  caricaIntervento() {
-    this.caricamento = true;
-
-    this.interventiService.getInterventoAdminById(this.interventoId).subscribe({
-      next: (intervento) => {
-        this.intervento = intervento;
-        this.caricamento = false;
-      },
-      error: (err) => {
-        console.error('Errore caricamento dettaglio intervento admin:', err);
-        this.caricamento = false;
-      }
-    });
-  }
-
-  async assegnaDipendente() {
-    if (!this.intervento) {
-      return;
+    &::part(month-year-button) {
+      pointer-events: none;
+      color: transparent;
+      text-shadow: 0 0 0 #f5a623;
     }
 
-    const alert = await this.alertController.create({
-      header: 'Assegna dipendente',
-      message: 'Seleziona il dipendente da assegnare a questo intervento.',
-      cssClass: 'custom-dark-alert',
-      inputs: this.dipendentiDisponibili.map(dipendente => ({
-        type: 'radio',
-        label: dipendente,
-        value: dipendente
-      })),
-      buttons: [
-        {
-          text: 'Annulla',
-          role: 'cancel'
-        },
-        {
-          text: 'Conferma',
-          handler: (dipendenteSelezionato: string) => {
-            if (!dipendenteSelezionato || !this.intervento) {
-              return false;
-            }
+    &::part(prev-month-button),
+    &::part(next-month-button) {
+      color: #f5a623;
+      opacity: 1 !important;
+    }
 
-            if (!this.intervento.dipendentiAssegnati) {
-              this.intervento.dipendentiAssegnati = [];
-            }
-
-            if (!this.intervento.dipendentiAssegnati.includes(dipendenteSelezionato)) {
-              this.intervento.dipendentiAssegnati.push(dipendenteSelezionato);
-            }
-
-            this.router.navigate(['/dashboard-admin']);
-
-            return true;
-          }
-        }
-      ]
-    });
-
-    await alert.present();
+    &::part(prev-month-button):hover,
+    &::part(next-month-button):hover,
+    &::part(prev-month-button):active,
+    &::part(next-month-button):active {
+      background: #151b23 !important;
+      background-color: #151b23 !important;
+      opacity: 1 !important;
+    }
   }
 }
-</file>
 
-<file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-cliente">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Dettaglio Intervento</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  <section class="detail-header">
-    <h1>Intervento #{{ interventoId }}</h1>
-    <p>Riepilogo della richiesta di assistenza tecnica.</p>
-  </section>
-
-  @if (intervento) {
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>Stato Intervento</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="info-row">
-          <span>Stato</span>
-          <ion-chip>{{ intervento.stato_admin }}</ion-chip>
-        </div>
-        <div class="info-row">
-          <span>Priorità</span>
-          <strong>{{ intervento.priorita }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Data programmata</span>
-          <strong [style.color]="!intervento.data_proposta_admin ? '#eb445a' : 'white'">
-            {{ intervento.dataOra }}
-          </strong>
-        </div>
-        <div class="info-row">
-          <span>Tecnici assegnati</span>
-          <strong>{{ intervento.tecnicoAssegnato }}</strong>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>Dati della richiesta</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="info-row">
-          <span>Descrizione intervento</span>
-          <strong>{{ intervento.descrizione }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Luogo intervento</span>
-          <strong>{{ intervento.luogo }}</strong>
-        </div>
-        
-        <div class="info-row">
-          <span>Data preferita richiesta</span>
-          <strong>{{ intervento.dataPreferitaFormattata }}</strong>
-        </div>
-      </ion-card-content>
-    </ion-card>
+@media (max-width: 700px) {
+  .detail-card {
+    margin-left: 16px;
+    margin-right: 16px;
   }
-</ion-content>
+
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: start;
+  }
+
+  .info-row strong {
+    text-align: left;
+  }
+
+  .info-row ion-chip {
+    justify-self: start;
+  }
+}
 </file>
 
 <file path="Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.ts">
@@ -9282,72 +8242,121 @@ export class GestioneDipendentiPage implements OnInit {
 }
 </file>
 
-<file path="Frontend/src/app/services/interventi.service.ts">
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Intervento } from 'src/app/models/intervento.model';
+<file path="Frontend/src/app/pages/login/login.page.ts">
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-export interface InterventoRichiesta {
-  descrizione: string;
-  luogo: string;
-  priorita: 'Bassa' | 'Media' | 'Alta';
-  data_proposta_cliente?: string;
-}
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButton,
+  IonButtons,
+  IonIcon,
+  IonCard,
+  IonCardContent,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonText,
+  IonInputPasswordToggle
+} from '@ionic/angular/standalone';
 
-@Injectable({
-  providedIn: 'root'
+import { addIcons } from 'ionicons';
+import { arrowBackOutline, alertCircleOutline } from 'ionicons/icons';
+
+// IMPORT CORRETTO E SICURO
+import { AuthService } from 'src/app/services/auth.service';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.page.html',
+  styleUrls: ['./login.page.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    RouterLink,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonButton,
+    IonButtons,
+    IonIcon,
+    IonCard,
+    IonCardContent,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonText,
+    IonInputPasswordToggle
+  ]
 })
-export class InterventiService {
+export class LoginPage {
 
-  private apiUrl = 'http://localhost:3000/api/interventi';
-  private adminApiUrl = 'http://localhost:3000/api/admin/interventi';
+  email = '';
+  password = '';
+  returnUrl = '/home';
+  erroreLogin = ''; 
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService 
+  ) {
+    addIcons({
+      arrowBackOutline,
+      alertCircleOutline
+    });
 
-  private getHeaders(): HttpHeaders {
-    const token = sessionStorage.getItem('token');
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/home';
+  }
+  
+  accedi() {
+    if (!this.loginValido) return;
 
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
+    this.erroreLogin = ''; 
+
+    const body = {
+      email: this.email,
+      password: this.password
+    };
+
+    this.authService.login(body).subscribe({
+      next: (response: any) => {
+        console.log('Login riuscito:', response);
+
+        if (response.token) {
+          sessionStorage.setItem('token', response.token);
+        }
+        
+        sessionStorage.setItem('utenteLoggato', 'true');
+        
+        // Salviamo il ruolo per la logica presente nella HomePage
+        const ruolo = response.utente?.ruolo || response.user?.ruolo || '';
+        sessionStorage.setItem('ruoloUtente', ruolo);
+
+        // Ora torniamo alla home, dove la logica dei bottoni farà il resto
+        this.router.navigate(['/home']);
+      },
+      error: (err: any) => {
+        console.error('Errore login:', err);
+        
+        if (err.status === 401 || err.status === 400) {
+          this.erroreLogin = err.error.message;
+        } else {
+          this.erroreLogin = 'Errore di connessione al server.';
+        }
+      }
     });
   }
-
-  creaIntervento(dati: InterventoRichiesta): Observable<any> {
-    return this.http.post(
-      this.apiUrl,
-      dati,
-      {
-        headers: this.getHeaders()
-      }
-    );
-  }
-
-  getInterventiCliente(): Observable<Intervento[]> {
-    return this.http.get<Intervento[]>(
-      this.apiUrl,
-      {
-        headers: this.getHeaders()
-      }
-    );
-  }
-
-  getInterventiAdmin(): Observable<Intervento[]> {
-    return this.http.get<Intervento[]>(
-      this.adminApiUrl,
-      {
-        headers: this.getHeaders()
-      }
-    );
-  }
-
-  getInterventoAdminById(id: number | string): Observable<Intervento> {
-    return this.http.get<Intervento>(
-      `${this.adminApiUrl}/${id}`,
-      {
-        headers: this.getHeaders()
-      }
+  
+  get loginValido(): boolean {
+    return (
+      this.email.trim() !== '' &&
+      this.password.trim() !== ''
     );
   }
 }
@@ -9381,75 +8390,291 @@ export class InterventiService {
 }
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.ts">
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common'; 
+<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark"> 
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
-  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
-} from '@ionic/angular/standalone';
+<ion-content>
+  <section class="dashboard-header">
+    <h1>Area Amministrativa</h1>
+    <p>Gestione globale della piattaforma, storico commesse e modifica listini.</p>
+    <div class="admin-actions">
+      <ion-button routerLink="/gestione-dipendenti">
+        <ion-icon slot="start" name="people-outline"></ion-icon>
+        Gestione Dipendenti
+      </ion-button>
+    </div>
+  </section>
 
-import { addIcons } from 'ionicons';
-import { arrowBackOutline } from 'ionicons/icons';
-import { InterventiService } from '../../services/interventi.service';
+  <ion-grid>
+    <ion-row class="summary-row">
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ totalePreventivi }}</span>
+          <span class="summary-label">Preventivi Da Gestire</span>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ ordiniAttivi }}</span>
+          <span class="summary-label">Ordini in Corso</span>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ interventiAperti }}</span>
+          <span class="summary-label">Interventi Aperti</span>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ vociCatalogo }}</span>
+          <span class="summary-label">Voci a Catalogo</span>
+        </div>
+      </ion-col>
+    </ion-row>
 
-@Component({
-  selector: 'app-dettaglio-intervento-cliente',
-  templateUrl: './dettaglio-intervento-cliente.page.html',
-  styleUrls: ['./dettaglio-intervento-cliente.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
-    IonButtons, IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle,
-    IonCardContent, IonChip
-  ]
-})
-export class DettaglioInterventoClientePage implements OnInit {
+    <ion-row class="details-row">
+      
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Preventivi</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+           @for (preventivo of preventivi; track preventivo.id) {
+            <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-admin', preventivo.id]">
+              <div class="item-header">
+                <h3>{{ preventivo.servizio }}</h3>
+                <ion-chip color="warning">{{ preventivo.stato_admin }}</ion-chip>
+              </div>
+              <p>Cliente: {{ preventivo.cliente_nome }} {{ preventivo.cliente_cognome }} | Preventivo #{{ preventivo.id }}</p>
+            </div>
+           } @empty {
+             <div class="empty-section">Nessun nuovo preventivo da gestire.</div>
+           }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
 
-  interventoId = '';
-  intervento: any = null; 
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Interventi</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            @for (intervento of interventi; track intervento.id) {
+              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-admin', intervento.id]">
+                <div class="item-header">
+                  <h3>{{ intervento.descrizione }}</h3>
+                  <ion-chip [color]="intervento.stato_admin === 'Data proposta' ? 'success' : 'warning'">
+                    {{ intervento.stato_admin }}
+                  </ion-chip>
+                </div>
+                <p>Cliente: {{ intervento.cliente }} | Priorità: {{ intervento.priorita }}</p>
+                <p>Luogo: {{ intervento.luogo }}</p>
+              </div>
+            } @empty {
+              <div class="empty-section">Nessun intervento da gestire.</div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
 
-  constructor(
-    private route: ActivatedRoute,
-    private interventiService: InterventiService 
-  ) {
-    addIcons({ arrowBackOutline });
-    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
-  }
+      <ion-col size="12">
+        <ion-card class="detail-section-card">
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Catalogo</ion-card-title>
+            <ion-button fill="clear" color="warning" size="small" (click)="aggiungiVoceCatalogo()">
+              <ion-icon slot="start" name="add-outline"></ion-icon>
+              Nuovo
+            </ion-button>
+          </ion-card-header>
+          <ion-card-content>
+            @for (voce of catalogo; track voce.id) {
+              <div class="dashboard-item">
+                <div class="item-header">
+                  <h3>{{ voce.nome }}</h3>
+                  <ion-chip>{{ voce.categoria }}</ion-chip>
+                </div>
+                <p>Prezzo Base: {{ voce.prezzoBase }}</p>
+                <div class="item-actions">
+                  <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
+                    <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
+                  </ion-button>
+                  <ion-button fill="clear" color="danger" size="small" (click)="eliminaVoceCatalogo(voce.id)">
+                    <ion-icon slot="start" name="trash-outline"></ion-icon> Elimina
+                  </ion-button>
+                </div>
+              </div>
+            } @empty {
+              <div class="empty-section">Il catalogo è vuoto.</div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
 
-  ngOnInit() {
-    if (this.interventoId) {
-      this.caricaDettaglio();
-    }
-  }
+      <ion-col size="12">
+        <ion-card class="detail-section-card calendar-card">
+          <ion-card-header>
+            <ion-card-title>Storico Globale Attività</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="timeline">
+              @for (evento of storicoGlobale; track evento.id) {
+                <div class="timeline-item">
+                  <div class="timeline-date"><strong>{{ evento.dataFormattata }}</strong></div>
+                  <div class="timeline-content">
+                    <h3>{{ evento.descrizione }}</h3>
+                    <p>Cliente: {{ evento.cliente }} | Tipo: {{ evento.tipo }}</p>
+                    <ion-chip [color]="evento.stato === 'Terminato' ? 'success' : 'primary'">
+                      {{ evento.stato }}
+                    </ion-chip>
+                  </div>
+                </div>
+              } @empty {
+                <div class="empty-section">Nessun evento registrato nello storico.</div>
+              }
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
 
-  caricaDettaglio() {
-    this.interventiService.getInterventiCliente().subscribe({
-      next: (tuttiGliInterventi) => {
-        this.intervento = tuttiGliInterventi.find(i => i.id.toString() === this.interventoId);
-        
-        if (this.intervento) {
-          // Mappatura date
-          this.intervento.dataOra = this.intervento.data_proposta_admin 
-            ? this.intervento.data_proposta_admin 
-            : 'In attesa di conferma';
+    </ion-row>
+  </ion-grid>
 
-          this.intervento.dataPreferitaFormattata = this.intervento.data_proposta_cliente 
-            ? this.intervento.data_proposta_cliente 
-            : 'Nessuna preferenza indicata';
-            
-          // Mappatura dipendenti (gestione array)
-          this.intervento.tecnicoAssegnato = (this.intervento.dipendentiAssegnati && this.intervento.dipendentiAssegnati.length > 0)
-            ? this.intervento.dipendentiAssegnati.join(', ') 
-            : 'In attesa di assegnazione';
-        }
-      },
-      error: (err) => console.error('Errore durante il caricamento dell\'intervento:', err)
-    });
-  }
-}
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
+    </ion-modal>
+
+</ion-content>
+</file>
+
+<file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark"> 
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <section class="dashboard-header">
+    <h1>Area Personale</h1>
+    <p>Benvenuto nel tuo pannello di controllo Metal Lab.</p>
+  </section>
+
+  <div class="dashboard-actions">
+    <ion-button expand="block" routerLink="/preventivi">Richiedi Preventivo</ion-button>
+    <ion-button expand="block" routerLink="/interventi">Richiedi Intervento</ion-button>
+  </div>
+
+  <ion-grid>
+    <ion-row class="summary-row">
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ preventivi.length }}</span>
+          <span class="summary-label">Preventivi</span>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ tuttiGliInterventi.length }}</span>
+          <span class="summary-label">Interventi</span>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ ordini.length }}</span>
+          <span class="summary-label">Ordini in corso</span>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ storicoOrdini.length }}</span>
+          <span class="summary-label">Storico Ordini</span>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="details-row">
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header><ion-card-title>I tuoi Preventivi</ion-card-title></ion-card-header>
+          <ion-card-content>
+            @for (preventivo of preventivi; track preventivo.id) {
+              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]">
+                <div class="item-header">
+                  <h3>{{ preventivo.descrizione }}</h3>
+                  <ion-chip>
+                    {{ preventivo.stato_admin }} | {{ preventivo.stato_risposta_cliente }}
+                  </ion-chip>
+                </div>
+                <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
+              </div>
+            } @empty { <div class="empty-section">Nessun preventivo presente</div> }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header><ion-card-title>Interventi Tecnici</ion-card-title></ion-card-header>
+          <ion-card-content>
+            @for (intervento of tuttiGliInterventi; track intervento.id) {
+              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-cliente', intervento.id]">
+                <div class="item-header">
+                  <h3>{{ intervento.descrizione }}</h3>
+                  <ion-chip [color]="intervento.stato_admin === 'Accettato' ? 'success' : 'warning'">
+                    {{ intervento.stato_admin }}
+                  </ion-chip>
+                </div>
+                <p>Luogo: {{ intervento.luogo }} | Richiesto il: {{ intervento.data_richiesta }}</p>
+              </div>
+            } @empty {
+              <div class="empty-section">Nessun intervento richiesto</div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <ion-card class="calendar-card">
+          <ion-card-header><ion-card-title>Calendario Attività</ion-card-title></ion-card-header>
+          <ion-card-content>
+            @for (evento of interventiFuturi; track evento.id) {
+              <div class="calendar-item clickable" [routerLink]="['/dettaglio-intervento-cliente', evento.id]">
+                <div class="calendar-date">{{ evento.data_proposta_admin || 'In attesa' }}</div>
+                <div class="calendar-info">
+                  <h3>{{ evento.descrizione }}</h3>
+                  <p>Luogo: {{ evento.luogo }}</p>
+                  <ion-chip [color]="evento.stato_lavorazione === 'Terminato' ? 'success' : 'warning'">
+                    {{ evento.stato_lavorazione }}
+                  </ion-chip>
+                </div>
+              </div>
+            } @empty {
+              <div class="empty-section">Nessuna attività pianificata.</div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
 </file>
 
 <file path="Frontend/src/app/pages/interventi/interventi.page.ts">
@@ -9861,6 +9086,1705 @@ module.exports = {
 };
 </file>
 
+<file path="Backend/models/interventiModel.js">
+const db = require('../database/database');
+
+exports.create = (dati) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `
+        INSERT INTO interventi
+        (cliente_id, descrizione, luogo, priorita, data_richiesta, data_proposta_cliente)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `,
+      [
+        dati.cliente_id,
+        dati.descrizione,
+        dati.luogo,
+        dati.priorita,
+        dati.data_richiesta,
+        dati.data_proposta_cliente
+      ],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            id: this.lastID,
+            ...dati
+          });
+        }
+      }
+    );
+  });
+};
+
+exports.findByClienteId = (cliente_id) => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `
+        SELECT *
+        FROM interventi
+        WHERE cliente_id = ?
+        ORDER BY data_richiesta DESC
+      `,
+      [cliente_id],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      }
+    );
+  });
+};
+
+exports.findAllForAdmin = () => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `
+        SELECT
+          interventi.*,
+          users.nome AS cliente_nome,
+          users.cognome AS cliente_cognome,
+          users.email AS cliente_email,
+          users.telefono AS cliente_telefono
+        FROM interventi
+        JOIN users ON users.id = interventi.cliente_id
+        ORDER BY interventi.data_richiesta DESC
+      `,
+      [],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      }
+    );
+  });
+};
+
+exports.findById = (id) => {
+  return new Promise((resolve, reject) => {
+    db.get(
+      `
+        SELECT
+          interventi.*,
+          users.nome AS cliente_nome,
+          users.cognome AS cliente_cognome,
+          users.email AS cliente_email,
+          users.telefono AS cliente_telefono
+        FROM interventi
+        JOIN users ON users.id = interventi.cliente_id
+        WHERE interventi.id = ?
+      `,
+      [id],
+      (err, row) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(row);
+        }
+      }
+    );
+  });
+};
+
+exports.adminProponeData = (id, data_proposta_admin) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `
+        UPDATE interventi
+        SET
+          stato_admin = 'Data proposta',
+          stato_risposta_cliente = 'In attesa',
+          data_proposta_admin = ?
+        WHERE id = ?
+      `,
+      [data_proposta_admin, id],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            changes: this.changes
+          });
+        }
+      }
+    );
+  });
+};
+
+exports.adminAccettaDataCliente = (id) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `
+        UPDATE interventi
+        SET
+          stato_admin = 'Data proposta',
+          stato_risposta_cliente = 'In attesa',
+          data_proposta_admin = data_proposta_cliente
+        WHERE id = ?
+      `,
+      [id],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            changes: this.changes
+          });
+        }
+      }
+    );
+  });
+};
+
+exports.adminRifiutaIntervento = (id) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `
+        UPDATE interventi
+        SET
+          stato_admin = 'Rifiutato'
+        WHERE id = ?
+      `,
+      [id],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            changes: this.changes
+          });
+        }
+      }
+    );
+  });
+};
+
+exports.clienteAccettaData = (id) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `
+        UPDATE interventi
+        SET
+          stato_admin = 'Intervento concordato',
+          stato_risposta_cliente = 'Data accettata',
+          data_accettata = data_proposta_admin,
+          stato_lavorazione = 'Programmato'
+        WHERE id = ?
+      `,
+      [id],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            changes: this.changes
+          });
+        }
+      }
+    );
+  });
+};
+
+exports.clienteProponeNuovaData = (id, nuova_data) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `
+        UPDATE interventi
+        SET
+          stato_admin = 'In attesa nuova valutazione',
+          stato_risposta_cliente = 'Nuova data proposta',
+          data_proposta_cliente = ?
+        WHERE id = ?
+      `,
+      [nuova_data, id],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            changes: this.changes
+          });
+        }
+      }
+    );
+  });
+};
+
+exports.clienteAnnullaIntervento = (id) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `
+        UPDATE interventi
+        SET
+          stato_risposta_cliente = 'Intervento annullato'
+        WHERE id = ?
+      `,
+      [id],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            changes: this.changes
+          });
+        }
+      }
+    );
+  });
+};
+</file>
+
+<file path="Backend/routes/routes.js">
+const express = require('express');
+
+// Controllers
+const authController = require('../controllers/authController');
+const dipendentiController = require('../controllers/dipendentiController');
+// 1. IMPORTIAMO IL NUOVO CONTROLLER
+const interventiController = require('../controllers/interventiController'); 
+const preventiviController = require('../controllers/preventiviController');
+// Middlewares
+const authMiddleware = require('../middlewares/authMiddleware');
+
+const router = express.Router();
+
+// ==========================================
+// AREA AUTENTICAZIONE
+// ==========================================
+router.post('/auth/register', authController.register);
+router.post('/auth/login', authController.login);
+router.get('/auth/profile', authMiddleware.verifyToken, authController.profile);
+
+// ==========================================
+// AREA CLIENTI
+// ==========================================
+// 2. LA NUOVA ROTTA PER LA RICHIESTA INTERVENTO
+router.post(
+  '/interventi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  interventiController.creaIntervento
+);
+
+router.get(
+  '/interventi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  interventiController.getInterventiCliente
+);
+
+router.post(
+  '/preventivi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  preventiviController.creaPreventivo
+);
+
+// Aggiungi questa rotta sotto la POST /preventivi
+router.get(
+  '/preventivi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  preventiviController.getPreventiviCliente
+);
+
+// ==========================================
+// AREA ADMIN: GESTIONE DIPENDENTI
+// ==========================================
+router.get('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.getAll);
+router.post('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.create);
+router.put('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.update);
+router.delete('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.delete);
+// ==========================================
+// AREA ADMIN: GESTI
+
+
+// ==========================================
+// AREA ADMIN: GESTIONE INTERVENTI E PREVENTIVI
+// ==========================================
+
+
+
+// NUOVA ROTTA: Recupera tutti i preventivi per l'admin
+router.get(
+  '/admin/preventivi',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  preventiviController.getPreventiviAdmin
+);
+
+router.put(
+  '/admin/interventi/:id/proponi-data',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.adminProponeData
+);
+
+router.put(
+  '/admin/interventi/:id/rifiuta',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.adminRifiutaIntervento
+);
+
+router.put(
+  '/interventi/:id/risposta-cliente',
+  authMiddleware.verifyToken,
+  authMiddleware.isCliente,
+  interventiController.clienteRispondeData
+);
+router.get(
+  '/interventi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isCliente,
+  interventiController.getInterventoClienteById
+);
+module.exports = router;
+</file>
+
+<file path="Frontend/src/app/models/intervento.model.ts">
+export interface Intervento {
+  id: number;
+
+  cliente_id?: number;
+
+  descrizione: string;
+
+  luogo: string;
+
+  priorita: 'Bassa' | 'Media' | 'Alta';
+
+  stato_admin:
+    | 'Richiesto'
+    | 'Rifiutato'
+    | 'Data proposta'
+    | 'In attesa nuova valutazione';
+
+  stato_risposta_cliente:
+    | 'In attesa'
+    | 'Data accettata'
+    | 'Nuova data proposta'
+    | 'Intervento annullato';
+
+  stato_lavorazione:
+    | 'Da programmare'
+    | 'Programmato'
+    | 'In lavorazione'
+    | 'Terminato';
+
+  // Campo di comodo usato in alcune viste frontend
+  dataOra?: string;
+
+  // Vecchi campi usati nei mock/pagine già esistenti
+  cliente?: string;
+
+  emailCliente?: string;
+
+  telefonoCliente?: string;
+
+  // Campi reali restituiti dal backend nelle query admin con JOIN users
+  cliente_nome?: string;
+
+  cliente_cognome?: string;
+
+  cliente_email?: string;
+
+  cliente_telefono?: string;
+
+  // Date del database
+  data_richiesta?: string;
+
+  data_proposta_cliente?: string;
+
+  data_proposta_admin?: string;
+
+  data_accettata?: string;
+
+  created_at?: string;
+
+  updated_at?: string;
+
+  // Tabella ponte dipendenti_interventi
+  dipendentiAssegnati?: string[];
+}
+</file>
+
+<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.ts">
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms'; 
+import { AlertController } from '@ionic/angular';
+
+
+
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonChip,
+  IonButton,
+  IonButtons,
+  IonIcon,
+  IonModal
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+import {
+  arrowBackOutline,
+  createOutline,
+  addOutline,
+  peopleOutline,
+  saveOutline,
+  trashOutline
+} from 'ionicons/icons';
+
+import { Intervento } from 'src/app/models/intervento.model';
+import { Preventivo } from 'src/app/models/preventivo.model';
+import { InterventiService } from 'src/app/services/interventi.service';
+import { PreventiviService } from 'src/app/services/preventivi.service';
+
+interface VoceCatalogo {
+  id: number;
+  nome: string;
+  categoria: string;
+  prezzoBase: string;
+}
+
+interface EventoStorico {
+  id: number;
+  dataFormattata: string;
+  descrizione: string;
+  cliente: string;
+  tipo: 'Ordine' | 'Intervento' | 'Preventivo';
+  stato: string;
+}
+
+@Component({
+  selector: 'app-dashboard-admin',
+  templateUrl: './dashboard-admin.page.html',
+  styleUrls: ['./dashboard-admin.page.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonChip,
+    IonButton,
+    IonButtons,
+    IonIcon,
+    IonModal
+  ]
+})
+export class DashboardAdminPage implements OnInit {
+
+  // Metriche globali (inizializzate a 0)
+  totalePreventivi = 0;
+  ordiniAttivi = 0;
+  interventiAperti = 0;
+  vociCatalogo = 0; 
+
+  // Array pronti per il backend
+  interventi: Intervento[] = [];
+  preventivi: Preventivo[] = [];
+  catalogo: VoceCatalogo[] = [];
+  storicoGlobale: EventoStorico[] = [];
+
+  isModalOpen = false;
+  modalMode: 'crea' | 'modifica' = 'crea';
+  formCatalogo: Partial<VoceCatalogo> = {};
+
+  constructor(
+  private alertController: AlertController,
+  private interventiService: InterventiService,
+  private preventiviService: PreventiviService
+) {
+  addIcons({
+    arrowBackOutline,
+    createOutline,
+    addOutline,
+    peopleOutline,
+    saveOutline,
+    trashOutline
+  });
+}
+
+ ngOnInit() {
+  this.caricaInterventiAdmin();
+  this.caricaPreventiviAdmin();
+}
+caricaInterventiAdmin() {
+  this.interventiService.getInterventiAdmin().subscribe({
+    next: (interventi) => {
+      this.interventi = interventi;
+      this.interventiAperti = interventi.filter(
+        intervento =>
+          intervento.stato_admin !== 'Rifiutato' &&
+          intervento.stato_risposta_cliente !== 'Intervento annullato' &&
+          intervento.stato_lavorazione !== 'Terminato'
+      ).length;
+    },
+    error: (err) => {
+      console.error('Errore caricamento interventi admin:', err);
+    }
+  });
+}
+
+caricaPreventiviAdmin() {
+    this.preventiviService.getPreventiviAdmin().subscribe({
+      next: (datiReali) => {
+        this.preventivi = datiReali;
+        
+        // Aggiorna anche il contatore in alto ("Preventivi Da Gestire")
+        this.totalePreventivi = datiReali.filter(p => p.stato_admin === 'Da valutare').length;
+      },
+      error: (err) => {
+        console.error('Errore caricamento preventivi admin:', err);
+      }
+    });
+  }
+
+  // --- LOGICA CATALOGO ---
+  modificaVoceCatalogo(id: number) {
+    this.modalMode = 'modifica';
+    const voce = this.catalogo.find(v => v.id === id);
+    if (voce) {
+      this.formCatalogo = { ...voce };
+      this.isModalOpen = true;
+    }
+  }
+
+  get formCatalogoValido(): boolean {
+    return (
+      (this.formCatalogo.nome?.trim() ?? '') !== '' &&
+      (this.formCatalogo.categoria?.trim() ?? '') !== ''
+    );
+  }
+
+  async eliminaVoceCatalogo(id: number) {
+    const alert = await this.alertController.create({
+      cssClass: 'custom-dark-alert', 
+      header: 'Eliminare voce?',
+      message: 'Sei sicuro di voler eliminare questa voce dal catalogo?',
+      buttons: [
+        { text: 'Annulla', role: 'cancel' },
+        {
+          text: 'Elimina',
+          role: 'destructive',
+          handler: () => {
+            this.catalogo = this.catalogo.filter(v => v.id !== id);
+            this.vociCatalogo = this.catalogo.length; 
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  aggiungiVoceCatalogo() {
+    this.modalMode = 'crea';
+    this.formCatalogo = {}; 
+    this.isModalOpen = true;
+  }
+
+  chiudiModale() {
+    this.isModalOpen = false;
+  }
+
+  salvaVoceCatalogo() {
+    if (!this.formCatalogoValido) return;
+
+    if (this.modalMode === 'crea') {
+      const nuovaVoce: VoceCatalogo = {
+        id: Date.now(),
+        nome: this.formCatalogo.nome || '',
+        categoria: this.formCatalogo.categoria || '',
+        prezzoBase: this.formCatalogo.prezzoBase || 'Su preventivo'
+      };
+      this.catalogo.push(nuovaVoce);
+    } else {
+      const index = this.catalogo.findIndex(v => v.id === this.formCatalogo.id);
+      if (index !== -1) {
+        this.catalogo[index] = {
+          id: this.formCatalogo.id!,
+          nome: this.formCatalogo.nome || '',
+          categoria: this.formCatalogo.categoria || '',
+          prezzoBase: this.formCatalogo.prezzoBase || 'Su preventivo'
+        };
+      }
+    }
+    this.vociCatalogo = this.catalogo.length;
+    this.chiudiModale();
+  }
+}
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-admin">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      Dashboard Admin
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <section class="detail-header">
+    <h1>
+      Intervento #{{ interventoId }}
+    </h1>
+
+    <p>
+      Riepilogo della richiesta tecnica e assegnazione al personale operativo.
+    </p>
+  </section>
+
+  @if (intervento) {
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>
+          Informazioni Cliente
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <div class="info-row">
+          <span>Cliente</span>
+          <strong>
+            {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Email</span>
+          <strong>
+            {{ intervento.cliente_email }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Telefono</span>
+          <strong>
+            {{ intervento.cliente_telefono }}
+          </strong>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>
+          Dati Intervento
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <div class="info-row">
+          <span>Descrizione</span>
+          <strong>
+            {{ intervento.descrizione }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Luogo</span>
+          <strong>
+            {{ intervento.luogo }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Priorità</span>
+          <strong>
+            {{ intervento.priorita }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Data richiesta</span>
+          <strong>
+            {{ intervento.data_richiesta }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Data proposta dal cliente</span>
+          <strong>
+            {{ intervento.data_proposta_cliente || 'Nessuna data proposta' }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Data proposta dall'admin</span>
+          <strong>
+            {{ intervento.data_proposta_admin || 'Nessuna data proposta' }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Data accettata</span>
+          <strong>
+            {{ intervento.data_accettata || 'Non ancora accettata' }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Risposta cliente</span>
+          <ion-chip>
+            {{ intervento.stato_risposta_cliente }}
+          </ion-chip>
+        </div>
+
+        <div class="info-row">
+          <span>Stato lavorazione</span>
+          <ion-chip>
+            {{ intervento.stato_lavorazione }}
+          </ion-chip>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>
+          Gestione Admin
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        @if (intervento.dipendentiAssegnati && intervento.dipendentiAssegnati.length > 0) {
+
+          <div class="assignment-box">
+            Dipendenti assegnati:
+            <strong>
+              {{ intervento.dipendentiAssegnati.join(', ') }}
+            </strong>
+          </div>
+
+        } @else {
+
+          <div class="assignment-box empty">
+            Nessun dipendente ancora assegnato.
+          </div>
+
+        }
+
+       
+          <div class="actions">
+              <ion-button
+    expand="block"
+    class="btn-glass-assign"
+    (click)="assegnaDipendente()">
+    Assegna dipendente
+  </ion-button>
+
+  @if (
+    intervento.stato_admin === 'Richiesto' ||
+    intervento.stato_admin === 'In attesa nuova valutazione'
+  ) {
+
+    <ion-button
+      expand="block"
+      class="btn-glass-assign"
+      (click)="accettaDataCliente()">
+      Accetta data proposta dal cliente
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      class="btn-glass-assign"
+      (click)="proponiAltraData()">
+      Proponi un'altra data
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      class="btn-glass-reject"
+      (click)="rifiutaIntervento()">
+      Rifiuta intervento
+    </ion-button>
+
+  }
+
+</div>
+
+      </ion-card-content>
+    </ion-card>
+
+  } @else {
+
+    <div class="ion-padding ion-text-center">
+      @if (caricamento) {
+        <p>
+          Caricamento dati...
+        </p>
+      } @else {
+        <p>
+          Intervento non trovato.
+        </p>
+      }
+    </div>
+
+  }
+
+</ion-content>
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.ts">
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonChip
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+import { arrowBackOutline } from 'ionicons/icons';
+
+import { Intervento } from 'src/app/models/intervento.model';
+import { InterventiService } from 'src/app/services/interventi.service';
+
+@Component({
+  selector: 'app-dettaglio-intervento-admin',
+  templateUrl: './dettaglio-intervento-admin.page.html',
+  styleUrls: ['./dettaglio-intervento-admin.page.scss'],
+  standalone: true,
+  imports: [
+    RouterLink,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonChip
+  ]
+})
+export class DettaglioInterventoAdminPage implements OnInit {
+
+  interventoId = '';
+
+  intervento: Intervento | null = null;
+
+  caricamento = true;
+
+  dipendentiDisponibili: string[] = [];
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private alertController: AlertController,
+    private interventiService: InterventiService
+  ) {
+    addIcons({
+      arrowBackOutline
+    });
+  }
+
+  ngOnInit() {
+    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
+
+    this.caricaIntervento();
+  }
+
+  caricaIntervento() {
+    this.caricamento = true;
+
+    this.interventiService.getInterventoAdminById(this.interventoId).subscribe({
+      next: (intervento) => {
+        this.intervento = intervento;
+        this.caricamento = false;
+      },
+      error: (err) => {
+        console.error('Errore caricamento dettaglio intervento admin:', err);
+        this.caricamento = false;
+      }
+    });
+  }
+
+  async assegnaDipendente() {
+    if (!this.intervento) {
+      return;
+    }
+
+    const alert = await this.alertController.create({
+      header: 'Assegna dipendente',
+      message: 'Seleziona il dipendente da assegnare a questo intervento.',
+      cssClass: 'custom-dark-alert',
+      inputs: this.dipendentiDisponibili.map(dipendente => ({
+        type: 'radio',
+        label: dipendente,
+        value: dipendente
+      })),
+      buttons: [
+        {
+          text: 'Annulla',
+          role: 'cancel'
+        },
+        {
+          text: 'Conferma',
+          handler: (dipendenteSelezionato: string) => {
+            if (!dipendenteSelezionato || !this.intervento) {
+              return false;
+            }
+
+            if (!this.intervento.dipendentiAssegnati) {
+              this.intervento.dipendentiAssegnati = [];
+            }
+
+            if (!this.intervento.dipendentiAssegnati.includes(dipendenteSelezionato)) {
+              this.intervento.dipendentiAssegnati.push(dipendenteSelezionato);
+            }
+
+            this.router.navigate(['/dashboard-admin']);
+
+            return true;
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+  accettaDataCliente() {
+  if (!this.intervento) {
+    return;
+  }
+
+  this.interventiService.adminProponeData(this.interventoId, {
+    usa_data_cliente: true
+  }).subscribe({
+    next: () => {
+      this.caricaIntervento();
+    },
+    error: (err) => {
+      console.error('Errore accettazione data cliente:', err);
+    }
+  });
+}
+async proponiAltraData() {
+  const alert = await this.alertController.create({
+    header: 'Proponi nuova data',
+    message: 'Inserisci una data alternativa da proporre al cliente.',
+    cssClass: 'custom-dark-alert',
+    inputs: [
+      {
+        name: 'data',
+        type: 'date',
+        placeholder: 'Seleziona data'
+      }
+    ],
+    buttons: [
+      {
+        text: 'Annulla',
+        role: 'cancel'
+      },
+      {
+        text: 'Conferma',
+        handler: (data: any) => {
+          if (!data.data) {
+            return false;
+          }
+
+          this.interventiService.adminProponeData(this.interventoId, {
+            data_proposta_admin: data.data,
+            usa_data_cliente: false
+          }).subscribe({
+            next: () => {
+              this.caricaIntervento();
+            },
+            error: (err) => {
+              console.error('Errore proposta nuova data:', err);
+            }
+          });
+
+          return true;
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
+async rifiutaIntervento() {
+  if (!this.intervento) {
+    return;
+  }
+
+  const alert = await this.alertController.create({
+    header: 'Rifiuta intervento',
+    message: 'Vuoi rifiutare definitivamente questo intervento?',
+    cssClass: 'custom-dark-alert',
+    buttons: [
+      {
+        text: 'Indietro',
+        role: 'cancel'
+      },
+      {
+        text: 'Rifiuta intervento',
+        role: 'destructive',
+        handler: () => {
+          this.interventiService.adminRifiutaIntervento(
+            this.interventoId
+          ).subscribe({
+            next: () => {
+              this.caricaIntervento();
+            },
+            error: (err) => {
+              console.error('Errore rifiuto intervento:', err);
+            }
+          });
+
+          return true;
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
+}
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-cliente">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      Dashboard Cliente
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <section class="detail-header">
+    <h1>
+      Intervento #{{ interventoId }}
+    </h1>
+
+    <p>
+      Dettaglio della tua richiesta di intervento e gestione della proposta data.
+    </p>
+  </section>
+
+  @if (intervento) {
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>
+          Dati Intervento
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <div class="info-row">
+          <span>Descrizione</span>
+          <strong>
+            {{ intervento.descrizione }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Luogo</span>
+          <strong>
+            {{ intervento.luogo }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Priorità</span>
+          <strong>
+            {{ intervento.priorita }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Data richiesta</span>
+          <strong>
+            {{ intervento.data_richiesta || 'Non disponibile' }}
+          </strong>
+        </div>
+
+
+        <div class="info-row">
+          <span>Data accettata</span>
+          <strong>
+            {{ intervento.data_accettata || 'Non ancora accettata' }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Risposta cliente</span>
+          <ion-chip>
+            {{ intervento.stato_risposta_cliente }}
+          </ion-chip>
+        </div>
+
+        <div class="info-row">
+          <span>Stato lavorazione</span>
+          <ion-chip>
+            {{ intervento.stato_lavorazione }}
+          </ion-chip>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>
+          Risposta alla proposta
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        @if (puoRispondereAllaProposta) {
+
+          <div class="proposal-box">
+            Data proposta dall'admin:
+            <strong>
+              {{ intervento.data_proposta_admin }}
+            </strong>
+          </div>
+
+          <div class="actions">
+
+            <ion-button
+              expand="block"
+              class="btn-glass-accept"
+              (click)="accettaDataAdmin()">
+              <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+              Accetta data proposta
+            </ion-button>
+
+            <ion-item
+              button="true"
+              detail="false"
+              id="apri-calendario-nuova-data"
+              class="calendar-trigger-item">
+
+              <ion-label position="stacked">
+                Nuova data da proporre
+              </ion-label>
+
+              <ion-input
+                [readonly]="true"
+                placeholder="Seleziona una data"
+                [value]="nuovaDataFormattata">
+              </ion-input>
+
+              <ion-icon
+                slot="end"
+                name="calendar-outline"
+                style="color: #f5a623; font-size: 22px; margin-top: 14px;">
+              </ion-icon>
+
+            </ion-item>
+
+            <ion-modal
+              trigger="apri-calendario-nuova-data"
+              class="dark-calendar-modal">
+
+              <ng-template>
+
+                <ion-datetime
+                  presentation="date"
+                  [(ngModel)]="nuovaDataCliente"
+                  [min]="dataMinima"
+                  class="custom-amber-calendar"
+                  [showDefaultButtons]="true"
+                  doneText="Conferma"
+                  cancelText="Annulla">
+                </ion-datetime>
+
+              </ng-template>
+
+            </ion-modal>
+
+            <ion-button
+              expand="block"
+              class="btn-glass-propose"
+              [disabled]="!nuovaDataCliente"
+              (click)="confermaNuovaData()">
+              <ion-icon slot="start" name="calendar-outline"></ion-icon>
+              Proponi nuova data
+            </ion-button>
+
+            <ion-button
+              expand="block"
+              class="btn-glass-reject"
+              (click)="annullaIntervento()">
+              <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+              Annulla intervento
+            </ion-button>
+
+          </div>
+
+        } @else {
+
+          <div class="proposal-box empty">
+            Nessuna proposta in attesa di risposta.
+          </div>
+
+        }
+
+      </ion-card-content>
+    </ion-card>
+
+    } @else {
+
+
+    <div class="ion-padding ion-text-center">
+      @if (caricamento) {
+        <p>
+          Caricamento dati...
+        </p>
+      } @else {
+        <p>
+          Intervento non trovato.
+        </p>
+      }
+    </div>
+
+  }
+
+</ion-content>
+</file>
+
+<file path="Frontend/src/app/services/interventi.service.ts">
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Intervento } from 'src/app/models/intervento.model';
+
+export interface InterventoRichiesta {
+  descrizione: string;
+  luogo: string;
+  priorita: 'Bassa' | 'Media' | 'Alta';
+  data_proposta_cliente?: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class InterventiService {
+
+  private apiUrl = 'http://localhost:3000/api/interventi';
+  private adminApiUrl = 'http://localhost:3000/api/admin/interventi';
+
+  constructor(private http: HttpClient) {}
+
+  private getHeaders(): HttpHeaders {
+    const token = sessionStorage.getItem('token');
+
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+  }
+
+  creaIntervento(dati: InterventoRichiesta): Observable<any> {
+    return this.http.post(
+      this.apiUrl,
+      dati,
+      {
+        headers: this.getHeaders()
+      }
+    );
+  }
+
+  getInterventiCliente(): Observable<Intervento[]> {
+    return this.http.get<Intervento[]>(
+      this.apiUrl,
+      {
+        headers: this.getHeaders()
+      }
+    );
+  }
+  getInterventoClienteById(id: number | string): Observable<Intervento> {
+  return this.http.get<Intervento>(
+    `${this.apiUrl}/${id}`,
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+  getInterventiAdmin(): Observable<Intervento[]> {
+    return this.http.get<Intervento[]>(
+      this.adminApiUrl,
+      {
+        headers: this.getHeaders()
+      }
+    );
+  }
+
+  getInterventoAdminById(id: number | string): Observable<Intervento> {
+    return this.http.get<Intervento>(
+      `${this.adminApiUrl}/${id}`,
+      {
+        headers: this.getHeaders()
+      }
+    );
+  }
+adminProponeData(
+  interventoId: number | string,
+  dati: {
+    data_proposta_admin?: string;
+    usa_data_cliente?: boolean;
+  }
+): Observable<any> {
+  return this.http.put(
+    `${this.adminApiUrl}/${interventoId}/proponi-data`,
+    dati,
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+adminRifiutaIntervento(
+  interventoId: number | string
+): Observable<any> {
+  return this.http.put(
+    `${this.adminApiUrl}/${interventoId}/rifiuta`,
+    {},
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+clienteRispondeData(
+  interventoId: number | string,
+  dati: {
+    azione: 'accetta_data' | 'proponi_nuova_data' | 'annulla_intervento';
+    nuova_data?: string;
+  }
+): Observable<any> {
+  return this.http.put(
+    `${this.apiUrl}/${interventoId}/risposta-cliente`,
+    dati,
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+}
+</file>
+
+<file path="Backend/controllers/interventiController.js">
+const Intervento = require('../models/interventiModel');
+
+exports.creaIntervento = async (req, res) => {
+  try {
+    const cliente_id = req.user.id; 
+    const { descrizione, luogo, priorita, data_proposta_cliente } = req.body;
+
+    if (!descrizione || !luogo || !priorita) {
+      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
+    }
+
+    const data_richiesta = new Date().toISOString().split('T')[0];
+
+    // Chiamiamo il Model e aspettiamo (await) che finisca di parlare col database
+    const nuovoIntervento = await Intervento.create({
+      cliente_id,
+      descrizione,
+      luogo,
+      priorita,
+      data_richiesta,
+      data_proposta_cliente
+    });
+
+    res.status(201).json({ 
+      message: 'Richiesta di intervento inviata con successo!',
+      intervento: nuovoIntervento 
+    });
+
+  } catch (error) {
+    console.error('Errore durante la creazione dell\'intervento:', error);
+    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
+  }
+};
+
+
+exports.getInterventiCliente = async (req, res) => {
+  try {
+    // req.user.id esiste grazie al middleware verifyToken
+    const cliente_id = req.user.id;
+    
+    const interventi = await Intervento.findByClienteId(cliente_id);
+    
+    return res.json(interventi);
+    
+  } catch (error) {
+    console.error('Errore nel recupero degli interventi:', error);
+    return res.status(500).json({ message: 'Errore durante la lettura degli interventi.' });
+  }
+};
+exports.getInterventoClienteById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    if (Number(intervento.cliente_id) !== Number(req.user.id)) {
+      return res.status(403).json({
+        message: 'Non puoi visualizzare un intervento non tuo.'
+      });
+    }
+
+    return res.json(intervento);
+
+  } catch (error) {
+    console.error('Errore recupero dettaglio intervento cliente:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il recupero del dettaglio intervento cliente.'
+    });
+  }
+};
+
+exports.getInterventiAdmin = async (req, res) => {
+  try {
+    const interventi = await Intervento.findAllForAdmin();
+
+    return res.json(interventi);
+
+  } catch (error) {
+    console.error('Errore recupero interventi admin:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il recupero degli interventi admin.'
+    });
+  }
+};
+
+
+
+exports.adminProponeData = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const {
+      data_proposta_admin,
+      usa_data_cliente
+    } = req.body;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    if (usa_data_cliente) {
+      if (!intervento.data_proposta_cliente) {
+        return res.status(400).json({
+          message: 'Il cliente non ha proposto nessuna data.'
+        });
+      }
+
+      await Intervento.adminAccettaDataCliente(id);
+
+    } else {
+      if (!data_proposta_admin) {
+        return res.status(400).json({
+          message: 'La data proposta dall’admin è obbligatoria.'
+        });
+      }
+
+      await Intervento.adminProponeData(id, data_proposta_admin);
+    }
+
+    const interventoAggiornato = await Intervento.findById(id);
+
+    return res.json({
+      message: 'Data proposta correttamente.',
+      intervento: interventoAggiornato
+    });
+
+  } catch (error) {
+    console.error('Errore proposta data admin:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante la proposta della data.'
+    });
+  }
+};
+
+exports.adminRifiutaIntervento = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    await Intervento.adminRifiutaIntervento(id);
+
+    const interventoAggiornato = await Intervento.findById(id);
+
+    return res.json({
+      message: 'Intervento rifiutato correttamente.',
+      intervento: interventoAggiornato
+    });
+
+  } catch (error) {
+    console.error('Errore rifiuto intervento admin:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il rifiuto dell’intervento.'
+    });
+  }
+};
+
+exports.clienteRispondeData = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const {
+  azione,
+  nuova_data
+} = req.body;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+   if (Number(intervento.cliente_id) !== Number(req.user.id)) {
+      return res.status(403).json({
+        message: 'Non puoi rispondere a un intervento non tuo.'
+      });
+    }
+
+    if (azione === 'accetta_data') {
+      if (!intervento.data_proposta_admin) {
+        return res.status(400).json({
+          message: 'Non esiste ancora una data proposta dall’admin.'
+        });
+      }
+
+      await Intervento.clienteAccettaData(id);
+
+    } else if (azione === 'proponi_nuova_data') {
+  if (!nuova_data) {
+    return res.status(400).json({
+      message: 'La nuova data è obbligatoria.'
+    });
+  }
+
+  await Intervento.clienteProponeNuovaData(
+    id,
+    nuova_data
+  );
+}else if (azione === 'annulla_intervento') {
+  await Intervento.clienteAnnullaIntervento(
+    id
+  );
+}else {
+      return res.status(400).json({
+        message: 'Azione non valida.'
+      });
+    }
+
+    const interventoAggiornato = await Intervento.findById(id);
+
+    return res.json({
+      message: 'Risposta salvata correttamente.',
+      intervento: interventoAggiornato
+    });
+
+  } catch (error) {
+    console.error('Errore risposta cliente:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante la risposta del cliente.'
+    });
+  }
+};
+</file>
+
 <file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.ts">
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -9972,6 +10896,222 @@ export class DashboardClientePage {
 }
 </file>
 
+<file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.ts">
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonChip,
+  IonModal,
+  IonDatetime,
+  IonItem,
+  IonLabel,
+  IonInput
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+
+import {
+  arrowBackOutline,
+  checkmarkCircleOutline,
+  calendarOutline,
+  closeCircleOutline
+} from 'ionicons/icons';
+
+import { Intervento } from 'src/app/models/intervento.model';
+import { InterventiService } from 'src/app/services/interventi.service';
+
+@Component({
+  selector: 'app-dettaglio-intervento-cliente',
+  templateUrl: './dettaglio-intervento-cliente.page.html',
+  styleUrls: ['./dettaglio-intervento-cliente.page.scss'],
+  standalone: true,
+  imports: [
+    RouterLink,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonChip,
+    IonModal,
+    IonDatetime,
+    IonItem,
+    IonLabel,
+    IonInput
+  ]
+})
+export class DettaglioInterventoClientePage implements OnInit {
+
+  interventoId = '';
+
+  intervento: Intervento | null = null;
+
+  caricamento = true;
+
+  nuovaDataCliente = '';
+
+  dataMinima = '';
+
+  constructor(
+    private route: ActivatedRoute,
+    private alertController: AlertController,
+    private interventiService: InterventiService
+  ) {
+    addIcons({
+      arrowBackOutline,
+      checkmarkCircleOutline,
+      calendarOutline,
+      closeCircleOutline
+    });
+
+    const domani = new Date();
+    domani.setDate(domani.getDate() + 1);
+
+    const tzoffset = domani.getTimezoneOffset() * 60000;
+
+    this.dataMinima = new Date(
+      domani.getTime() - tzoffset
+    ).toISOString().split('T')[0];
+  }
+
+  ngOnInit() {
+    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
+
+    this.caricaIntervento();
+  }
+
+  caricaIntervento() {
+    this.caricamento = true;
+
+    this.interventiService.getInterventoClienteById(this.interventoId).subscribe({
+      next: (intervento) => {
+        this.intervento = intervento;
+        this.caricamento = false;
+      },
+      error: (err) => {
+        console.error('Errore caricamento dettaglio intervento cliente:', err);
+        this.caricamento = false;
+      }
+    });
+  }
+
+  get puoRispondereAllaProposta(): boolean {
+    return (
+      !!this.intervento &&
+      this.intervento.stato_admin === 'Data proposta' &&
+      this.intervento.stato_risposta_cliente === 'In attesa' &&
+      !!this.intervento.data_proposta_admin
+    );
+  }
+
+  get nuovaDataFormattata(): string {
+    if (!this.nuovaDataCliente) {
+      return '';
+    }
+
+    const d = new Date(this.nuovaDataCliente);
+
+    return d.toLocaleDateString('it-IT');
+  }
+
+  accettaDataAdmin() {
+    if (!this.intervento) {
+      return;
+    }
+
+    this.interventiService.clienteRispondeData(this.interventoId, {
+      azione: 'accetta_data'
+    }).subscribe({
+      next: () => {
+        this.caricaIntervento();
+      },
+      error: (err) => {
+        console.error('Errore accettazione data:', err);
+      }
+    });
+  }
+
+  confermaNuovaData() {
+  if (!this.intervento || !this.nuovaDataCliente) {
+    return;
+  }
+
+  const dataPulita = this.nuovaDataCliente.split('T')[0];
+
+  this.interventiService.clienteRispondeData(this.interventoId, {
+    azione: 'proponi_nuova_data',
+    nuova_data: dataPulita
+  }).subscribe({
+    next: () => {
+      this.nuovaDataCliente = '';
+      this.caricaIntervento();
+    },
+    error: (err) => {
+      console.error('Errore proposta nuova data:', err);
+    }
+  });}
+
+  async annullaIntervento() {
+  if (!this.intervento) {
+    return;
+  }
+
+  const alert = await this.alertController.create({
+    header: 'Annulla intervento',
+    message: 'Vuoi annullare definitivamente questo intervento?',
+    cssClass: 'custom-dark-alert',
+    buttons: [
+      {
+        text: 'Indietro',
+        role: 'cancel'
+      },
+      {
+        text: 'Annulla intervento',
+        role: 'destructive',
+        handler: () => {
+          this.interventiService.clienteRispondeData(this.interventoId, {
+            azione: 'annulla_intervento'
+          }).subscribe({
+            next: () => {
+              this.caricaIntervento();
+            },
+            error: (err) => {
+              console.error('Errore annullamento intervento:', err);
+            }
+          });
+
+          return true;
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
+}
+</file>
+
 <file path="Backend/database/database.js">
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
@@ -10021,7 +11161,8 @@ db.serialize(() => {
           'Richiesto',
           'Rifiutato',
           'Data proposta',
-          'In attesa nuova valutazione'
+          'In attesa nuova valutazione',
+          'Intervento concordato'
         )
       ),
 
