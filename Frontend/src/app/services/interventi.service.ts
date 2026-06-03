@@ -117,4 +117,73 @@ clienteRispondeData(
   );
 }
 
+assegnaDipendente(
+  interventoId: number | string,
+  dipendenteId: number | string
+): Observable<any> {
+  return this.http.post(
+    `${this.adminApiUrl}/${interventoId}/dipendenti`,
+    {
+      dipendente_id: dipendenteId
+    },
+    {
+      headers: this.getHeaders()
+    }
+  );
 }
+
+getDipendentiAssegnati(
+  interventoId: number | string
+): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.adminApiUrl}/${interventoId}/dipendenti`,
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+getDipendentiDisponibili(): Observable<any[]> {
+  return this.http.get<any[]>(
+    'http://localhost:3000/api/gestione-dipendenti',
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+getInterventiDipendente(): Observable<Intervento[]> {
+  return this.http.get<Intervento[]>(
+    'http://localhost:3000/api/dipendente/interventi',
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+getInterventoDipendenteById(id: number | string): Observable<Intervento> {
+  return this.http.get<Intervento>(
+    `http://localhost:3000/api/dipendente/interventi/${id}`,
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+aggiornaStatoLavorazioneDipendente(
+  interventoId: number | string,
+  stato_lavorazione: 'Programmato' | 'In lavorazione' | 'Terminato'
+): Observable<any> {
+  return this.http.put(
+    `http://localhost:3000/api/dipendente/interventi/${interventoId}/stato`,
+    {
+      stato_lavorazione
+    },
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+}
+

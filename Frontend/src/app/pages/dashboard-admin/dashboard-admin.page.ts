@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
@@ -83,7 +83,7 @@ interface EventoStorico {
     IonModal
   ]
 })
-export class DashboardAdminPage implements OnInit {
+export class DashboardAdminPage {
 
   // Metriche globali (inizializzate a 0)
   totalePreventivi = 0;
@@ -116,7 +116,7 @@ export class DashboardAdminPage implements OnInit {
   });
 }
 
- ngOnInit() {
+ionViewWillEnter() {
   this.caricaInterventiAdmin();
   this.caricaPreventiviAdmin();
 }

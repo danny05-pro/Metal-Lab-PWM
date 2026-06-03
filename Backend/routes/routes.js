@@ -119,4 +119,43 @@ router.get(
   authMiddleware.isCliente,
   interventiController.getInterventoClienteById
 );
+
+router.post(
+  '/admin/interventi/:id/dipendenti',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.assegnaDipendente
+);
+
+router.get(
+  '/admin/interventi/:id/dipendenti',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.getDipendentiAssegnati
+);
+
+// ==========================================
+// AREA DIPENDENTE: INTERVENTI ASSEGNATI
+// ==========================================
+
+router.get(
+  '/dipendente/interventi',
+  authMiddleware.verifyToken,
+  authMiddleware.isDipendente,
+  interventiController.getInterventiDipendente
+);
+
+router.get(
+  '/dipendente/interventi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isDipendente,
+  interventiController.getInterventoDipendenteById
+);
+
+router.put(
+  '/dipendente/interventi/:id/stato',
+  authMiddleware.verifyToken,
+  authMiddleware.isDipendente,
+  interventiController.aggiornaStatoLavorazioneDipendente
+);
 module.exports = router;
