@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
 
 import {
   IonCard,
@@ -27,8 +26,7 @@ import { Product } from '../../models/product.model';
     IonCardContent,
     IonButton,
     IonIcon,
-    IonBadge,
-    DecimalPipe
+    IonBadge
   ]
 })
 export class ProductCardComponent {

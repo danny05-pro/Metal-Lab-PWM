@@ -15,37 +15,33 @@
     <p>Benvenuto nel tuo pannello di controllo Metal Lab.</p>
   </section>
 
-  <div class="dashboard-actions">
-    <ion-button expand="block" routerLink="/preventivi">Richiedi Preventivo</ion-button>
-    <ion-button expand="block" routerLink="/interventi">Richiedi Intervento</ion-button>
+ <div class="dashboard-actions">
+    <ion-button expand="block" routerLink="/preventivi">
+      <ion-icon slot="start" name="document-text-outline"></ion-icon>
+      Richiedi Preventivo
+    </ion-button>
+    
+    <ion-button expand="block" routerLink="/interventi">
+      <ion-icon slot="start" name="construct-outline"></ion-icon>
+      Richiedi Intervento
+    </ion-button>
   </div>
 
   <ion-grid>
     <ion-row class="summary-row">
-      <ion-col size="6" size-md="3">
+      <ion-col size="12" size-md="6">
         <div class="summary-card">
           <span class="summary-value">{{ preventivi.length }}</span>
           <span class="summary-label">Preventivi</span>
         </div>
       </ion-col>
-      <ion-col size="6" size-md="3">
+      <ion-col size="12" size-md="6">
         <div class="summary-card">
           <span class="summary-value">{{ tuttiGliInterventi.length }}</span>
           <span class="summary-label">Interventi</span>
         </div>
       </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ ordini.length }}</span>
-          <span class="summary-label">Ordini in corso</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ storicoOrdini.length }}</span>
-          <span class="summary-label">Storico Ordini</span>
-        </div>
-      </ion-col>
+     
     </ion-row>
 
     <ion-row class="details-row">

@@ -23,17 +23,15 @@
     </p>
 
     <div class="card-info">
-
       <ion-badge color="medium">
-        {{ prodotto.materiale }}
+        {{ prodotto.categoria }}
       </ion-badge>
 
       <strong>
-        € {{ prodotto.prezzo | number:'1.2-2' }}
+        {{ prodotto.prezzoBase || 'Su preventivo' }}
       </strong>
-
     </div>
-
+    
     <ion-button fill="clear" class="btn-glass-favorite" (click)="onTogglePreferito(prodotto)">
       <ion-icon slot="icon-only" [name]="prodotto.preferito ? 'heart' : 'heart-outline'"></ion-icon>
     </ion-button>

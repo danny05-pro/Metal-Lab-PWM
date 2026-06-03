@@ -40,226 +40,211 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
-Backend/
-  controllers/
-    authController.js
-    dipendentiController.js
-    interventiController.js
-    preventiviController.js
-  database/
-    database.js
-  middlewares/
-    authMiddleware.js
-  models/
-    interventiModel.js
-    preventiviModel.js
-    userModel.js
-  routes/
-    routes.js
-  package.json
-  server.js
-Frontend/
-  src/
-    app/
-      components/
-        header/
-          header.component.html
-          header.component.scss
-          header.component.spec.ts
-          header.component.ts
-        product-card/
-          product-card.component.html
-          product-card.component.scss
-          product-card.component.spec.ts
-          product-card.component.ts
-        service-card/
-          service-card.component.html
-          service-card.component.scss
-          service-card.component.spec.ts
-          service-card.component.ts
-      explore-container/
-        explore-container.component.html
-        explore-container.component.scss
-        explore-container.component.spec.ts
-        explore-container.component.ts
-      models/
-        intervento.model.ts
-        ordine.model.ts
-        preventivo.model.ts
-        product.model.ts
-        service.model.ts
-      pages/
-        catalogo/
-          catalogo.page.html
-          catalogo.page.scss
-          catalogo.page.spec.ts
-          catalogo.page.ts
-        dashboard-admin/
-          dashboard-admin.page.html
-          dashboard-admin.page.scss
-          dashboard-admin.page.spec.ts
-          dashboard-admin.page.ts
-        dashboard-cliente/
-          dashboard-cliente.page.html
-          dashboard-cliente.page.scss
-          dashboard-cliente.page.spec.ts
-          dashboard-cliente.page.ts
-        dashboard-dipendente/
-          dashboard-dipendente.page.html
-          dashboard-dipendente.page.scss
-          dashboard-dipendente.page.spec.ts
-          dashboard-dipendente.page.ts
-        dettaglio-intervento-admin/
-          dettaglio-intervento-admin.page.html
-          dettaglio-intervento-admin.page.scss
-          dettaglio-intervento-admin.page.spec.ts
-          dettaglio-intervento-admin.page.ts
-        dettaglio-intervento-cliente/
-          dettaglio-intervento-cliente.page.html
-          dettaglio-intervento-cliente.page.scss
-          dettaglio-intervento-cliente.page.spec.ts
-          dettaglio-intervento-cliente.page.ts
-        dettaglio-intervento-dipendente/
-          dettaglio-intervento-dipendente.page.html
-          dettaglio-intervento-dipendente.page.scss
-          dettaglio-intervento-dipendente.page.spec.ts
-          dettaglio-intervento-dipendente.page.ts
-        dettaglio-preventivo-admin/
-          dettaglio-preventivo-admin.page.html
-          dettaglio-preventivo-admin.page.scss
-          dettaglio-preventivo-admin.page.spec.ts
-          dettaglio-preventivo-admin.page.ts
-        dettaglio-preventivo-cliente/
-          dettaglio-preventivo-cliente.page.html
-          dettaglio-preventivo-cliente.page.scss
-          dettaglio-preventivo-cliente.page.spec.ts
-          dettaglio-preventivo-cliente.page.ts
-        gestione-dipendenti/
-          gestione-dipendenti.page.html
-          gestione-dipendenti.page.scss
-          gestione-dipendenti.page.spec.ts
-          gestione-dipendenti.page.ts
-        home/
-          home.page.html
-          home.page.scss
-          home.page.spec.ts
-          home.page.ts
-        interventi/
-          interventi.page.html
-          interventi.page.scss
-          interventi.page.spec.ts
-          interventi.page.ts
-        login/
-          login.page.html
-          login.page.scss
-          login.page.spec.ts
-          login.page.ts
-        preventivi/
-          preventivi.page.html
-          preventivi.page.scss
-          preventivi.page.spec.ts
-          preventivi.page.ts
-        register/
-          register.page.html
-          register.page.scss
-          register.page.spec.ts
-          register.page.ts
-      services/
-        auth.service.ts
-        dipendenti.service.ts
-        interventi.service.ts
-        preventivi.service.ts
-      app.component.html
-      app.component.scss
-      app.component.spec.ts
-      app.component.ts
-      app.routes.ts
-    assets/
-      icon/
-        favicon.png
-      shapes.svg
-    environments/
-      environment.prod.ts
-      environment.ts
-    theme/
-      variables.scss
-    global.scss
-    index.html
-    main.ts
-    polyfills.ts
-    test.ts
-    zone-flags.ts
-  .gitignore
-  angular.json
-  capacitor.config.ts
-  ionic.config.json
-  karma.conf.js
-  package.json
-  README.md
-  tsconfig.app.json
-  tsconfig.json
-  tsconfig.spec.json
 .gitignore
+Backend/controllers/authController.js
+Backend/controllers/catalogoController.js
+Backend/controllers/dipendentiController.js
+Backend/controllers/interventiController.js
+Backend/controllers/preventiviController.js
+Backend/database/database.js
+Backend/middlewares/authMiddleware.js
+Backend/models/catalogoModel.js
+Backend/models/interventiModel.js
+Backend/models/preventiviModel.js
+Backend/models/userModel.js
+Backend/package.json
+Backend/routes/routes.js
+Backend/server.js
+Backend/uploads/6e19df741c9eefa3d4ef2e355bdfdbdc
+Frontend/.gitignore
+Frontend/angular.json
+Frontend/capacitor.config.ts
+Frontend/ionic.config.json
+Frontend/karma.conf.js
+Frontend/package.json
+Frontend/README.md
+Frontend/src/app/app.component.html
+Frontend/src/app/app.component.scss
+Frontend/src/app/app.component.spec.ts
+Frontend/src/app/app.component.ts
+Frontend/src/app/app.routes.ts
+Frontend/src/app/components/header/header.component.html
+Frontend/src/app/components/header/header.component.scss
+Frontend/src/app/components/header/header.component.spec.ts
+Frontend/src/app/components/header/header.component.ts
+Frontend/src/app/components/product-card/product-card.component.html
+Frontend/src/app/components/product-card/product-card.component.scss
+Frontend/src/app/components/product-card/product-card.component.spec.ts
+Frontend/src/app/components/product-card/product-card.component.ts
+Frontend/src/app/components/service-card/service-card.component.html
+Frontend/src/app/components/service-card/service-card.component.scss
+Frontend/src/app/components/service-card/service-card.component.spec.ts
+Frontend/src/app/components/service-card/service-card.component.ts
+Frontend/src/app/explore-container/explore-container.component.html
+Frontend/src/app/explore-container/explore-container.component.scss
+Frontend/src/app/explore-container/explore-container.component.spec.ts
+Frontend/src/app/explore-container/explore-container.component.ts
+Frontend/src/app/models/intervento.model.ts
+Frontend/src/app/models/preventivo.model.ts
+Frontend/src/app/models/product.model.ts
+Frontend/src/app/models/service.model.ts
+Frontend/src/app/pages/catalogo/catalogo.page.html
+Frontend/src/app/pages/catalogo/catalogo.page.scss
+Frontend/src/app/pages/catalogo/catalogo.page.spec.ts
+Frontend/src/app/pages/catalogo/catalogo.page.ts
+Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.html
+Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.scss
+Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.spec.ts
+Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.ts
+Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.html
+Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.scss
+Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.spec.ts
+Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.ts
+Frontend/src/app/pages/dashboard-dipendente/dashboard-dipendente.page.html
+Frontend/src/app/pages/dashboard-dipendente/dashboard-dipendente.page.scss
+Frontend/src/app/pages/dashboard-dipendente/dashboard-dipendente.page.spec.ts
+Frontend/src/app/pages/dashboard-dipendente/dashboard-dipendente.page.ts
+Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.html
+Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.scss
+Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.spec.ts
+Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.ts
+Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.html
+Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.scss
+Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.spec.ts
+Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.ts
+Frontend/src/app/pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page.html
+Frontend/src/app/pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page.scss
+Frontend/src/app/pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page.spec.ts
+Frontend/src/app/pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page.ts
+Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.html
+Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.scss
+Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.spec.ts
+Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.ts
+Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.html
+Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.scss
+Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.spec.ts
+Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.ts
+Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.html
+Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.scss
+Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.spec.ts
+Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.ts
+Frontend/src/app/pages/home/home.page.html
+Frontend/src/app/pages/home/home.page.scss
+Frontend/src/app/pages/home/home.page.spec.ts
+Frontend/src/app/pages/home/home.page.ts
+Frontend/src/app/pages/interventi/interventi.page.html
+Frontend/src/app/pages/interventi/interventi.page.scss
+Frontend/src/app/pages/interventi/interventi.page.spec.ts
+Frontend/src/app/pages/interventi/interventi.page.ts
+Frontend/src/app/pages/login/login.page.html
+Frontend/src/app/pages/login/login.page.scss
+Frontend/src/app/pages/login/login.page.spec.ts
+Frontend/src/app/pages/login/login.page.ts
+Frontend/src/app/pages/preventivi/preventivi.page.html
+Frontend/src/app/pages/preventivi/preventivi.page.scss
+Frontend/src/app/pages/preventivi/preventivi.page.spec.ts
+Frontend/src/app/pages/preventivi/preventivi.page.ts
+Frontend/src/app/pages/register/register.page.html
+Frontend/src/app/pages/register/register.page.scss
+Frontend/src/app/pages/register/register.page.spec.ts
+Frontend/src/app/pages/register/register.page.ts
+Frontend/src/app/services/auth.service.ts
+Frontend/src/app/services/catalogo.service.ts
+Frontend/src/app/services/dipendenti.service.ts
+Frontend/src/app/services/interventi.service.ts
+Frontend/src/app/services/preventivi.service.ts
+Frontend/src/assets/icon/favicon.png
+Frontend/src/assets/shapes.svg
+Frontend/src/environments/environment.prod.ts
+Frontend/src/environments/environment.ts
+Frontend/src/global.scss
+Frontend/src/index.html
+Frontend/src/main.ts
+Frontend/src/polyfills.ts
+Frontend/src/test.ts
+Frontend/src/theme/variables.scss
+Frontend/src/zone-flags.ts
+Frontend/tsconfig.app.json
+Frontend/tsconfig.json
+Frontend/tsconfig.spec.json
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
 
-<file path="Backend/controllers/preventiviController.js">
-const Preventivo = require('../models/preventiviModel');
+<file path="Backend/controllers/catalogoController.js">
+const Catalogo = require('../models/catalogoModel');
 
-exports.creaPreventivo = async (req, res) => {
+exports.getAll = async (req, res) => {
   try {
-    // req.user è iniettato dal middleware authMiddleware.verifyToken
-    const cliente_id = req.user.id; 
-    
-    const { descrizione, servizio, materiale, dimensioni, finitura, allegato } = req.body;
-
-    // Controllo campi obbligatori
-    if (!descrizione || !servizio || !materiale || !dimensioni) {
-      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
-    }
-
-    const nuovoPreventivo = await Preventivo.create({
-      cliente_id,
-      descrizione,
-      servizio,
-      materiale,
-      dimensioni,
-      finitura: finitura || null,
-      allegato: allegato || null
-    });
-
-    res.status(201).json({ 
-      message: 'Preventivo inviato con successo!',
-      preventivo: nuovoPreventivo 
-    });
-
+    const voci = await Catalogo.findAll();
+    res.json(voci);
   } catch (error) {
-    console.error('Errore durante la creazione del preventivo:', error);
-    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
+    console.error("Errore recupero catalogo:", error);
+    res.status(500).json({ message: 'Errore nel caricamento del catalogo.' });
   }
 };
 
-exports.getPreventiviCliente = async (req, res) => {
+exports.createItem = async (req, res) => {
   try {
-    const preventivi = await Preventivo.findByClienteId(req.user.id);
-    res.json(preventivi);
+    const { nome, categoria, prezzoBase } = req.body;
+    const immagine = req.file ? `/uploads/${req.file.filename}` : '';
+    if (!nome || !categoria) {
+      return res.status(400).json({ message: 'Nome e categoria sono obbligatori.' });
+    }
+    const nuovaVoce = await Catalogo.create({ nome, categoria, prezzoBase, immagine });
+    res.status(201).json(nuovaVoce);
   } catch (error) {
-    res.status(500).json({ message: 'Errore nel recupero preventivi.' });
+    console.error("Errore creazione voce catalogo:", error);
+    res.status(500).json({ message: 'Errore durante la creazione.' });
+  }
+};
+
+exports.updateItem = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { nome, categoria, prezzoBase, immagine } = req.body;
+    const modifiche = await Catalogo.update(id, { nome, categoria, prezzoBase, immagine });
+    
+    if (modifiche === 0) return res.status(404).json({ message: 'Voce non trovata.' });
+    res.json({ message: 'Voce aggiornata con successo.' });
+  } catch (error) {
+    console.error("Errore aggiornamento voce catalogo:", error);
+    res.status(500).json({ message: 'Errore durante la modifica.' });
+  }
+};
+
+exports.deleteItem = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const modifiche = await Catalogo.delete(id);
+    
+    if (modifiche === 0) return res.status(404).json({ message: 'Voce non trovata.' });
+    res.json({ message: 'Voce eliminata con successo.' });
+  } catch (error) {
+    console.error("Errore eliminazione voce catalogo:", error);
+    res.status(500).json({ message: 'Errore durante l\'eliminazione.' });
   }
 };
 </file>
 
-<file path="Backend/models/preventiviModel.js">
+<file path="Backend/models/catalogoModel.js">
 const db = require('../database/database');
+
+exports.findAll = () => {
+  return new Promise((resolve, reject) => {
+    db.all(`SELECT * FROM catalogo ORDER BY categoria, nome`, [], (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
+    });
+  });
+};
 
 exports.create = (dati) => {
   return new Promise((resolve, reject) => {
     db.run(
-      `INSERT INTO preventivi (cliente_id, descrizione, servizio, materiale, dimensioni, finitura, allegato)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [dati.cliente_id, dati.descrizione, dati.servizio, dati.materiale, dati.dimensioni, dati.finitura, dati.allegato],
+      `INSERT INTO catalogo (nome, categoria, prezzo_base, immagine) VALUES (?, ?, ?, ?)`,
+      [dati.nome, dati.categoria, dati.prezzoBase || 'Su preventivo', dati.immagine || ''],
       function (err) {
         if (err) reject(err);
         else resolve({ id: this.lastID, ...dati });
@@ -268,58 +253,86 @@ exports.create = (dati) => {
   });
 };
 
-exports.findByClienteId = (cliente_id) => {
+exports.update = (id, dati) => {
   return new Promise((resolve, reject) => {
-    db.all(
-      `SELECT * FROM preventivi WHERE cliente_id = ? ORDER BY id DESC`,
-      [cliente_id],
-      (err, rows) => {
+    db.run(
+      `UPDATE catalogo SET nome = ?, categoria = ?, prezzo_base = ?, immagine = ? WHERE id = ?`,
+      [dati.nome, dati.categoria, dati.prezzoBase, dati.immagine, id],
+      function (err) {
         if (err) reject(err);
-        else resolve(rows);
+        else resolve(this.changes);
       }
     );
   });
 };
+
+exports.delete = (id) => {
+  return new Promise((resolve, reject) => {
+    db.run(`DELETE FROM catalogo WHERE id = ?`, [id], function (err) {
+      if (err) reject(err);
+      else resolve(this.changes);
+    });
+  });
+};
 </file>
 
-<file path="Frontend/src/app/services/preventivi.service.ts">
+<file path="Frontend/src/app/services/catalogo.service.ts">
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Preventivo } from '../models/preventivo.model';
 
-export interface PreventivoRichiesta {
-  descrizione: string;
-  servizio: string;
-  materiale: string;
-  dimensioni: string;
-  finitura?: string;
-  allegato?: string;
+export interface VoceCatalogo {
+  id?: number;
+  nome: string;
+  categoria: string;
+  prezzo_base?: string;
+  prezzoBase?: string;
+  immagine?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class PreventiviService {
-
-  private apiUrl = 'http://localhost:3000/api/preventivi';
+export class CatalogoService {
+  private apiUrl = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders(): HttpHeaders {
-    const token = sessionStorage.getItem('token');
+  // Questo metodo crea gli header SOLO con il token. 
+  // NIENTE "Content-Type: application/json" qui!
+  private getAuthHeaders(): HttpHeaders {
+    let token = sessionStorage.getItem('token') || '';
+    token = token.replace(/^"(.*)"$/, '$1');
     return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
+      'Authorization': `Bearer ${token}`
     });
   }
 
-  creaPreventivo(dati: PreventivoRichiesta): Observable<any> {
-    return this.http.post(this.apiUrl, dati, { headers: this.getHeaders() });
+  // --- LE CHIAMATE ---
+
+  getCatalogo(): Observable<any[]> {
+    // Per la GET usiamo il formato standard
+    return this.http.get<any[]>(`${this.apiUrl}/catalogo`, { headers: this.getAuthHeaders() });
   }
 
-  getPreventivi(): Observable<Preventivo[]> {
-    return this.http.get<Preventivo[]>(this.apiUrl, { headers: this.getHeaders() });
+  creaVoce(formData: FormData): Observable<any> {
+    // Per i file, NON passare Content-Type. HttpClient lo farà per te.
+    return this.http.post<any>(`${this.apiUrl}/admin/catalogo`, formData, { 
+      headers: this.getAuthHeaders() 
+    });
+  }
+
+  modificaVoce(id: number, formData: FormData): Observable<any> {
+    // Anche qui, inviamo FormData.
+    return this.http.put<any>(`${this.apiUrl}/admin/catalogo/${id}`, formData, { 
+      headers: this.getAuthHeaders() 
+    });
+  }
+
+  eliminaVoce(id: number): Observable<any> {
+    // Qui serve il Content-Type perché non mandiamo file
+    const headers = this.getAuthHeaders().set('Content-Type', 'application/json');
+    return this.http.delete<any>(`${this.apiUrl}/admin/catalogo/${id}`, { headers });
   }
 }
 </file>
@@ -400,85 +413,365 @@ exports.delete = async (req, res) => {
 };
 </file>
 
-<file path="Backend/routes/routes.js">
-const express = require('express');
+<file path="Frontend/angular.json">
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "app": {
+      "projectType": "application",
+      "schematics": {
+        "@ionic/angular-toolkit:page": {
+          "styleext": "scss",
+          "standalone": true
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": {
+              "base": "www",
+              "browser": ""
+            },
+            "index": "src/index.html",
+            "polyfills": [
+              "src/polyfills.ts"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              }
+            ],
+            "styles": ["src/global.scss", "src/theme/variables.scss"],
+            "scripts": [],
+            "browser": "src/main.ts"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "ci": {
+              "progress": false
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "app:build:production"
+            },
+            "development": {
+              "buildTarget": "app:build:development"
+            },
+            "ci": {
+              "progress": false
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              }
+            ],
+            "styles": ["src/global.scss", "src/theme/variables.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "ci": {
+              "progress": false,
+              "watch": false
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "schematicCollections": [
+      "@ionic/angular-toolkit"
+    ],
+    "analytics": false
+  },
+  "schematics": {
+    "@ionic/angular-toolkit:component": {
+      "styleext": "scss"
+    },
+    "@ionic/angular-toolkit:page": {
+      "styleext": "scss"
+    },
+    "@angular-eslint/schematics:application": {
+      "setParserOptionsProject": true
+    },
+    "@angular-eslint/schematics:library": {
+      "setParserOptionsProject": true
+    }
+  }
+}
+</file>
 
-// Controllers
-const authController = require('../controllers/authController');
-const dipendentiController = require('../controllers/dipendentiController');
-// 1. IMPORTIAMO IL NUOVO CONTROLLER
-const interventiController = require('../controllers/interventiController'); 
-const preventiviController = require('../controllers/preventiviController');
-// Middlewares
-const authMiddleware = require('../middlewares/authMiddleware');
+<file path="Frontend/capacitor.config.ts">
+import type { CapacitorConfig } from '@capacitor/cli';
 
-const router = express.Router();
+const config: CapacitorConfig = {
+  appId: 'io.ionic.starter',
+  appName: 'metal-lab',
+  webDir: 'www'
+};
 
-// ==========================================
-// AREA AUTENTICAZIONE
-// ==========================================
-router.post('/auth/register', authController.register);
-router.post('/auth/login', authController.login);
-router.get('/auth/profile', authMiddleware.verifyToken, authController.profile);
+export default config;
+</file>
 
-// ==========================================
-// AREA CLIENTI
-// ==========================================
-// 2. LA NUOVA ROTTA PER LA RICHIESTA INTERVENTO
-router.post(
-  '/interventi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  interventiController.creaIntervento
-);
+<file path="Frontend/ionic.config.json">
+{
+  "name": "metal-lab",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
+</file>
 
-router.get(
-  '/interventi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  interventiController.getInterventiCliente
-);
+<file path="Frontend/karma.conf.js">
+// Karma configuration file, see link for more information
+// https://karma-runner.github.io/1.0/config/configuration-file.html
 
-router.post(
-  '/preventivi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  preventiviController.creaPreventivo
-);
+module.exports = function (config) {
+  config.set({
+    basePath: '',
+    frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-jasmine-html-reporter'),
+      require('karma-coverage'),
+      require('@angular-devkit/build-angular/plugins/karma')
+    ],
+    client: {
+      jasmine: {
+        // you can add configuration options for Jasmine here
+        // the possible options are listed at https://jasmine.github.io/api/edge/Configuration.html
+        // for example, you can disable the random execution with `random: false`
+        // or set a specific seed with `seed: 4321`
+      },
+      clearContext: false // leave Jasmine Spec Runner output visible in browser
+    },
+    jasmineHtmlReporter: {
+      suppressAll: true // removes the duplicated traces
+    },
+    coverageReporter: {
+      dir: require('path').join(__dirname, './coverage/app'),
+      subdir: '.',
+      reporters: [
+        { type: 'html' },
+        { type: 'text-summary' }
+      ]
+    },
+    reporters: ['progress', 'kjhtml'],
+    port: 9876,
+    colors: true,
+    logLevel: config.LOG_INFO,
+    autoWatch: true,
+    browsers: ['Chrome'],
+    singleRun: false,
+    restartOnFileChange: true
+  });
+};
+</file>
 
-// Aggiungi questa rotta sotto la POST /preventivi
-router.get(
-  '/preventivi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  preventiviController.getPreventiviCliente
-);
+<file path="Frontend/package.json">
+{
+  "name": "metal-lab",
+  "version": "0.0.1",
+  "author": "Ionic Framework",
+  "homepage": "https://ionicframework.com/",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "lint": "ng lint"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^20.0.0",
+    "@angular/common": "^20.0.0",
+    "@angular/compiler": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "@angular/forms": "^20.0.0",
+    "@angular/platform-browser": "^20.0.0",
+    "@angular/platform-browser-dynamic": "^20.0.0",
+    "@angular/router": "^20.0.0",
+    "@capacitor/app": "8.1.0",
+    "@capacitor/core": "8.3.3",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/keyboard": "8.0.3",
+    "@capacitor/status-bar": "8.0.2",
+    "@ionic/angular": "^8.0.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "ionicons": "^7.0.0",
+    "jsonwebtoken": "^9.0.3",
+    "nodemon": "^3.1.14",
+    "rxjs": "~7.8.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^20.0.0",
+    "@angular-eslint/builder": "^20.0.0",
+    "@angular-eslint/eslint-plugin": "^20.0.0",
+    "@angular-eslint/eslint-plugin-template": "^20.0.0",
+    "@angular-eslint/schematics": "^20.0.0",
+    "@angular-eslint/template-parser": "^20.0.0",
+    "@angular/cli": "^20.0.0",
+    "@angular/compiler-cli": "^20.0.0",
+    "@angular/language-service": "^20.0.0",
+    "@capacitor/cli": "8.3.3",
+    "@ionic/angular-toolkit": "^12.0.0",
+    "@types/jasmine": "~5.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^9.16.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsdoc": "^48.2.1",
+    "eslint-plugin-prefer-arrow": "1.2.2",
+    "jasmine-core": "~5.1.0",
+    "jasmine-spec-reporter": "~5.0.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.9.0"
+  },
+  "description": "An Ionic project",
+  "main": "karma.conf.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danny05-pro/Metal-Lab.git"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/danny05-pro/Metal-Lab/issues"
+  },
 
-// ==========================================
-// AREA ADMIN: GESTIONE DIPENDENTI
-// ==========================================
-router.get('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.getAll);
-router.post('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.create);
-router.put('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.update);
-router.delete('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.delete);
-// ==========================================
-// AREA ADMIN: GESTIONE INTERVENTI
-// ==========================================
+  "overrides": {
+    "uuid": "^11.1.1"
+  }
 
-router.get(
-  '/admin/interventi',
-  authMiddleware.verifyToken,
-  authMiddleware.isAdmin,
-  interventiController.getInterventiAdmin
-);
+}
+</file>
 
-router.get(
-  '/admin/interventi/:id',
-  authMiddleware.verifyToken,
-  authMiddleware.isAdmin,
-  interventiController.getInterventoById
-);
-module.exports = router;
+<file path="Frontend/README.md">
+# Metal-Lab
+Progetto universitario per la materia "Programmazione web e mobile"
+</file>
+
+<file path="Frontend/src/app/app.component.html">
+<ion-app>
+  <ion-router-outlet></ion-router-outlet>
+</ion-app>
+</file>
+
+<file path="Frontend/src/app/app.component.scss">
+
+</file>
+
+<file path="Frontend/src/app/app.component.spec.ts">
+import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { AppComponent } from './app.component';
+
+describe('AppComponent', () => {
+  it('should create the app', async () => {
+    await TestBed.configureTestingModule({
+      imports: [AppComponent],
+      providers: [provideRouter([])]
+    }).compileComponents();
+    
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+});
+</file>
+
+<file path="Frontend/src/app/app.component.ts">
+import { Component } from '@angular/core';
+import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.component.html',
+  imports: [IonApp, IonRouterOutlet],
+})
+export class AppComponent {
+  constructor() {}
+}
 </file>
 
 <file path="Frontend/src/app/components/header/header.component.html">
@@ -535,113 +828,6 @@ export class HeaderComponent  implements OnInit {
 }
 </file>
 
-<file path="Frontend/src/app/components/product-card/product-card.component.html">
-<ion-card class="catalog-card">
-
-  <img
-    [src]="prodotto.immagine"
-    [alt]="prodotto.nome">
-
-  <ion-card-header>
-
-    <ion-card-subtitle>
-      {{ prodotto.categoria }}
-    </ion-card-subtitle>
-
-    <ion-card-title>
-      {{ prodotto.nome }}
-    </ion-card-title>
-
-  </ion-card-header>
-
-  <ion-card-content>
-
-    <p>
-      {{ prodotto.descrizione }}
-    </p>
-
-    <div class="card-info">
-
-      <ion-badge color="medium">
-        {{ prodotto.materiale }}
-      </ion-badge>
-
-      <strong>
-        € {{ prodotto.prezzo | number:'1.2-2' }}
-      </strong>
-
-    </div>
-
-    <ion-button
-      expand="block"
-      fill="outline"
-      color="warning"
-      (click)="onTogglePreferito(prodotto)">
-
-      <ion-icon
-        slot="start"
-        [name]="prodotto.preferito ? 'heart' : 'heart-outline'">
-      </ion-icon>
-
-      {{ prodotto.preferito
-        ? 'Rimuovi dai preferiti'
-        : 'Aggiungi ai preferiti' }}
-
-    </ion-button>
-
-  </ion-card-content>
-
-</ion-card>
-</file>
-
-<file path="Frontend/src/app/components/product-card/product-card.component.scss">
-.catalog-card {
-  --background: #151b23;
-
-  color: white;
-
-  border-radius: 22px;
-
-  overflow: hidden;
-
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.catalog-card img {
-  width: 100%;
-  height: 230px;
-  object-fit: cover;
-}
-
-ion-card-subtitle {
-  color: #f5a623;
-  font-weight: 800;
-}
-
-ion-card-title {
-  color: white;
-  font-weight: 800;
-}
-
-ion-card-content p {
-  color: #c6ced8;
-  line-height: 1.6;
-}
-
-.card-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  margin: 18px 0;
-}
-
-.card-info strong {
-  color: #f5a623;
-  font-size: 1.2rem;
-}
-</file>
-
 <file path="Frontend/src/app/components/product-card/product-card.component.spec.ts">
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
@@ -671,7 +857,6 @@ describe('ProductCardComponent', () => {
 
 <file path="Frontend/src/app/components/product-card/product-card.component.ts">
 import { Component, Input } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
 
 import {
   IonCard,
@@ -699,8 +884,7 @@ import { Product } from '../../models/product.model';
     IonCardContent,
     IonButton,
     IonIcon,
-    IonBadge,
-    DecimalPipe
+    IonBadge
   ]
 })
 export class ProductCardComponent {
@@ -709,89 +893,6 @@ export class ProductCardComponent {
 
   @Input() onTogglePreferito!: (prodotto: Product) => void;
 
-}
-</file>
-
-<file path="Frontend/src/app/components/service-card/service-card.component.html">
-<ion-card class="catalog-card">
-
-  <img [src]="servizio.immagine" [alt]="servizio.nome">
-
-  <ion-card-header>
-    <ion-card-subtitle>
-      {{ servizio.categoria }}
-    </ion-card-subtitle>
-
-    <ion-card-title>
-      {{ servizio.nome }}
-    </ion-card-title>
-  </ion-card-header>
-
-  <ion-card-content>
-    <p>
-      {{ servizio.descrizione }}
-    </p>
-
-    <div class="card-info">
-      <ion-badge color="success">
-        {{ servizio.stato }}
-      </ion-badge>
-    </div>
-
-    <ion-button
-      expand="block"
-      fill="outline"
-      color="warning"
-      (click)="onTogglePreferito(servizio)">
-
-      <ion-icon
-        slot="start"
-        [name]="servizio.preferito ? 'heart' : 'heart-outline'">
-      </ion-icon>
-
-      {{ servizio.preferito ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti' }}
-
-    </ion-button>
-  </ion-card-content>
-
-</ion-card>
-</file>
-
-<file path="Frontend/src/app/components/service-card/service-card.component.scss">
-.catalog-card {
-  --background: #151b23;
-  color: white;
-  border-radius: 22px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.catalog-card img {
-  width: 100%;
-  height: 230px;
-  object-fit: cover;
-}
-
-ion-card-subtitle {
-  color: #f5a623;
-  font-weight: 800;
-}
-
-ion-card-title {
-  color: white;
-  font-weight: 800;
-}
-
-ion-card-content p {
-  color: #c6ced8;
-  line-height: 1.6;
-}
-
-.card-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 18px 0;
 }
 </file>
 
@@ -940,77 +1041,6 @@ export class ExploreContainerComponent {
 }
 </file>
 
-<file path="Frontend/src/app/models/ordine.model.ts">
-export interface Ordine {
-  id: number;
-
-  descrizione: string;
-
-  stato:
-    | 'In attesa'
-    | 'In lavorazione'
-    | 'Pronto per il ritiro'
-    | 'Consegnato';
-
-  dataConsegnaPrevista: string;
-
-  cliente?: string;
-
-  emailCliente?: string;
-
-  dataOrdine?: string;
-
-  importoTotale?: number;
-
-  note?: string;
-}
-</file>
-
-<file path="Frontend/src/app/models/preventivo.model.ts">
-export interface Preventivo {
-  id: number;
-
-  cliente_id?: number;
-
-  descrizione: string;
-
-  servizio: string;
-
-  materiale: string;
-
-  dimensioni: string;
-
-  finitura: string;
-
-  // --- STATO LATO ADMIN ---
-  stato_admin:
-    | 'Da valutare'
-    | 'Prezzo proposto'
-    | 'Rifiutato';
-
-  // --- STATO LATO CLIENTE ---
-  stato_risposta_cliente:
-    | 'In attesa'
-    | 'Accettato'
-    | 'Rifiutato';
-
-  // I campi uniti tramite JOIN (quando l'admin legge i dati)
-  cliente?: string; 
-
-  emailCliente?: string;
-
-  cliente_nome?: string;
-
-  cliente_cognome?: string;
-
-  cliente_telefono?: string;
-
-  allegato?: string;
-
-  prezzoProposto?: number | null;
-}
-</file>
-
 <file path="Frontend/src/app/models/product.model.ts">
 export interface Product {
   id: number;
@@ -1019,6 +1049,7 @@ export interface Product {
   categoria: string;
   materiale: string;
   prezzo: number;
+  prezzoBase?: string; // <-- AGGIUNTO
   immagine: string;
   preferito: boolean;
 }
@@ -1031,6 +1062,7 @@ export interface Service {
   descrizione: string;
   categoria: string;
   stato: string;
+  prezzoBase?: string; // <-- AGGIUNTO
   immagine: string;
   preferito: boolean;
 }
@@ -1144,122 +1176,12 @@ export interface Service {
 }
 </file>
 
-<file path="Frontend/src/app/pages/catalogo/catalogo.page.scss">
-ion-content {
-  --background: #0b0f14;
-}
-
-.catalog-header {
-  padding: 38px 22px 20px;
-  color: white;
-  text-align: center;
-}
-
-.catalog-header h1 {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 900;
-  margin: 0;
-}
-
-.catalog-header p {
-  color: #b7c0cc;
-  max-width: 720px;
-  margin: 14px auto 0;
-  line-height: 1.6;
-}
-
-  .catalog-segment {
-  max-width: 720px;
-  margin: 20px auto 30px;
-  padding: 0 18px;
-
-    ion-segment-button {
-      --color: #b7c0cc;         /* Colore del testo NON selezionato */
-      --color-checked: #ffffff; /* Colore del testo SELEZIONATO */
-    }
-  }
-
-
-.catalog-grid {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 18px 60px;
-
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-}
-
-.catalog-card {
-  --background: #151b23;
-  color: white;
-  border-radius: 22px;
-  overflow: hidden;
-  margin: 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.catalog-card img {
-  width: 100%;
-  height: 230px;
-  object-fit: cover;
-}
-
-ion-card-subtitle {
-  color: #f5a623;
-  font-weight: 800;
-}
-
-ion-card-title {
-  color: white;
-  font-weight: 800;
-}
-
-ion-card-content p {
-  color: #c6ced8;
-  line-height: 1.6;
-}
-
-.card-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 18px 0;
-}
-
-.card-info strong {
-  color: #f5a623;
-  font-size: 1.2rem;
-}
-
-.empty-state {
-  grid-column: 1 / -1;
-  text-align: center;
-  color: white;
-  padding: 60px 20px;
-}
-
-.empty-state p {
-  color: #b7c0cc;
-}
-
-.favorite-card {
-  border-color: rgba(245, 166, 35, 0.5);
-}
-
-@media (max-width: 850px) {
-  .catalog-grid {
-    grid-template-columns: 1fr;
-  }
-}
-</file>
-
 <file path="Frontend/src/app/pages/catalogo/catalogo.page.spec.ts">
 
 </file>
 
 <file path="Frontend/src/app/pages/catalogo/catalogo.page.ts">
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import {
@@ -1285,9 +1207,10 @@ import {
 
 import { Product } from '../../models/product.model';
 import { Service } from '../../models/service.model';
-
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
 import { ServiceCardComponent } from '../../components/service-card/service-card.component';
+import { CatalogoService } from '../../services/catalogo.service';
+
 
 @Component({
   selector: 'app-catalogo',
@@ -1296,77 +1219,70 @@ import { ServiceCardComponent } from '../../components/service-card/service-card
   standalone: true,
   imports: [
     RouterLink,
-
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonButton,
-    IonButtons,
-    IonSegment,
-    IonSegmentButton,
-    IonLabel,
-    IonIcon,
-
-    ProductCardComponent,
-    ServiceCardComponent
+    IonHeader, IonToolbar, IonTitle, IonContent, IonButton,
+    IonButtons, IonSegment, IonSegmentButton, IonLabel, IonIcon,
+    ProductCardComponent, ServiceCardComponent
   ]
 })
-export class CatalogoPage {
+export class CatalogoPage implements OnInit { // <-- Aggiunto implements OnInit
 
   selectedSection: 'prodotti' | 'servizi' | 'preferiti' = 'prodotti';
+  prodotti: Product[] = [];
+  servizi: Service[] = [];
 
-  prodotti: Product[] = [
-    {
-      id: 1,
-      nome: 'Staffa di fissaggio',
-      descrizione: 'Staffa metallica resistente per installazioni industriali.',
-      categoria: 'Componenti metallici',
-      materiale: 'Acciaio zincato',
-      prezzo: 18.50,
-      immagine: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=1200&auto=format&fit=crop',
-      preferito: false
-    },
-
-    {
-      id: 2,
-      nome: 'Piastra preforata',
-      descrizione: 'Piastra in ferro con fori standard per montaggio rapido.',
-      categoria: 'Piastre',
-      materiale: 'Ferro',
-      prezzo: 32,
-      immagine: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=1200&auto=format&fit=crop',
-      preferito: false
-    }
-  ];
-
-  servizi: Service[] = [
-    {
-      id: 1,
-      nome: 'Carpenteria metallica',
-      descrizione: 'Realizzazione di strutture in ferro, acciaio e inox su misura.',
-      categoria: 'Lavorazioni',
-      stato: 'Disponibile',
-      immagine: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=1200&auto=format&fit=crop',
-      preferito: false
-    },
-
-    {
-      id: 2,
-      nome: 'Manutenzione industriale',
-      descrizione: 'Interventi tecnici programmati o urgenti su impianti industriali.',
-      categoria: 'Manutenzione',
-      stato: 'Disponibile',
-      immagine: 'https://images.unsplash.com/photo-1535813547-99c456a41d4a?q=80&w=1200&auto=format&fit=crop',
-      preferito: false
-    }
-  ];
-
-  constructor() {
+  // Iniettiamo il service nel costruttore
+  constructor(private catalogoService: CatalogoService) {
     addIcons({
-      heart,
-      heartOutline,
-      arrowBackOutline
+      heart, heartOutline, arrowBackOutline
+    });
+  }
+
+  // Scatta appena apriamo la pagina
+  ngOnInit() {
+    this.caricaCatalogoReale();
+  }
+
+  caricaCatalogoReale() {
+    this.catalogoService.getCatalogo().subscribe({
+      next: (datiDB) => {
+        this.prodotti = [];
+        this.servizi = [];
+
+        // Immagine segnaposto bellissima nel caso l'admin non inserisca un URL
+        const placeholder = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=1200&auto=format&fit=crop';
+
+        datiDB.forEach(voce => {
+          const immagineReale = voce.immagine ? voce.immagine : placeholder;
+
+          // Se è un prodotto lo mettiamo nell'array Prodotti
+          if (voce.categoria === 'Prodotto') {
+            this.prodotti.push({
+              id: voce.id,
+              nome: voce.nome,
+              categoria: voce.categoria,
+              descrizione: 'Prodotto in catalogo. Aggiungilo ai preferiti per richiederlo.',
+              materiale: '-', 
+              prezzo: 0, 
+              prezzoBase: voce.prezzo_base, 
+              immagine: immagineReale,
+              preferito: false
+            });
+          } else {
+            // Tutto il resto (Interventi, Lavorazioni, Carpenteria) va nella scheda Servizi
+            this.servizi.push({
+              id: voce.id,
+              nome: voce.nome,
+              categoria: voce.categoria,
+              descrizione: 'Servizio professionale eseguito dai nostri tecnici specializzati.',
+              stato: 'Disponibile',
+              prezzoBase: voce.prezzo_base,
+              immagine: immagineReale,
+              preferito: false
+            });
+          }
+        });
+      },
+      error: (err) => console.error('Errore nel caricamento del catalogo:', err)
     });
   }
 
@@ -1383,17 +1299,12 @@ export class CatalogoPage {
   }
 
   get prodottiPreferiti(): Product[] {
-    return this.prodotti.filter(
-      prodotto => prodotto.preferito
-    );
+    return this.prodotti.filter(p => p.preferito);
   }
 
   get serviziPreferiti(): Service[] {
-    return this.servizi.filter(
-      servizio => servizio.preferito
-    );
+    return this.servizi.filter(s => s.preferito);
   }
-
 }
 </file>
 
@@ -1623,7 +1534,6 @@ ion-chip {
   font-weight: 600;
   letter-spacing: -0.2px;
 
-  /* Stile Vetro Apple */
   --background: rgba(255, 255, 255, 0.06);
   --color: #ffffff;
   --border-radius: 16px;
@@ -1701,6 +1611,47 @@ ion-modal.dark-modal {
 
   &:active {
     transform: scale(0.97);
+  }
+}
+
+.btn-glass-save {
+  margin: 0;
+  height: 48px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+
+  /* Struttura Vetro */
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Colori Ambra (Stato riposo) */
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  /* Effetto Hover (Pieno - Stile pulsante Admin) */
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px);
+  }
+
+  /* Stato Disabilitato */
+  &.button-disabled {
+    opacity: 0.5;
+    --background: rgba(255, 255, 255, 0.05);
+    --color: #6c7a89;
+    --border-color: rgba(255, 255, 255, 0.1);
   }
 }
 </file>
@@ -2897,113 +2848,6 @@ export class DettaglioPreventivoAdminPage {
 }
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-cliente">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Dettaglio Preventivo</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  @if (preventivo) {
-    <section class="detail-header">
-      <h1>Preventivo #{{ preventivoId }}</h1>
-      <p>Riepilogo della tua richiesta e stato di avanzamento.</p>
-    </section>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>Stato Preventivo</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="info-row">
-          <span>Stato Amministrazione</span>
-          <ion-chip>{{ preventivo.stato_admin }}</ion-chip>
-        </div>
-        
-        <div class="info-row">
-          <span>La tua risposta</span>
-          <ion-chip>{{ preventivo.stato_risposta_cliente }}</ion-chip>
-        </div>
-
-        @if (preventivo.prezzoProposto) {
-          <div class="price-box">
-            Prezzo proposto da Metal Lab:
-            <strong>€ {{ preventivo.prezzoProposto }}</strong>
-          </div>
-        } @else {
-          <div class="price-box empty">
-            Nessun prezzo ancora proposto.
-          </div>
-        }
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>Dati Tecnici Richiesta</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="description-box">
-          <h3>Descrizione</h3>
-          <p>{{ preventivo.descrizione }}</p>
-        </div>
-        <div class="info-row">
-          <span>Servizio richiesto</span>
-          <strong>{{ preventivo.servizio }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Materiale</span>
-          <strong>{{ preventivo.materiale }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Dimensioni</span>
-          <strong>{{ preventivo.dimensioni }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Finitura</span>
-          <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Allegato tecnico</span>
-          <strong>{{ preventivo.allegato || 'Nessun allegato' }}</strong>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    @if (preventivo.stato_admin === 'Prezzo proposto' && preventivo.stato_risposta_cliente === 'In attesa') {
-      <ion-card class="detail-card">
-        <ion-card-header>
-          <ion-card-title>Risposta alla proposta</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <p class="response-text">
-            Puoi accettare o rifiutare il prezzo proposto da Metal Lab.
-          </p>
-          <div class="actions">
-            <ion-button expand="block" class="btn-glass-accept" (click)="accettaPreventivo()">
-              Accetta preventivo
-            </ion-button>
-            <ion-button expand="block" class="btn-glass-reject" (click)="rifiutaPreventivo()">
-              Rifiuta preventivo
-            </ion-button>
-          </div>
-        </ion-card-content>
-      </ion-card>
-    }
-  } @else {
-    <div class="ion-padding ion-text-center">
-      <p>Caricamento preventivo in corso...</p>
-    </div>
-  }
-</ion-content>
-</file>
-
 <file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.scss">
 ion-content {
   --background: #0b0f14;
@@ -3181,75 +3025,6 @@ describe('DettaglioPreventivoClientePage', () => {
     expect(component).toBeTruthy();
   });
 });
-</file>
-
-<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.ts">
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Necessario per @if, @for
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // CORRETTO: import da @angular/router
-
-import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
-  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
-} from '@ionic/angular/standalone';
-
-import { addIcons } from 'ionicons';
-import { arrowBackOutline } from 'ionicons/icons';
-import { Preventivo } from '../../models/preventivo.model';
-
-@Component({
-  selector: 'app-dettaglio-preventivo-cliente',
-  templateUrl: './dettaglio-preventivo-cliente.page.html',
-  styleUrls: ['./dettaglio-preventivo-cliente.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonChip
-  ]
-})
-export class DettaglioPreventivoClientePage implements OnInit {
-
-  preventivoId = '';
-  preventivo: Preventivo | null = null; 
-
-  constructor(
-    private route: ActivatedRoute, 
-    private router: Router
-  ) {
-    addIcons({ arrowBackOutline });
-    this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
-  }
-
-  ngOnInit() {
-    // Qui in futuro caricherai i dati reali.
-    // Per ora, se vuoi vedere la pagina renderizzata, 
-    // potresti inizializzare preventivo con dati mock.
-  }
-
-  accettaPreventivo() {
-    if (!this.preventivo) return;
-    this.preventivo.stato_risposta_cliente = 'Accettato';
-    this.router.navigate(['/dashboard-cliente']);
-  }
-
-  rifiutaPreventivo() {
-    if (!this.preventivo) return;
-    this.preventivo.stato_risposta_cliente = 'Rifiutato';
-    this.router.navigate(['/dashboard-cliente']);
-  }
-}
 </file>
 
 <file path="Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.spec.ts">
@@ -4850,159 +4625,6 @@ describe('PreventiviPage', () => {
 });
 </file>
 
-<file path="Frontend/src/app/pages/preventivi/preventivi.page.ts">
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
-
-// 1. Aggiungiamo l'AlertController per la gestione visiva degli errori
-import { AlertController } from '@ionic/angular';
-
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonButton,
-  IonButtons,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonInput,
-  IonTextarea,
-  IonSelect,
-  IonSelectOption,
-  IonCard,
-  IonCardContent
-} from '@ionic/angular/standalone';
-
-import { addIcons } from 'ionicons';
-import { arrowBackOutline, documentAttachOutline, trashOutline } from 'ionicons/icons';
-
-// 2. Importiamo il nostro nuovo Service
-import { PreventiviService, PreventivoRichiesta } from '../../services/preventivi.service';
-
-@Component({
-  selector: 'app-preventivi',
-  templateUrl: './preventivi.page.html',
-  styleUrls: ['./preventivi.page.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    RouterLink,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonButton,
-    IonButtons,
-    IonIcon,
-    IonItem,
-    IonLabel,
-    IonInput,
-    IonTextarea,
-    IonSelect,
-    IonSelectOption,
-    IonCard,
-    IonCardContent
-  ]
-})
-export class PreventiviPage {
-
-  // RIGOROSAMENTE NESSUN DATO FITTIZIO: solo contenitori vuoti per il form
-  descrizione: string = '';
-  servizio: string = '';
-  materiale: string = '';
-  dimensioni: string = '';
-  finitura: string = '';
-  allegatiNomi: string[] = [];
-
-  preventivoInviato: boolean = false;
-  isMac: boolean = false;
-
-  get formValido(): boolean {
-    return (
-      this.descrizione.trim() !== '' &&
-      this.servizio.trim() !== '' &&
-      this.materiale.trim() !== '' &&
-      this.dimensioni.trim() !== ''
-    );
-  }
-
-  // 3. Iniettiamo il service e l'alert controller
-  constructor(
-    private router: Router,
-    private preventiviService: PreventiviService,
-    private alertController: AlertController
-  ) {
-    addIcons({
-      arrowBackOutline,
-      documentAttachOutline,
-      trashOutline
-    });
-
-    this.isMac = navigator.userAgent.toLowerCase().includes('mac');
-  }
-
-  selezionaFile(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.allegatiNomi = []; 
-
-    if (input.files && input.files.length > 0) {
-      for (let i = 0; i < input.files.length; i++) {
-        this.allegatiNomi.push(input.files[i].name);
-      }
-    }
-  }
-
-  svuotaAllegati() {
-    this.allegatiNomi = [];
-  }
-
-  // 4. Invio REALE al database
-  inviaPreventivo() {
-    if (!this.formValido) return;
-
-    // Convertiamo l'array di file in una stringa separata da virgole per rispettare la colonna SQLite
-    const stringaAllegati = this.allegatiNomi.length > 0 
-      ? this.allegatiNomi.join(', ') 
-      : undefined;
-
-    const payload: PreventivoRichiesta = {
-      descrizione: this.descrizione,
-      servizio: this.servizio,
-      materiale: this.materiale,
-      dimensioni: this.dimensioni,
-      finitura: this.finitura || undefined, // Evitiamo stringhe vuote, passiamo undefined per generare NULL
-      allegato: stringaAllegati
-    };
-
-    // Chiamata HTTP
-    this.preventiviService.creaPreventivo(payload).subscribe({
-      next: () => {
-        this.preventivoInviato = true;
-
-        setTimeout(() => {
-          this.router.navigate(['/dashboard-cliente']);
-        }, 1500);
-      },
-      error: async (err: any) => {
-        console.error('Errore invio preventivo:', err);
-        const messaggio = err.error?.message || 'Errore di connessione al server.';
-
-        const alert = await this.alertController.create({
-          cssClass: 'custom-dark-alert',
-          header: 'Errore',
-          message: messaggio,
-          buttons: ['OK']
-        });
-        await alert.present();
-      }
-    });
-  }
-}
-</file>
-
 <file path="Frontend/src/app/pages/register/register.page.html">
 <ion-header class="ion-no-border">
   <ion-toolbar color="dark"> 
@@ -5424,151 +5046,6 @@ export class AuthService {
 }
 </file>
 
-<file path="Frontend/src/app/app.component.html">
-<ion-app>
-  <ion-router-outlet></ion-router-outlet>
-</ion-app>
-</file>
-
-<file path="Frontend/src/app/app.component.scss">
-
-</file>
-
-<file path="Frontend/src/app/app.component.spec.ts">
-import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { AppComponent } from './app.component';
-
-describe('AppComponent', () => {
-  it('should create the app', async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppComponent],
-      providers: [provideRouter([])]
-    }).compileComponents();
-    
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-});
-</file>
-
-<file path="Frontend/src/app/app.component.ts">
-import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
-
-@Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet],
-})
-export class AppComponent {
-  constructor() {}
-}
-</file>
-
-<file path="Frontend/src/app/app.routes.ts">
-import { Routes } from '@angular/router';
-
-export const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
-  },
-  {
-    path: 'home',
-    loadComponent: () =>
-      import('./pages/home/home.page').then(m => m.HomePage)
-  },
-  {
-    path: 'login',
-    loadComponent: () =>
-      import('./pages/login/login.page').then(m => m.LoginPage)
-  },
-  {
-    path: 'register',
-    loadComponent: () =>
-      import('./pages/register/register.page').then(m => m.RegisterPage)
-  },
-  {
-    path: 'catalogo',
-    loadComponent: () =>
-      import('./pages/catalogo/catalogo.page').then(m => m.CatalogoPage)
-  },
-  {
-    path: 'preventivi',
-    loadComponent: () =>
-      import('./pages/preventivi/preventivi.page').then(m => m.PreventiviPage)
-  },
-  {
-    path: 'dashboard-cliente',
-    loadComponent: () =>
-      import('./pages/dashboard-cliente/dashboard-cliente.page')
-    .then(m => m.DashboardClientePage)
-  },
-  {
-    path: 'dashboard-dipendente',
-    loadComponent: () =>
-      import('./pages/dashboard-dipendente/dashboard-dipendente.page')
-    .then(m => m.DashboardDipendentePage)
-  },
-  {
-    path: 'dashboard-admin',
-    loadComponent: () =>
-      import('./pages/dashboard-admin/dashboard-admin.page')
-    .then(m => m.DashboardAdminPage)
-  },
-  {
-    path: 'interventi',
-    loadComponent: () => import('./pages/interventi/interventi.page')
-    .then( m => m.InterventiPage)
-  },
- {
-  path: 'dettaglio-preventivo-admin/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page')
-      .then(m => m.DettaglioPreventivoAdminPage)
-},
-  
-  {
-    path: 'gestione-dipendenti',
-    loadComponent: () => import('./pages/gestione-dipendenti/gestione-dipendenti.page')
-    .then( m => m.GestioneDipendentiPage)
-  },
-  {
-  path: 'dettaglio-preventivo-cliente/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page')
-      .then(m => m.DettaglioPreventivoClientePage)
-},
-{
-  path: 'dettaglio-intervento-cliente/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page')
-      .then(m => m.DettaglioInterventoClientePage)
-},
-{
-  path: 'dettaglio-intervento-admin/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page')
-      .then(m => m.DettaglioInterventoAdminPage)
-},
-{
-  path: 'dettaglio-intervento-dipendente/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page')
-      .then(m => m.DettaglioInterventoDipendentePage)
-},
-  {
-    path: '**',
-    redirectTo: 'home'
-  }
-
-
-];
-</file>
-
 <file path="Frontend/src/assets/shapes.svg">
 <svg width="350" height="140" xmlns="http://www.w3.org/2000/svg" style="background:#f6f7f9"><g fill="none" fill-rule="evenodd"><path fill="#F04141" style="mix-blend-mode:multiply" d="M61.905-34.23l96.194 54.51-66.982 54.512L22 34.887z"/><circle fill="#10DC60" style="mix-blend-mode:multiply" cx="155.5" cy="135.5" r="57.5"/><path fill="#3880FF" style="mix-blend-mode:multiply" d="M208.538 9.513l84.417 15.392L223.93 93.93z"/><path fill="#FFCE00" style="mix-blend-mode:multiply" d="M268.625 106.557l46.332-26.75 46.332 26.75v53.5l-46.332 26.75-46.332-26.75z"/><circle fill="#7044FF" style="mix-blend-mode:multiply" cx="299.5" cy="9.5" r="38.5"/><rect fill="#11D3EA" style="mix-blend-mode:multiply" transform="rotate(-60 148.47 37.886)" x="143.372" y="-7.056" width="10.196" height="89.884" rx="5.098"/><path d="M-25.389 74.253l84.86 8.107c5.498.525 9.53 5.407 9.004 10.905a10 10 0 0 1-.057.477l-12.36 85.671a10.002 10.002 0 0 1-11.634 8.42l-86.351-15.226c-5.44-.959-9.07-6.145-8.112-11.584l13.851-78.551a10 10 0 0 1 10.799-8.219z" fill="#7044FF" style="mix-blend-mode:multiply"/><circle fill="#0CD1E8" style="mix-blend-mode:multiply" cx="273.5" cy="106.5" r="20.5"/></g></svg>
 </file>
@@ -5596,11 +5073,6 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
-</file>
-
-<file path="Frontend/src/theme/variables.scss">
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
 </file>
 
 <file path="Frontend/src/global.scss">
@@ -5992,6 +5464,11 @@ getTestBed().initTestEnvironment(
 );
 </file>
 
+<file path="Frontend/src/theme/variables.scss">
+// For information on how to create your own theme, please refer to:
+// https://ionicframework.com/docs/theming/
+</file>
+
 <file path="Frontend/src/zone-flags.ts">
 /**
  * Prevents Angular change detection from
@@ -5999,324 +5476,6 @@ getTestBed().initTestEnvironment(
  */
 // eslint-disable-next-line no-underscore-dangle
 (window as any).__Zone_disable_customElements = true;
-</file>
-
-<file path="Frontend/angular.json">
-{
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1,
-  "newProjectRoot": "projects",
-  "projects": {
-    "app": {
-      "projectType": "application",
-      "schematics": {
-        "@ionic/angular-toolkit:page": {
-          "styleext": "scss",
-          "standalone": true
-        }
-      },
-      "root": "",
-      "sourceRoot": "src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:application",
-          "options": {
-            "outputPath": {
-              "base": "www",
-              "browser": ""
-            },
-            "index": "src/index.html",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
-            "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
-              }
-            ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
-            "scripts": [],
-            "browser": "src/main.ts"
-          },
-          "configurations": {
-            "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
-            },
-            "ci": {
-              "progress": false
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "buildTarget": "app:build:production"
-            },
-            "development": {
-              "buildTarget": "app:build:development"
-            },
-            "ci": {
-              "progress": false
-            }
-          },
-          "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "app:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
-              }
-            ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
-            "scripts": []
-          },
-          "configurations": {
-            "ci": {
-              "progress": false,
-              "watch": false
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
-          }
-        }
-      }
-    }
-  },
-  "cli": {
-    "schematicCollections": [
-      "@ionic/angular-toolkit"
-    ],
-    "analytics": false
-  },
-  "schematics": {
-    "@ionic/angular-toolkit:component": {
-      "styleext": "scss"
-    },
-    "@ionic/angular-toolkit:page": {
-      "styleext": "scss"
-    },
-    "@angular-eslint/schematics:application": {
-      "setParserOptionsProject": true
-    },
-    "@angular-eslint/schematics:library": {
-      "setParserOptionsProject": true
-    }
-  }
-}
-</file>
-
-<file path="Frontend/capacitor.config.ts">
-import type { CapacitorConfig } from '@capacitor/cli';
-
-const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'metal-lab',
-  webDir: 'www'
-};
-
-export default config;
-</file>
-
-<file path="Frontend/ionic.config.json">
-{
-  "name": "metal-lab",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone"
-}
-</file>
-
-<file path="Frontend/karma.conf.js">
-// Karma configuration file, see link for more information
-// https://karma-runner.github.io/1.0/config/configuration-file.html
-
-module.exports = function (config) {
-  config.set({
-    basePath: '',
-    frameworks: ['jasmine', '@angular-devkit/build-angular'],
-    plugins: [
-      require('karma-jasmine'),
-      require('karma-chrome-launcher'),
-      require('karma-jasmine-html-reporter'),
-      require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma')
-    ],
-    client: {
-      jasmine: {
-        // you can add configuration options for Jasmine here
-        // the possible options are listed at https://jasmine.github.io/api/edge/Configuration.html
-        // for example, you can disable the random execution with `random: false`
-        // or set a specific seed with `seed: 4321`
-      },
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
-    },
-    jasmineHtmlReporter: {
-      suppressAll: true // removes the duplicated traces
-    },
-    coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/app'),
-      subdir: '.',
-      reporters: [
-        { type: 'html' },
-        { type: 'text-summary' }
-      ]
-    },
-    reporters: ['progress', 'kjhtml'],
-    port: 9876,
-    colors: true,
-    logLevel: config.LOG_INFO,
-    autoWatch: true,
-    browsers: ['Chrome'],
-    singleRun: false,
-    restartOnFileChange: true
-  });
-};
-</file>
-
-<file path="Frontend/package.json">
-{
-  "name": "metal-lab",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "lint": "ng lint"
-  },
-  "private": true,
-  "dependencies": {
-    "@angular/animations": "^20.0.0",
-    "@angular/common": "^20.0.0",
-    "@angular/compiler": "^20.0.0",
-    "@angular/core": "^20.0.0",
-    "@angular/forms": "^20.0.0",
-    "@angular/platform-browser": "^20.0.0",
-    "@angular/platform-browser-dynamic": "^20.0.0",
-    "@angular/router": "^20.0.0",
-    "@capacitor/app": "8.1.0",
-    "@capacitor/core": "8.3.3",
-    "@capacitor/haptics": "8.0.2",
-    "@capacitor/keyboard": "8.0.3",
-    "@capacitor/status-bar": "8.0.2",
-    "@ionic/angular": "^8.0.0",
-    "bcrypt": "^6.0.0",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "ionicons": "^7.0.0",
-    "jsonwebtoken": "^9.0.3",
-    "nodemon": "^3.1.14",
-    "rxjs": "~7.8.0",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^6.0.1",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.15.0"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^20.0.0",
-    "@angular-eslint/builder": "^20.0.0",
-    "@angular-eslint/eslint-plugin": "^20.0.0",
-    "@angular-eslint/eslint-plugin-template": "^20.0.0",
-    "@angular-eslint/schematics": "^20.0.0",
-    "@angular-eslint/template-parser": "^20.0.0",
-    "@angular/cli": "^20.0.0",
-    "@angular/compiler-cli": "^20.0.0",
-    "@angular/language-service": "^20.0.0",
-    "@capacitor/cli": "8.3.3",
-    "@ionic/angular-toolkit": "^12.0.0",
-    "@types/jasmine": "~5.1.0",
-    "@typescript-eslint/eslint-plugin": "^8.18.0",
-    "@typescript-eslint/parser": "^8.18.0",
-    "eslint": "^9.16.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsdoc": "^48.2.1",
-    "eslint-plugin-prefer-arrow": "1.2.2",
-    "jasmine-core": "~5.1.0",
-    "jasmine-spec-reporter": "~5.0.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.0"
-  },
-  "description": "An Ionic project",
-  "main": "karma.conf.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/danny05-pro/Metal-Lab.git"
-  },
-  "keywords": [],
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/danny05-pro/Metal-Lab/issues"
-  },
-
-  "overrides": {
-    "uuid": "^11.1.1"
-  }
-
-}
-</file>
-
-<file path="Frontend/README.md">
-# Metal-Lab
-Progetto universitario per la materia "Programmazione web e mobile"
 </file>
 
 <file path="Frontend/tsconfig.app.json">
@@ -6358,9 +5517,127 @@ Progetto universitario per la materia "Programmazione web e mobile"
 }
 </file>
 
+<file path="Backend/controllers/preventiviController.js">
+const Preventivo = require('../models/preventiviModel');
+
+exports.creaPreventivo = async (req, res) => {
+  try {
+    // req.user è iniettato dal middleware authMiddleware.verifyToken
+    const cliente_id = req.user.id; 
+    
+    const { descrizione, servizio, materiale, dimensioni, finitura, allegato } = req.body;
+
+    // Controllo campi obbligatori
+    if (!descrizione || !servizio || !materiale || !dimensioni) {
+      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
+    }
+
+    const nuovoPreventivo = await Preventivo.create({
+      cliente_id,
+      descrizione,
+      servizio,
+      materiale,
+      dimensioni,
+      finitura: finitura || null,
+      allegato: allegato || null
+    });
+
+    res.status(201).json({ 
+      message: 'Preventivo inviato con successo!',
+      preventivo: nuovoPreventivo 
+    });
+
+  } catch (error) {
+    console.error('Errore durante la creazione del preventivo:', error);
+    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
+  }
+};
+
+exports.getPreventiviCliente = async (req, res) => {
+  try {
+    const preventivi = await Preventivo.findByClienteId(req.user.id);
+    res.json(preventivi);
+  } catch (error) {
+    res.status(500).json({ message: 'Errore nel recupero preventivi.' });
+  }
+};
+
+
+
+exports.getPreventiviAdmin = async (req, res) => {
+  try {
+    const preventivi = await Preventivo.findAllForAdmin();
+    return res.json(preventivi);
+  } catch (error) {
+    console.error('Errore nel recupero preventivi per admin:', error);
+    return res.status(500).json({ message: 'Errore nel caricamento dei dati.' });
+  }
+};
+</file>
+
+<file path="Backend/models/preventiviModel.js">
+const db = require('../database/database');
+
+exports.create = (dati) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `INSERT INTO preventivi (cliente_id, descrizione, servizio, materiale, dimensioni, finitura, allegato)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [dati.cliente_id, dati.descrizione, dati.servizio, dati.materiale, dati.dimensioni, dati.finitura, dati.allegato],
+      function (err) {
+        if (err) reject(err);
+        else resolve({ id: this.lastID, ...dati });
+      }
+    );
+  });
+};
+
+exports.findByClienteId = (cliente_id) => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `SELECT * FROM preventivi WHERE cliente_id = ? ORDER BY id DESC`,
+      [cliente_id],
+      (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      }
+    );
+  });
+};
+
+
+
+exports.findAllForAdmin = () => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `
+        SELECT
+          preventivi.*,
+          users.nome AS cliente_nome,
+          users.cognome AS cliente_cognome,
+          users.email AS cliente_email,
+          users.telefono AS cliente_telefono
+        FROM preventivi
+        JOIN users ON users.id = preventivi.cliente_id
+        ORDER BY preventivi.id DESC
+      `,
+      [],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      }
+    );
+  });
+};
+</file>
+
 <file path="Backend/server.js">
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 require('./database/database');
 
@@ -6387,126 +5664,541 @@ app.use('/api', routes);
 app.listen(PORT, () => {
   console.log(`Server in ascolto su http://localhost:${PORT}`);
 });
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 </file>
 
-<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark"> 
-    <ion-buttons slot="start">
-      <ion-button routerLink="/home">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Home</ion-title>
-  </ion-toolbar>
-</ion-header>
+<file path="Frontend/.gitignore">
+# Angular specific
+/dist/
+/out-tsc/
+/tmp/
+/coverage/
+/e2e/test-output/
+/.angular/
+.angular/
 
-<ion-content>
-  <section class="dashboard-header">
-    <h1>Area Personale</h1>
-    <p>Benvenuto nel tuo pannello di controllo Metal Lab.</p>
-  </section>
+# Node modules and dependency files
+*./node_modules/
+/node_modules/
+/package-lock.json
+/yarn.lock
 
-  <div class="dashboard-actions">
-    <ion-button expand="block" routerLink="/preventivi">Richiedi Preventivo</ion-button>
-    <ion-button expand="block" routerLink="/interventi">Richiedi Intervento</ion-button>
-  </div>
+# Environment files
+/.env
 
-  <ion-grid>
-    <ion-row class="summary-row">
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ preventivi.length }}</span>
-          <span class="summary-label">Preventivi</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ tuttiGliInterventi.length }}</span>
-          <span class="summary-label">Interventi</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ ordini.length }}</span>
-          <span class="summary-label">Ordini in corso</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ storicoOrdini.length }}</span>
-          <span class="summary-label">Storico Ordini</span>
-        </div>
-      </ion-col>
-    </ion-row>
+# Angular CLI and build artefacts
+/.angular-cli.json
+/.ng/
 
-    <ion-row class="details-row">
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header><ion-card-title>I tuoi Preventivi</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (preventivo of preventivi; track preventivo.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]">
-                <div class="item-header">
-                  <h3>{{ preventivo.descrizione }}</h3>
-                  <ion-chip>
-                    {{ preventivo.stato_admin }} | {{ preventivo.stato_risposta_cliente }}
-                  </ion-chip>
-                </div>
-                <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
-              </div>
-            } @empty { <div class="empty-section">Nessun preventivo presente</div> }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+# TypeScript cache
+*.tsbuildinfo
 
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header><ion-card-title>Interventi Tecnici</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (intervento of tuttiGliInterventi; track intervento.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-cliente', intervento.id]">
-                <div class="item-header">
-                  <h3>{{ intervento.descrizione }}</h3>
-                  <ion-chip [color]="intervento.stato_admin === 'Accettato' ? 'success' : 'warning'">
-                    {{ intervento.stato_admin }}
-                  </ion-chip>
-                </div>
-                <p>Luogo: {{ intervento.luogo }} | Richiesto il: {{ intervento.data_richiesta }}</p>
-              </div>
-            } @empty {
-              <div class="empty-section">Nessun intervento richiesto</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      </ion-row>
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+ng-serve-current.err.log
+ng-serve-current.log
+</file>
 
-    <ion-row>
-      <ion-col size="12">
-        <ion-card class="calendar-card">
-          <ion-card-header><ion-card-title>Calendario Attività</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (evento of interventiFuturi; track evento.id) {
-              <div class="calendar-item clickable" [routerLink]="['/dettaglio-intervento-cliente', evento.id]">
-                <div class="calendar-date">{{ evento.data_proposta_admin || 'In attesa' }}</div>
-                <div class="calendar-info">
-                  <h3>{{ evento.descrizione }}</h3>
-                  <p>Luogo: {{ evento.luogo }}</p>
-                  <ion-chip [color]="evento.stato_lavorazione === 'Terminato' ? 'success' : 'warning'">
-                    {{ evento.stato_lavorazione }}
-                  </ion-chip>
-                </div>
-              </div>
-            } @empty {
-              <div class="empty-section">Nessuna attività pianificata.</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-content>
+<file path="Frontend/src/app/app.routes.ts">
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    loadComponent: () =>
+      import('./pages/home/home.page').then(m => m.HomePage)
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./pages/login/login.page').then(m => m.LoginPage)
+  },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./pages/register/register.page').then(m => m.RegisterPage)
+  },
+  {
+    path: 'catalogo',
+    loadComponent: () =>
+      import('./pages/catalogo/catalogo.page').then(m => m.CatalogoPage)
+  },
+  {
+    path: 'preventivi',
+    loadComponent: () =>
+      import('./pages/preventivi/preventivi.page').then(m => m.PreventiviPage)
+  },
+  {
+    path: 'dashboard-cliente',
+    loadComponent: () =>
+      import('./pages/dashboard-cliente/dashboard-cliente.page')
+    .then(m => m.DashboardClientePage)
+  },
+  {
+    path: 'dashboard-dipendente',
+    loadComponent: () =>
+      import('./pages/dashboard-dipendente/dashboard-dipendente.page')
+    .then(m => m.DashboardDipendentePage)
+  },
+  {
+    path: 'dashboard-admin',
+    loadComponent: () =>
+      import('./pages/dashboard-admin/dashboard-admin.page')
+    .then(m => m.DashboardAdminPage)
+  },
+  {
+    path: 'interventi',
+    loadComponent: () => import('./pages/interventi/interventi.page')
+    .then( m => m.InterventiPage)
+  },
+  {
+    path: 'dettaglio-preventivo-admin/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page')
+        .then(m => m.DettaglioPreventivoAdminPage)
+  },
+  {
+    path: 'gestione-dipendenti',
+    loadComponent: () => import('./pages/gestione-dipendenti/gestione-dipendenti.page')
+    .then( m => m.GestioneDipendentiPage)
+  },
+  {
+    path: 'dettaglio-preventivo-cliente/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page')
+        .then(m => m.DettaglioPreventivoClientePage)
+  },
+  {
+    path: 'dettaglio-intervento-cliente/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page')
+        .then(m => m.DettaglioInterventoClientePage)
+  },
+  {
+    path: 'dettaglio-intervento-admin/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page')
+        .then(m => m.DettaglioInterventoAdminPage)
+  },
+  {
+    path: 'dettaglio-intervento-dipendente/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page')
+        .then(m => m.DettaglioInterventoDipendentePage)
+  },
+  {
+    path: '**',
+    redirectTo: 'home'
+  }
+];
+</file>
+
+<file path="Frontend/src/app/components/product-card/product-card.component.html">
+<ion-card class="catalog-card">
+
+  <img
+    [src]="prodotto.immagine"
+    [alt]="prodotto.nome">
+
+  <ion-card-header>
+
+    <ion-card-subtitle>
+      {{ prodotto.categoria }}
+    </ion-card-subtitle>
+
+    <ion-card-title>
+      {{ prodotto.nome }}
+    </ion-card-title>
+
+  </ion-card-header>
+
+  <ion-card-content>
+
+    <p>
+      {{ prodotto.descrizione }}
+    </p>
+
+    <div class="card-info">
+      <ion-badge color="medium">
+        {{ prodotto.categoria }}
+      </ion-badge>
+
+      <strong>
+        {{ prodotto.prezzoBase || 'Su preventivo' }}
+      </strong>
+    </div>
+    
+    <ion-button fill="clear" class="btn-glass-favorite" (click)="onTogglePreferito(prodotto)">
+      <ion-icon slot="icon-only" [name]="prodotto.preferito ? 'heart' : 'heart-outline'"></ion-icon>
+    </ion-button>
+
+  </ion-card-content>
+
+</ion-card>
+</file>
+
+<file path="Frontend/src/app/components/product-card/product-card.component.scss">
+.catalog-card {
+  --background: #151b23;
+
+  color: white;
+
+  border-radius: 22px;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.catalog-card img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+}
+
+ion-card-subtitle {
+  color: #f5a623;
+  font-weight: 800;
+}
+
+ion-card-title {
+  color: white;
+  font-weight: 800;
+}
+
+ion-card-content p {
+  color: #c6ced8;
+  line-height: 1.6;
+}
+
+.card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin: 18px 0;
+}
+
+.card-info strong {
+  color: #f5a623;
+  font-size: 1.2rem;
+}
+
+.btn-glass-favorite {
+  --color: #f5a623; 
+  --border-radius: 50%; /* Arrotonda lo sfondo interno di Ionic */
+  --background: rgba(245, 166, 35, 0.1);
+  --background-hover: rgba(245, 166, 35, 0.2);
+  --box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  
+  /* Centratura perfetta dell'icona */
+  --padding-start: 0;
+  --padding-end: 0;
+  
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  
+  /* FIX: Arrotonda anche il contenitore esterno che possiede il bordo */
+  border-radius: 50%; 
+  border: 1px solid rgba(245, 166, 35, 0.2);
+  
+  transition: all 0.3s ease;
+
+  /* Effetto "pop" quando viene premuto */
+  &:active {
+    transform: scale(0.92);
+  }
+}
+
+/* Se il prodotto è tra i preferiti, rendiamo il bottone "pieno" */
+.btn-glass-favorite.is-favorite {
+  --background: rgba(245, 166, 35, 0.25);
+  border: 1px solid rgba(245, 166, 35, 0.5);
+}
+</file>
+
+<file path="Frontend/src/app/components/service-card/service-card.component.html">
+<ion-card class="catalog-card">
+
+  <img [src]="servizio.immagine" [alt]="servizio.nome">
+
+  <ion-card-header>
+    <ion-card-subtitle>
+      {{ servizio.categoria }}
+    </ion-card-subtitle>
+
+    <ion-card-title>
+      {{ servizio.nome }}
+    </ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <p>
+      {{ servizio.descrizione }}
+    </p>
+
+    <div class="card-info">
+      <ion-badge color="success">
+        {{ servizio.stato }}
+      </ion-badge>
+
+      <strong style="color: #f5a623; font-size: 1.2rem;">
+        {{ servizio.prezzoBase || 'Su preventivo' }}
+      </strong>
+    </div>
+
+    <ion-button fill="clear" class="btn-glass-favorite" (click)="onTogglePreferito(servizio)">
+      <ion-icon slot="icon-only" [name]="servizio.preferito ? 'heart' : 'heart-outline'"></ion-icon>
+    </ion-button>
+  </ion-card-content>
+
+</ion-card>
+</file>
+
+<file path="Frontend/src/app/components/service-card/service-card.component.scss">
+.catalog-card {
+  --background: #151b23;
+  color: white;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.catalog-card img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+}
+
+ion-card-subtitle {
+  color: #f5a623;
+  font-weight: 800;
+}
+
+ion-card-title {
+  color: white;
+  font-weight: 800;
+}
+
+ion-card-content p {
+  color: #c6ced8;
+  line-height: 1.6;
+}
+
+.card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 18px 0;
+}
+
+.btn-glass-favorite {
+  --color: #f5a623; 
+  --border-radius: 50%; /* Arrotonda lo sfondo interno di Ionic */
+  --background: rgba(245, 166, 35, 0.1);
+  --background-hover: rgba(245, 166, 35, 0.2);
+  --box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  
+  /* Centratura perfetta dell'icona */
+  --padding-start: 0;
+  --padding-end: 0;
+  
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  
+  /* FIX: Arrotonda anche il contenitore esterno che possiede il bordo */
+  border-radius: 50%; 
+  border: 1px solid rgba(245, 166, 35, 0.2);
+  
+  transition: all 0.3s ease;
+
+  /* Effetto "pop" quando viene premuto */
+  &:active {
+    transform: scale(0.92);
+  }
+}
+
+/* Se il prodotto è tra i preferiti, rendiamo il bottone "pieno" */
+.btn-glass-favorite.is-favorite {
+  --background: rgba(245, 166, 35, 0.25);
+  border: 1px solid rgba(245, 166, 35, 0.5);
+}
+</file>
+
+<file path="Frontend/src/app/models/preventivo.model.ts">
+export interface Preventivo {
+  id: number;
+
+  cliente_id?: number;
+
+  descrizione: string;
+
+  servizio: string;
+
+  materiale: string;
+
+  dimensioni: string;
+
+  finitura: string;
+
+  // --- STATO LATO ADMIN ---
+  stato_admin:
+    | 'Da valutare'
+    | 'Prezzo proposto'
+    | 'Rifiutato';
+
+  // --- STATO LATO CLIENTE ---
+  stato_risposta_cliente:
+    | 'In attesa'
+    | 'Accettato'
+    | 'Rifiutato';
+
+  // I campi uniti tramite JOIN (quando l'admin legge i dati)
+  cliente?: string; 
+
+  emailCliente?: string;
+
+  cliente_nome?: string;
+
+  cliente_cognome?: string;
+
+  cliente_telefono?: string;
+
+  allegato?: string;
+
+  prezzoProposto?: number | null;
+}
+</file>
+
+<file path="Frontend/src/app/pages/catalogo/catalogo.page.scss">
+ion-content {
+  --background: #0b0f14;
+}
+
+.catalog-header {
+  padding: 38px 22px 20px;
+  color: white;
+  text-align: center;
+}
+
+.catalog-header h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.catalog-header p {
+  color: #b7c0cc;
+  max-width: 720px;
+  margin: 14px auto 0;
+  line-height: 1.6;
+}
+
+.catalog-segment {
+  max-width: 600px;
+  margin: 20px auto 40px;
+  background: #151b23; /* Sfondo scuro del contenitore */
+  border-radius: 16px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  ion-segment-button {
+    --color: #8b95a5; /* Grigio spento quando non selezionato */
+    --color-checked: #f5a623; /* Ambra quando selezionato */
+    --indicator-color: rgba(245, 166, 35, 0.15); /* Sfondo ambra semitrasparente */
+    --indicator-box-shadow: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 12px;
+    min-height: 40px;
+    margin: 0 2px;
+    transition: 0.3s ease;
+  }
+}
+
+
+.catalog-grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 18px 60px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.catalog-card {
+  --background: #151b23;
+  color: white;
+  border-radius: 22px;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.catalog-card img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+}
+
+ion-card-subtitle {
+  color: #f5a623;
+  font-weight: 800;
+}
+
+ion-card-title {
+  color: white;
+  font-weight: 800;
+}
+
+ion-card-content p {
+  color: #c6ced8;
+  line-height: 1.6;
+}
+
+.card-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 18px 0;
+}
+
+.card-info strong {
+  color: #f5a623;
+  font-size: 1.2rem;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: white;
+  padding: 60px 20px;
+}
+
+.empty-state p {
+  color: #b7c0cc;
+}
+
+.favorite-card {
+  border-color: rgba(245, 166, 35, 0.5);
+}
+
+@media (max-width: 850px) {
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </file>
 
 <file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.scss">
@@ -6888,8 +6580,8 @@ interface AppuntamentoCalendario {
   id: number;
   dataFormattata: string;
   descrizione: string;
-  tipo: 'Intervento' | 'Ordine';
   dettaglio: string;
+  tipo?: string;
 }
 
 interface Storico {
@@ -7253,6 +6945,182 @@ export class DettaglioInterventoDipendentePage implements OnInit {
     });
 
     await alert.present();
+  }
+}
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-cliente">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Dettaglio Preventivo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (preventivo) {
+    <section class="detail-header">
+      <h1>Preventivo #{{ preventivoId }}</h1>
+      <p>Riepilogo della tua richiesta e stato di avanzamento.</p>
+    </section>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Stato Preventivo</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-row">
+          <span>Stato Amministrazione</span>
+          <ion-chip>{{ preventivo.stato_admin }}</ion-chip>
+        </div>
+        
+        <div class="info-row">
+          <span>La tua risposta</span>
+          <ion-chip>{{ preventivo.stato_risposta_cliente }}</ion-chip>
+        </div>
+
+        @if (preventivo.prezzoProposto) {
+          <div class="price-box">
+            Prezzo proposto da Metal Lab:
+            <strong>€ {{ preventivo.prezzoProposto }}</strong>
+          </div>
+        } @else {
+          <div class="price-box empty">
+            Nessun prezzo ancora proposto.
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Dati Tecnici Richiesta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="description-box">
+          <h3>Descrizione</h3>
+          <p>{{ preventivo.descrizione }}</p>
+        </div>
+        <div class="info-row">
+          <span>Servizio richiesto</span>
+          <strong>{{ preventivo.servizio }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Materiale</span>
+          <strong>{{ preventivo.materiale }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Dimensioni</span>
+          <strong>{{ preventivo.dimensioni }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Finitura</span>
+          <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Allegato tecnico</span>
+          <strong>{{ preventivo.allegato || 'Nessun allegato' }}</strong>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    @if (preventivo.stato_admin === 'Prezzo proposto' && preventivo.stato_risposta_cliente === 'In attesa') {
+      <ion-card class="detail-card">
+        <ion-card-header>
+          <ion-card-title>Risposta alla proposta</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p class="response-text">
+            Puoi accettare o rifiutare il prezzo proposto da Metal Lab.
+          </p>
+          <div class="actions">
+            <ion-button expand="block" class="btn-glass-accept" (click)="accettaPreventivo()">
+              Accetta preventivo
+            </ion-button>
+            <ion-button expand="block" class="btn-glass-reject" (click)="rifiutaPreventivo()">
+              Rifiuta preventivo
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+  } @else {
+    <div class="ion-padding ion-text-center">
+      <p>Caricamento preventivo in corso...</p>
+    </div>
+  }
+</ion-content>
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.ts">
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Necessario per @if, @for
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // CORRETTO: import da @angular/router
+
+import {
+  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
+  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+import { arrowBackOutline } from 'ionicons/icons';
+import { Preventivo } from '../../models/preventivo.model';
+
+@Component({
+  selector: 'app-dettaglio-preventivo-cliente',
+  templateUrl: './dettaglio-preventivo-cliente.page.html',
+  styleUrls: ['./dettaglio-preventivo-cliente.page.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonChip
+  ]
+})
+export class DettaglioPreventivoClientePage implements OnInit {
+
+  preventivoId = '';
+  preventivo: Preventivo | null = null; 
+
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router
+  ) {
+    addIcons({ arrowBackOutline });
+    this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
+  }
+
+  ngOnInit() {
+    // Qui in futuro caricherai i dati reali.
+    // Per ora, se vuoi vedere la pagina renderizzata, 
+    // potresti inizializzare preventivo con dati mock.
+  }
+
+  accettaPreventivo() {
+    if (!this.preventivo) return;
+    this.preventivo.stato_risposta_cliente = 'Accettato';
+    this.router.navigate(['/dashboard-cliente']);
+  }
+
+  rifiutaPreventivo() {
+    if (!this.preventivo) return;
+    this.preventivo.stato_risposta_cliente = 'Rifiutato';
+    this.router.navigate(['/dashboard-cliente']);
   }
 }
 </file>
@@ -7631,15 +7499,13 @@ ion-input.has-focus ion-input-password-toggle,
 }
 </file>
 
-<file path="Frontend/src/app/pages/login/login.page.ts">
+<file path="Frontend/src/app/pages/preventivi/preventivi.page.ts">
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink, Router } from '@angular/router';
 
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink
-} from '@angular/router';
+// 1. Aggiungiamo l'AlertController per la gestione visiva degli errori
+import { AlertController } from '@ionic/angular';
 
 import {
   IonHeader,
@@ -7649,28 +7515,26 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
-  IonCard,
-  IonCardContent,
   IonItem,
   IonLabel,
   IonInput,
-  IonText,
-  IonInputPasswordToggle
+  IonTextarea,
+  IonSelect,
+  IonSelectOption,
+  IonCard,
+  IonCardContent
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import {
-  arrowBackOutline,
-  alertCircleOutline
-} from 'ionicons/icons';
+import { arrowBackOutline, documentAttachOutline, trashOutline } from 'ionicons/icons';
 
-// 1. Importiamo il Service di Autenticazione
-import { AuthService } from '../../services/auth.service';
+// 2. Importiamo il nostro nuovo Service
+import { PreventiviService, PreventivoRichiesta } from '../../services/preventivi.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-preventivi',
+  templateUrl: './preventivi.page.html',
+  styleUrls: ['./preventivi.page.scss'],
   standalone: true,
   imports: [
     FormsModule,
@@ -7682,86 +7546,108 @@ import { AuthService } from '../../services/auth.service';
     IonButton,
     IonButtons,
     IonIcon,
-    IonCard,
-    IonCardContent,
     IonItem,
     IonLabel,
     IonInput,
-    IonText,
-    IonInputPasswordToggle
+    IonTextarea,
+    IonSelect,
+    IonSelectOption,
+    IonCard,
+    IonCardContent
   ]
 })
-export class LoginPage {
+export class PreventiviPage {
 
-  modalita: 'login' | 'register' = 'login';
-  email = '';
-  password = '';
-  returnUrl = '/home';
-  
-  erroreLogin = ''; 
+  // RIGOROSAMENTE NESSUN DATO FITTIZIO: solo contenitori vuoti per il form
+  descrizione: string = '';
+  servizio: string = '';
+  materiale: string = '';
+  dimensioni: string = '';
+  finitura: string = '';
+  allegatiNomi: string[] = [];
 
-  // 2. Iniettiamo l'AuthService invece di HttpClient
+  preventivoInviato: boolean = false;
+  isMac: boolean = false;
+
+  get formValido(): boolean {
+    return (
+      this.descrizione.trim() !== '' &&
+      this.servizio.trim() !== '' &&
+      this.materiale.trim() !== '' &&
+      this.dimensioni.trim() !== ''
+    );
+  }
+
+  // 3. Iniettiamo il service e l'alert controller
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
-    private authService: AuthService 
+    private preventiviService: PreventiviService,
+    private alertController: AlertController
   ) {
     addIcons({
       arrowBackOutline,
-      alertCircleOutline
+      documentAttachOutline,
+      trashOutline
     });
 
-    this.returnUrl =
-      this.route.snapshot.queryParamMap.get('returnUrl')
-      || '/home';
+    this.isMac = navigator.userAgent.toLowerCase().includes('mac');
   }
-  
-  accedi() {
-    if (!this.loginValido) {
-      return;
+
+  selezionaFile(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.allegatiNomi = []; 
+
+    if (input.files && input.files.length > 0) {
+      for (let i = 0; i < input.files.length; i++) {
+        this.allegatiNomi.push(input.files[i].name);
+      }
     }
+  }
 
-    this.erroreLogin = ''; 
+  svuotaAllegati() {
+    this.allegatiNomi = [];
+  }
 
-    const body = {
-      email: this.email,
-      password: this.password
+  // 4. Invio REALE al database
+  inviaPreventivo() {
+    if (!this.formValido) return;
+
+    // Convertiamo l'array di file in una stringa separata da virgole per rispettare la colonna SQLite
+    const stringaAllegati = this.allegatiNomi.length > 0 
+      ? this.allegatiNomi.join(', ') 
+      : undefined;
+
+    const payload: PreventivoRichiesta = {
+      descrizione: this.descrizione,
+      servizio: this.servizio,
+      materiale: this.materiale,
+      dimensioni: this.dimensioni,
+      finitura: this.finitura || undefined, // Evitiamo stringhe vuote, passiamo undefined per generare NULL
+      allegato: stringaAllegati
     };
 
-    // 3. Usiamo il service per fare la chiamata
-    this.authService.login(body).subscribe({
-      next: (response: any) => {
-        console.log('Login riuscito:', response);
+    // Chiamata HTTP
+    this.preventiviService.creaPreventivo(payload).subscribe({
+      next: () => {
+        this.preventivoInviato = true;
 
-        if (response.token) {
-          sessionStorage.setItem('token', response.token);
-        }
-        
-        sessionStorage.setItem('utenteLoggato', 'true');
-        
-        // Estraiamo il ruolo (supporta sia che dal server arrivi come 'user' o come 'utente')
-        const ruolo = response.utente?.ruolo || response.user?.ruolo || '';
-        sessionStorage.setItem('ruoloUtente', ruolo);
-
-        this.router.navigate([this.returnUrl]);
+        setTimeout(() => {
+          this.router.navigate(['/dashboard-cliente']);
+        }, 1500);
       },
-      error: (err: any) => {
-        console.error('Errore login:', err);
-        
-        if (err.status === 401 || err.status === 400) {
-          this.erroreLogin = err.error.message;
-        } else {
-          this.erroreLogin = 'Errore di connessione al server.';
-        }
+      error: async (err: any) => {
+        console.error('Errore invio preventivo:', err);
+        const messaggio = err.error?.message || 'Errore di connessione al server.';
+
+        const alert = await this.alertController.create({
+          cssClass: 'custom-dark-alert',
+          header: 'Errore',
+          message: messaggio,
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     });
-  }
-  
-  get loginValido(): boolean {
-    return (
-      this.email.trim() !== '' &&
-      this.password.trim() !== ''
-    );
   }
 }
 </file>
@@ -7970,38 +7856,50 @@ export class DipendentiService {
 }
 </file>
 
-<file path="Frontend/.gitignore">
-# Angular specific
-/dist/
-/out-tsc/
-/tmp/
-/coverage/
-/e2e/test-output/
-/.angular/
-.angular/
+<file path="Frontend/src/app/services/preventivi.service.ts">
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Preventivo } from '../models/preventivo.model';
 
-# Node modules and dependency files
-*./node_modules/
-/node_modules/
-/package-lock.json
-/yarn.lock
+export interface PreventivoRichiesta {
+  descrizione: string;
+  servizio: string;
+  materiale: string;
+  dimensioni: string;
+  finitura?: string;
+  allegato?: string;
+}
 
-# Environment files
-/.env
+@Injectable({
+  providedIn: 'root'
+})
+export class PreventiviService {
 
-# Angular CLI and build artefacts
-/.angular-cli.json
-/.ng/
+  private apiUrl = 'http://localhost:3000/api/preventivi';
 
-# TypeScript cache
-*.tsbuildinfo
+  constructor(private http: HttpClient) {}
 
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-ng-serve-current.err.log
-ng-serve-current.log
+  private getHeaders(): HttpHeaders {
+    const token = sessionStorage.getItem('token');
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+  }
+
+  creaPreventivo(dati: PreventivoRichiesta): Observable<any> {
+    return this.http.post(this.apiUrl, dati, { headers: this.getHeaders() });
+  }
+
+  getPreventivi(): Observable<Preventivo[]> {
+    return this.http.get<Preventivo[]>(this.apiUrl, { headers: this.getHeaders() });
+  }
+  getPreventiviAdmin(): Observable<Preventivo[]> {
+    const adminUrl = 'http://localhost:3000/api/admin/preventivi';
+    return this.http.get<Preventivo[]>(adminUrl, { headers: this.getHeaders() });
+  }
+}
 </file>
 
 <file path="Frontend/tsconfig.json">
@@ -8039,68 +7937,6 @@ ng-serve-current.log
     "strictTemplates": true
   }
 }
-</file>
-
-<file path="Backend/controllers/interventiController.js">
-const Intervento = require('../models/interventiModel');
-
-exports.creaIntervento = async (req, res) => {
-  try {
-    const cliente_id = req.user.id; 
-    const { descrizione, luogo, priorita, data_proposta_cliente } = req.body;
-
-    if (!descrizione || !luogo || !priorita) {
-      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
-    }
-
-    const data_richiesta = new Date().toISOString().split('T')[0];
-
-    const nuovoIntervento = await Intervento.create({
-      cliente_id,
-      descrizione,
-      luogo,
-      priorita,
-      data_richiesta,
-      data_proposta_cliente
-    });
-
-    res.status(201).json({ 
-      message: 'Richiesta di intervento inviata con successo!',
-      intervento: nuovoIntervento 
-    });
-  } catch (error) {
-    console.error('Errore durante la creazione dell\'intervento:', error);
-    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
-  }
-};
-
-exports.getInterventiCliente = async (req, res) => {
-  try {
-    const interventi = await Intervento.findByClienteId(req.user.id);
-    return res.json(interventi);
-  } catch (error) {
-    return res.status(500).json({ message: 'Errore lettura interventi.' });
-  }
-};
-
-exports.getInterventiAdmin = async (req, res) => {
-  try {
-    const interventi = await Intervento.findAllForAdmin();
-    return res.json(interventi);
-  } catch (error) {
-    return res.status(500).json({ message: 'Errore lettura interventi admin.' });
-  }
-};
-
-exports.getInterventoById = async (req, res) => {
-  try {
-    const intervento = await Intervento.findById(req.params.id);
-    if (!intervento) return res.status(404).json({ message: 'Non trovato.' });
-    return res.json(intervento);
-  } catch (error) {
-    return res.status(500).json({ message: 'Errore lettura dettaglio.' });
-  }
-};
 </file>
 
 <file path="Backend/models/interventiModel.js">
@@ -8324,6 +8160,94 @@ exports.delete = (id) => {
 };
 </file>
 
+<file path="Backend/routes/routes.js">
+const express = require('express');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
+const authController = require('../controllers/authController');
+const dipendentiController = require('../controllers/dipendentiController');
+const interventiController = require('../controllers/interventiController'); 
+const preventiviController = require('../controllers/preventiviController');
+const catalogoController = require('../controllers/catalogoController');
+
+const authMiddleware = require('../middlewares/authMiddleware');
+
+const router = express.Router();
+
+// AREA AUTENTICAZIONE
+router.post('/auth/register', authController.register);
+router.post('/auth/login', authController.login);
+router.get('/auth/profile', authMiddleware.verifyToken, authController.profile);
+
+// AREA CLIENTI
+router.post(
+  '/interventi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  interventiController.creaIntervento
+);
+
+router.get(
+  '/interventi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  interventiController.getInterventiCliente
+);
+
+router.post(
+  '/preventivi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  preventiviController.creaPreventivo
+);
+
+router.get(
+  '/preventivi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  preventiviController.getPreventiviCliente
+);
+
+// AREA ADMIN: GESTIONE DIPENDENTI
+router.get('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.getAll);
+router.post('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.create);
+router.put('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.update);
+router.delete('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.delete);
+
+// AREA ADMIN: GESTIONE INTERVENTI
+router.get(
+  '/admin/interventi',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.getInterventiAdmin
+);
+
+router.get(
+  '/admin/interventi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.getInterventoById
+);
+
+
+// AREA ADMIN: GESTIONE INTERVENTI E PREVENTIVI
+router.get(
+  '/admin/preventivi',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  preventiviController.getPreventiviAdmin
+);
+
+// AREA ADMIN: GESTIONE CATALOGO
+router.get('/catalogo', catalogoController.getAll);
+router.post('/admin/catalogo', authMiddleware.verifyToken, authMiddleware.isAdmin, upload.single('immagine'), catalogoController.createItem);
+router.put('/admin/catalogo/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, upload.single('immagine'), catalogoController.updateItem);
+router.delete('/admin/catalogo/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, catalogoController.deleteItem);
+
+module.exports = router;
+</file>
+
 <file path="Frontend/src/app/models/intervento.model.ts">
 export interface Intervento {
   id: number;
@@ -8398,266 +8322,6 @@ export interface Intervento {
   // Tabella ponte dipendenti_interventi
   dipendentiAssegnati?: string[];
 }
-</file>
-
-<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.ts">
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms'; 
-import { AlertController } from '@ionic/angular';
-
-import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonCard,
-  IonCardContent, IonCardHeader, IonCardTitle, IonGrid,
-  IonRow, IonCol, IonChip, IonButton, IonButtons, IonIcon, IonModal
-} from '@ionic/angular/standalone';
-
-import { addIcons } from 'ionicons';
-import {
-  arrowBackOutline, createOutline, addOutline,
-  peopleOutline, saveOutline, trashOutline
-} from 'ionicons/icons';
-
-import { Intervento } from 'src/app/models/intervento.model';
-import { Preventivo } from 'src/app/models/preventivo.model';
-import { InterventiService } from 'src/app/services/interventi.service';
-
-interface VoceCatalogo {
-  id: number;
-  nome: string;
-  categoria: string;
-  prezzoBase: string;
-}
-
-interface EventoStorico {
-  id: number;
-  dataFormattata: string;
-  descrizione: string;
-  cliente: string;
-  tipo: 'Ordine' | 'Intervento' | 'Preventivo';
-  stato: string;
-}
-
-@Component({
-  selector: 'app-dashboard-admin',
-  templateUrl: './dashboard-admin.page.html',
-  styleUrls: ['./dashboard-admin.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule, RouterLink, FormsModule, IonContent, IonHeader,
-    IonTitle, IonToolbar, IonCard, IonCardContent, IonCardHeader,
-    IonCardTitle, IonGrid, IonRow, IonCol, IonChip, IonButton,
-    IonButtons, IonIcon, IonModal
-  ]
-})
-export class DashboardAdminPage implements OnInit {
-
-  // Metriche globali
-  totalePreventivi = 0;
-  ordiniAttivi = 0;
-  interventiAperti = 0;
-  vociCatalogo = 0; 
-
-  // --- VARIABILI CHE MANCAVANO (quelle che causavano il crash) ---
-  tuttiGliInterventi: any[] = [];
-  interventiFuturi: any[] = [];
-  ordini: any[] = [];
-  storicoOrdini: any[] = [];
-  // -------------------------------------------------------------
-
-  interventi: Intervento[] = [];
-  preventivi: Preventivo[] = [{
-      id: 1,
-      cliente_id: 1,
-      descrizione: 'Struttura metallica industriale',
-      servizio: 'Saldatura',
-      materiale: 'Acciaio',
-      dimensioni: '3x2m',
-      finitura: 'Zincatura',
-      stato_admin: 'Da valutare',
-      stato_risposta_cliente: 'In attesa'
-    },
-    {
-      id: 2,
-      cliente_id: 2,
-      descrizione: 'Cancello automatico',
-      servizio: 'Taglio laser',
-      materiale: 'Alluminio',
-      dimensioni: '2x1m',
-      finitura: 'Verniciatura',
-      stato_admin: 'Prezzo proposto',
-      stato_risposta_cliente: 'In attesa'
-    }];
-  catalogo: VoceCatalogo[] = [];
-  storicoGlobale: EventoStorico[] = [];
-
-  isModalOpen = false;
-  modalMode: 'crea' | 'modifica' = 'crea';
-  formCatalogo: Partial<VoceCatalogo> = {};
-
-  constructor(
-    private alertController: AlertController,
-    private interventiService: InterventiService
-  ) {
-    addIcons({
-      arrowBackOutline, createOutline, addOutline,
-      peopleOutline, saveOutline, trashOutline
-    });
-  }
-
-  ngOnInit() {
-    this.caricaInterventiAdmin();
-  }
-
-  caricaInterventiAdmin() {
-    this.interventiService.getInterventiAdmin().subscribe({
-      next: (interventi) => {
-        // Sincronizziamo le variabili per l'HTML
-        this.interventi = interventi;
-        this.tuttiGliInterventi = interventi; 
-        
-        this.interventiAperti = interventi.filter(
-          intervento =>
-            intervento.stato_admin !== 'Rifiutato' &&
-            intervento.stato_risposta_cliente !== 'Intervento annullato' &&
-            intervento.stato_lavorazione !== 'Terminato'
-        ).length;
-      },
-      error: (err) => {
-        console.error('Errore caricamento interventi admin:', err);
-      }
-    });
-  }
-
-  // --- LOGICA CATALOGO INVARIATA ---
-  modificaVoceCatalogo(id: number) { /* ... */ }
-  get formCatalogoValido(): boolean { /* ... */ return true; }
-  async eliminaVoceCatalogo(id: number) { /* ... */ }
-  aggiungiVoceCatalogo() { /* ... */ }
-  chiudiModale() { /* ... */ }
-  salvaVoceCatalogo() { /* ... */ }
-}
-</file>
-
-<file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark"> 
-    <ion-buttons slot="start">
-      <ion-button routerLink="/home">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Home</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  <section class="dashboard-header">
-    <h1>Area Personale</h1>
-    <p>Benvenuto nel tuo pannello di controllo Metal Lab.</p>
-  </section>
-
-  <div class="dashboard-actions">
-    <ion-button expand="block" routerLink="/preventivi">Richiedi Preventivo</ion-button>
-    <ion-button expand="block" routerLink="/interventi">Richiedi Intervento</ion-button>
-  </div>
-
-  <ion-grid>
-    <ion-row class="summary-row">
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ preventivi.length }}</span>
-          <span class="summary-label">Preventivi</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ tuttiGliInterventi.length }}</span>
-          <span class="summary-label">Interventi</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ ordini.length }}</span>
-          <span class="summary-label">Ordini in corso</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ storicoOrdini.length }}</span>
-          <span class="summary-label">Storico Ordini</span>
-        </div>
-      </ion-col>
-    </ion-row>
-
-    <ion-row class="details-row">
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header><ion-card-title>I tuoi Preventivi</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (preventivo of preventivi; track preventivo.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]">
-                <div class="item-header">
-                  <h3>{{ preventivo.descrizione }}</h3>
-                  <ion-chip>
-                    {{ preventivo.stato_admin }} | {{ preventivo.stato_risposta_cliente }}
-                  </ion-chip>
-                </div>
-                <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
-              </div>
-            } @empty { <div class="empty-section">Nessun preventivo presente</div> }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header><ion-card-title>Interventi Tecnici</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (intervento of tuttiGliInterventi; track intervento.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-cliente', intervento.id]">
-                <div class="item-header">
-                  <h3>{{ intervento.descrizione }}</h3>
-                  <ion-chip [color]="intervento.stato_admin === 'Accettato' ? 'success' : 'warning'">
-                    {{ intervento.stato_admin }}
-                  </ion-chip>
-                </div>
-                <p>Luogo: {{ intervento.luogo }} | Richiesto il: {{ intervento.data_richiesta }}</p>
-              </div>
-            } @empty {
-              <div class="empty-section">Nessun intervento richiesto</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      </ion-row>
-
-    <ion-row>
-      <ion-col size="12">
-        <ion-card class="calendar-card">
-          <ion-card-header><ion-card-title>Calendario Attività</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (evento of interventiFuturi; track evento.id) {
-              <div class="calendar-item clickable" [routerLink]="['/dettaglio-intervento-cliente', evento.id]">
-                <div class="calendar-date">{{ evento.data_proposta_admin || 'In attesa' }}</div>
-                <div class="calendar-info">
-                  <h3>{{ evento.descrizione }}</h3>
-                  <p>Luogo: {{ evento.luogo }}</p>
-                  <ion-chip [color]="evento.stato_lavorazione === 'Terminato' ? 'success' : 'warning'">
-                    {{ evento.stato_lavorazione }}
-                  </ion-chip>
-                </div>
-              </div>
-            } @empty {
-              <div class="empty-section">Nessuna attività pianificata.</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-content>
 </file>
 
 <file path="Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.html">
@@ -9282,6 +8946,126 @@ export class GestioneDipendentiPage implements OnInit {
 }
 </file>
 
+<file path="Frontend/src/app/pages/login/login.page.ts">
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButton,
+  IonButtons,
+  IonIcon,
+  IonCard,
+  IonCardContent,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonText,
+  IonInputPasswordToggle
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+import { arrowBackOutline, alertCircleOutline } from 'ionicons/icons';
+
+// IMPORT CORRETTO E SICURO
+import { AuthService } from 'src/app/services/auth.service';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.page.html',
+  styleUrls: ['./login.page.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    RouterLink,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonButton,
+    IonButtons,
+    IonIcon,
+    IonCard,
+    IonCardContent,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonText,
+    IonInputPasswordToggle
+  ]
+})
+export class LoginPage {
+
+  email = '';
+  password = '';
+  returnUrl = '/home';
+  erroreLogin = ''; 
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService 
+  ) {
+    addIcons({
+      arrowBackOutline,
+      alertCircleOutline
+    });
+
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/home';
+  }
+  
+  accedi() {
+    if (!this.loginValido) return;
+
+    this.erroreLogin = ''; 
+
+    const body = {
+      email: this.email,
+      password: this.password
+    };
+
+    this.authService.login(body).subscribe({
+      next: (response: any) => {
+        console.log('Login riuscito:', response);
+
+        if (response.token) {
+          sessionStorage.setItem('token', response.token);
+        }
+        
+        sessionStorage.setItem('utenteLoggato', 'true');
+        
+        // Salviamo il ruolo per la logica presente nella HomePage
+        const ruolo = response.utente?.ruolo || response.user?.ruolo || '';
+        sessionStorage.setItem('ruoloUtente', ruolo);
+
+        // Ora torniamo alla home, dove la logica dei bottoni farà il resto
+        this.router.navigate(['/home']);
+      },
+      error: (err: any) => {
+        console.error('Errore login:', err);
+        
+        if (err.status === 401 || err.status === 400) {
+          this.erroreLogin = err.error.message;
+        } else {
+          this.erroreLogin = 'Errore di connessione al server.';
+        }
+      }
+    });
+  }
+  
+  get loginValido(): boolean {
+    return (
+      this.email.trim() !== '' &&
+      this.password.trim() !== ''
+    );
+  }
+}
+</file>
+
 <file path="Frontend/src/app/services/interventi.service.ts">
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -9353,6 +9137,68 @@ export class InterventiService {
 }
 </file>
 
+<file path="Backend/controllers/interventiController.js">
+const Intervento = require('../models/interventiModel');
+
+exports.creaIntervento = async (req, res) => {
+  try {
+    const cliente_id = req.user.id; 
+    const { descrizione, luogo, priorita, data_proposta_cliente } = req.body;
+
+    if (!descrizione || !luogo || !priorita) {
+      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
+    }
+
+    const data_richiesta = new Date().toISOString().split('T')[0];
+
+    const nuovoIntervento = await Intervento.create({
+      cliente_id,
+      descrizione,
+      luogo,
+      priorita,
+      data_richiesta,
+      data_proposta_cliente
+    });
+
+    res.status(201).json({ 
+      message: 'Richiesta di intervento inviata con successo!',
+      intervento: nuovoIntervento 
+    });
+  } catch (error) {
+    console.error('Errore durante la creazione dell\'intervento:', error);
+    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
+  }
+};
+
+exports.getInterventiCliente = async (req, res) => {
+  try {
+    const interventi = await Intervento.findByClienteId(req.user.id);
+    return res.json(interventi);
+  } catch (error) {
+    return res.status(500).json({ message: 'Errore lettura interventi.' });
+  }
+};
+
+exports.getInterventiAdmin = async (req, res) => {
+  try {
+    const interventi = await Intervento.findAllForAdmin();
+    return res.json(interventi);
+  } catch (error) {
+    return res.status(500).json({ message: 'Errore lettura interventi admin.' });
+  }
+};
+
+exports.getInterventoById = async (req, res) => {
+  try {
+    const intervento = await Intervento.findById(req.params.id);
+    if (!intervento) return res.status(404).json({ message: 'Non trovato.' });
+    return res.json(intervento);
+  } catch (error) {
+    return res.status(500).json({ message: 'Errore lettura dettaglio.' });
+  }
+};
+</file>
+
 <file path="Backend/package.json">
 {
   "name": "mio-server-express",
@@ -9372,6 +9218,7 @@ export class InterventiService {
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^2.1.1",
     "sqlite": "^5.1.1",
     "sqlite3": "^6.0.1"
   },
@@ -9379,6 +9226,347 @@ export class InterventiService {
     "nodemon": "^3.1.14"
   }
 }
+</file>
+
+<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark"> 
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <section class="dashboard-header">
+    <h1>Area Amministrativa</h1>
+    <p>Gestione globale della piattaforma, storico commesse e modifica listini.</p>
+    <div class="admin-actions">
+      <ion-button routerLink="/gestione-dipendenti">
+        <ion-icon slot="start" name="people-outline"></ion-icon>
+        Gestione Dipendenti
+      </ion-button>
+    </div>
+  </section>
+
+  <ion-grid>
+    <ion-row class="summary-row">
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ totalePreventivi }}</span>
+          <span class="summary-label">Preventivi Da Gestire</span>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ ordiniAttivi }}</span>
+          <span class="summary-label">Ordini in Corso</span>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ interventiAperti }}</span>
+          <span class="summary-label">Interventi Aperti</span>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ vociCatalogo }}</span>
+          <span class="summary-label">Voci a Catalogo</span>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="details-row">
+      
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Preventivi</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+           @for (preventivo of preventivi; track preventivo.id) {
+            <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-admin', preventivo.id]">
+              <div class="item-header">
+                <h3>{{ preventivo.servizio }}</h3>
+                <ion-chip color="warning">{{ preventivo.stato_admin }}</ion-chip>
+              </div>
+              <p>Cliente: {{ preventivo.cliente_nome }} {{ preventivo.cliente_cognome }} | Preventivo #{{ preventivo.id }}</p>
+            </div>
+           } @empty {
+             <div class="empty-section">Nessun nuovo preventivo da gestire.</div>
+           }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Interventi</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            @for (intervento of interventi; track intervento.id) {
+              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-admin', intervento.id]">
+                <div class="item-header">
+                  <h3>{{ intervento.descrizione }}</h3>
+                  <ion-chip [color]="intervento.stato_admin === 'Data proposta' ? 'success' : 'warning'">
+                    {{ intervento.stato_admin }}
+                  </ion-chip>
+                </div>
+                <p>Cliente: {{ intervento.cliente }} | Priorità: {{ intervento.priorita }}</p>
+                <p>Luogo: {{ intervento.luogo }}</p>
+              </div>
+            } @empty {
+              <div class="empty-section">Nessun intervento da gestire.</div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12">
+        <ion-card class="detail-section-card">
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Catalogo</ion-card-title>
+            <ion-button fill="clear" color="warning" size="small" (click)="aggiungiVoceCatalogo()">
+              <ion-icon slot="start" name="add-outline"></ion-icon>
+              Nuovo
+            </ion-button>
+          </ion-card-header>
+          <ion-card-content>
+            @for (voce of catalogo; track voce.id) {
+              <div class="dashboard-item">
+                <div class="item-header">
+                  <h3>{{ voce.nome }}</h3>
+                  <ion-chip>{{ voce.categoria }}</ion-chip>
+                </div>
+                <p>Prezzo Base: {{ voce.prezzoBase }}</p>
+                <div class="item-actions">
+                  <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
+                    <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
+                  </ion-button>
+                  <ion-button fill="clear" color="danger" size="small" (click)="eliminaVoceCatalogo(voce.id)">
+                    <ion-icon slot="start" name="trash-outline"></ion-icon> Elimina
+                  </ion-button>
+                </div>
+              </div>
+            } @empty {
+              <div class="empty-section">Il catalogo è vuoto.</div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12">
+        <ion-card class="detail-section-card calendar-card">
+          <ion-card-header>
+            <ion-card-title>Storico Globale Attività</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="timeline">
+              @for (evento of storicoGlobale; track evento.id) {
+                <div class="timeline-item">
+                  <div class="timeline-date"><strong>{{ evento.dataFormattata }}</strong></div>
+                  <div class="timeline-content">
+                    <h3>{{ evento.descrizione }}</h3>
+                    <p>Cliente: {{ evento.cliente }} | Tipo: {{ evento.tipo }}</p>
+                    <ion-chip [color]="evento.stato === 'Terminato' ? 'success' : 'primary'">
+                      {{ evento.stato }}
+                    </ion-chip>
+                  </div>
+                </div>
+              } @empty {
+                <div class="empty-section">Nessun evento registrato nello storico.</div>
+              }
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+<ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar color="dark">
+          <ion-title>{{ modalMode === 'crea' ? 'Nuova Voce' : 'Modifica Voce' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="chiudiModale()">
+              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding" style="--background: #151b23;">
+        
+        @if (formCatalogo.immagine) {
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img [src]="formCatalogo.immagine" alt="Anteprima" style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+          </div>
+        }
+
+        <ion-item color="dark" class="custom-input-item">
+          <ion-input label="Nome Voce" labelPlacement="stacked" type="text" [(ngModel)]="formCatalogo.nome" placeholder="Es: Taglio Laser"></ion-input>
+        </ion-item>
+
+        <ion-item color="dark" class="custom-input-item" style="margin-top: 15px;">
+          <ion-select 
+            label="Categoria" 
+            labelPlacement="stacked" 
+            [(ngModel)]="formCatalogo.categoria" 
+            interface="popover" 
+            [interfaceOptions]="{ cssClass: 'status-popover-theme' }">
+            
+            <ion-select-option value="Prodotto">Prodotto</ion-select-option>
+            <ion-select-option value="Servizio">Servizio</ion-select-option>
+            
+          </ion-select>
+        </ion-item>
+
+        <ion-item color="dark" class="custom-input-item" style="margin-top: 15px;">
+          <ion-input label="Prezzo Base" labelPlacement="stacked" type="text" [(ngModel)]="formCatalogo.prezzoBase" placeholder="Es: Da 50€/mq (Opzionale)"></ion-input>
+        </ion-item>
+
+        <ion-item color="dark" class="custom-input-item" style="margin-top: 15px;">
+          <ion-button fill="clear" (click)="fileInput.click()">
+            <ion-icon slot="start" name="camera-outline"></ion-icon>
+            Carica Immagine
+          </ion-button>
+          <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" accept="image/*">
+          <span style="font-size: 0.8rem; color: #6c7a89;">{{ nomeFileSelezionato }}</span>
+        </ion-item>
+      </ion-content>
+
+      <ion-footer class="ion-no-border">
+        <ion-toolbar style="--background: #0b0f14; padding: 16px;">
+          <ion-button 
+            expand="block" 
+            class="btn-glass-save" 
+            (click)="salvaVoceCatalogo()" 
+            [disabled]="!formCatalogoValido">
+            <ion-icon slot="start" name="save-outline"></ion-icon>
+            Salva nel Catalogo
+          </ion-button>
+        </ion-toolbar>
+      </ion-footer>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>
+</file>
+
+<file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark"> 
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <section class="dashboard-header">
+    <h1>Area Personale</h1>
+    <p>Benvenuto nel tuo pannello di controllo Metal Lab.</p>
+  </section>
+
+  <div class="dashboard-actions">
+    <ion-button expand="block" routerLink="/preventivi">Richiedi Preventivo</ion-button>
+    <ion-button expand="block" routerLink="/interventi">Richiedi Intervento</ion-button>
+  </div>
+
+  <ion-grid>
+    <ion-row class="summary-row">
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ preventivi.length }}</span>
+          <span class="summary-label">Preventivi</span>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="3">
+        <div class="summary-card">
+          <span class="summary-value">{{ tuttiGliInterventi.length }}</span>
+          <span class="summary-label">Interventi</span>
+        </div>
+      </ion-col>
+     
+    </ion-row>
+
+    <ion-row class="details-row">
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header><ion-card-title>I tuoi Preventivi</ion-card-title></ion-card-header>
+          <ion-card-content>
+            @for (preventivo of preventivi; track preventivo.id) {
+              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]">
+                <div class="item-header">
+                  <h3>{{ preventivo.descrizione }}</h3>
+                  <ion-chip>
+                    {{ preventivo.stato_admin }} | {{ preventivo.stato_risposta_cliente }}
+                  </ion-chip>
+                </div>
+                <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
+              </div>
+            } @empty { <div class="empty-section">Nessun preventivo presente</div> }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header><ion-card-title>Interventi Tecnici</ion-card-title></ion-card-header>
+          <ion-card-content>
+            @for (intervento of tuttiGliInterventi; track intervento.id) {
+              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-cliente', intervento.id]">
+                <div class="item-header">
+                  <h3>{{ intervento.descrizione }}</h3>
+                  <ion-chip [color]="intervento.stato_admin === 'Accettato' ? 'success' : 'warning'">
+                    {{ intervento.stato_admin }}
+                  </ion-chip>
+                </div>
+                <p>Luogo: {{ intervento.luogo }} | Richiesto il: {{ intervento.data_richiesta }}</p>
+              </div>
+            } @empty {
+              <div class="empty-section">Nessun intervento richiesto</div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <ion-card class="calendar-card">
+          <ion-card-header><ion-card-title>Calendario Attività</ion-card-title></ion-card-header>
+          <ion-card-content>
+            @for (evento of interventiFuturi; track evento.id) {
+              <div class="calendar-item clickable" [routerLink]="['/dettaglio-intervento-cliente', evento.id]">
+                <div class="calendar-date">{{ evento.data_proposta_admin || 'In attesa' }}</div>
+                <div class="calendar-info">
+                  <h3>{{ evento.descrizione }}</h3>
+                  <p>Luogo: {{ evento.luogo }}</p>
+                  <ion-chip [color]="evento.stato_lavorazione === 'Terminato' ? 'success' : 'warning'">
+                    {{ evento.stato_lavorazione }}
+                  </ion-chip>
+                </div>
+              </div>
+            } @empty {
+              <div class="empty-section">Nessuna attività pianificata.</div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
 </file>
 
 <file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.ts">
@@ -9861,6 +10049,232 @@ module.exports = {
 };
 </file>
 
+<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.ts">
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms'; 
+import { AlertController } from '@ionic/angular';
+
+import {
+  IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent,
+  IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonChip, IonButton,
+  IonButtons, IonIcon, IonModal, IonItem, IonInput, IonSelect, IonSelectOption, IonFooter
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+import { arrowBackOutline, createOutline, addOutline, peopleOutline, saveOutline, trashOutline, closeOutline } from 'ionicons/icons';
+
+import { Intervento } from 'src/app/models/intervento.model';
+import { Preventivo } from 'src/app/models/preventivo.model';
+import { InterventiService } from 'src/app/services/interventi.service';
+import { PreventiviService } from 'src/app/services/preventivi.service';
+
+// IMPORTIAMO IL NUOVO SERVICE
+import { CatalogoService, VoceCatalogo } from 'src/app/services/catalogo.service';
+
+
+@Component({
+  selector: 'app-dashboard-admin',
+  templateUrl: './dashboard-admin.page.html',
+  styleUrls: ['./dashboard-admin.page.scss'],
+  standalone: true,
+  imports: [
+    CommonModule, RouterLink, FormsModule, IonContent, IonHeader, IonTitle,
+    IonToolbar, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid,
+    IonRow, IonCol, IonChip, IonButton, IonButtons, IonIcon, IonModal, IonItem,
+    IonInput, IonSelect, IonSelectOption, IonFooter
+  ]
+})
+export class DashboardAdminPage implements OnInit {
+
+  // Metriche globali
+  totalePreventivi = 0;
+  ordiniAttivi = 0;
+  interventiAperti = 0;
+  vociCatalogo = 0; 
+
+  // Array
+  interventi: Intervento[] = [];
+  preventivi: Preventivo[] = [];
+  catalogo: VoceCatalogo[] = [];
+  storicoGlobale: any[] = [];
+
+  isModalOpen = false;
+  modalMode: 'crea' | 'modifica' = 'crea';
+  formCatalogo: Partial<VoceCatalogo> = {};
+
+  constructor(
+    private alertController: AlertController,
+    private interventiService: InterventiService,
+    private preventiviService: PreventiviService,
+    private catalogoService: CatalogoService // <--- INIETTATO QUI
+  ) {
+    addIcons({
+      arrowBackOutline, createOutline, addOutline, peopleOutline, 
+      saveOutline, trashOutline, closeOutline
+    });
+  }
+
+  ngOnInit() {
+    this.caricaInterventiAdmin();
+    this.caricaPreventiviAdmin();
+    this.caricaCatalogo(); 
+  }
+
+  // ... (caricaInterventiAdmin e caricaPreventiviAdmin rimangono INVARIATI) ...
+  caricaInterventiAdmin() {
+    this.interventiService.getInterventiAdmin().subscribe({
+      next: (interventi) => {
+        this.interventi = interventi;
+        this.interventiAperti = interventi.filter(
+          intervento =>
+            intervento.stato_admin !== 'Rifiutato' &&
+            intervento.stato_risposta_cliente !== 'Intervento annullato' &&
+            intervento.stato_lavorazione !== 'Terminato'
+        ).length;
+      },
+      error: (err) => console.error('Errore caricamento interventi admin:', err)
+    });
+  }
+
+  caricaPreventiviAdmin() {
+    this.preventiviService.getPreventiviAdmin().subscribe({
+      next: (datiReali) => {
+        this.preventivi = datiReali;
+        this.totalePreventivi = datiReali.filter(p => p.stato_admin === 'Da valutare').length;
+      },
+      error: (err) => console.error('Errore caricamento preventivi admin:', err)
+    });
+  }
+
+  // ==========================================
+  // NUOVA LOGICA CATALOGO CON CHIAMATE HTTP
+  // ==========================================
+
+  caricaCatalogo() {
+    this.catalogoService.getCatalogo().subscribe({
+      next: (dati) => {
+        // Mappiamo prezzo_base a prezzoBase per retrocompatibilità se necessario
+        this.catalogo = dati.map(v => ({
+            ...v,
+            prezzoBase: v.prezzo_base || v.prezzoBase
+        }));
+        this.vociCatalogo = this.catalogo.length;
+      },
+      error: (err) => console.error('Errore caricamento catalogo:', err)
+    });
+  }
+
+  aggiungiVoceCatalogo() {
+    this.modalMode = 'crea';
+    this.formCatalogo = { categoria: 'Prodotto' }; // Default iniziale
+    this.isModalOpen = true;
+  }
+
+  modificaVoceCatalogo(id: number | undefined) {
+    if (!id) return;
+    const voce = this.catalogo.find(v => v.id === id);
+    if (voce) {
+      this.modalMode = 'modifica';
+      this.formCatalogo = { ...voce };
+      this.isModalOpen = true;
+    }
+  }
+
+  chiudiModale() {
+    this.isModalOpen = false;
+  }
+
+  get formCatalogoValido(): boolean {
+    return (
+      (this.formCatalogo.nome?.trim() ?? '') !== '' &&
+      (this.formCatalogo.categoria?.trim() ?? '') !== ''
+    );
+  }
+
+nomeFileSelezionato: string = '';
+  fileDaCaricare: File | null = null;
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.fileDaCaricare = file;
+      this.nomeFileSelezionato = file.name;
+    }
+  }
+
+  salvaVoceCatalogo() {
+    if (!this.formCatalogoValido) return;
+
+    const formData = new FormData();
+    formData.append('nome', this.formCatalogo.nome!);
+    formData.append('categoria', this.formCatalogo.categoria!);
+    formData.append('prezzoBase', this.formCatalogo.prezzoBase || 'Su preventivo');
+    
+    if (this.fileDaCaricare) {
+      formData.append('immagine', this.fileDaCaricare);
+    }
+
+    if (this.modalMode === 'crea') {
+      this.catalogoService.creaVoce(formData).subscribe({
+        next: () => {
+          this.resetFile();
+          this.caricaCatalogo();
+          this.chiudiModale();
+        },
+        error: (err) => console.error('Errore creazione:', err)
+      });
+    } else {
+      // ORA PASSIAMO formData ANCHE NELLA MODIFICA
+      if (this.formCatalogo.id) {
+        this.catalogoService.modificaVoce(this.formCatalogo.id, formData).subscribe({
+          next: () => {
+            this.resetFile();
+            this.caricaCatalogo();
+            this.chiudiModale();
+          },
+          error: (err) => console.error('Errore modifica:', err)
+        });
+      }
+    }
+  }
+
+  resetFile() {
+    this.fileDaCaricare = null;
+    this.nomeFileSelezionato = '';
+  }
+
+  async eliminaVoceCatalogo(id: number | undefined) {
+    if (!id) return;
+    
+    const alert = await this.alertController.create({
+      cssClass: 'custom-dark-alert', 
+      header: 'Eliminare voce?',
+      message: 'Sei sicuro di voler eliminare questa voce dal catalogo?',
+      buttons: [
+        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
+        {
+          text: 'Elimina',
+          role: 'destructive',
+          cssClass: 'dark-alert-btn-danger',
+          handler: () => {
+            // CHIAMATA DELETE
+            this.catalogoService.eliminaVoce(id).subscribe({
+              next: () => {
+                this.caricaCatalogo(); 
+              },
+              error: (err) => console.error('Errore eliminazione voce catalogo:', err)
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+}
+</file>
+
 <file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.ts">
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -9888,7 +10302,6 @@ import { addIcons } from 'ionicons';
 import { arrowBackOutline } from 'ionicons/icons';
 
 import { Preventivo } from 'src/app/models/preventivo.model';
-import { Ordine } from 'src/app/models/ordine.model';
 import { InterventiService } from '../../services/interventi.service';
 // IMPORTA IL SERVICE DEI PREVENTIVI
 import { PreventiviService } from '../../services/preventivi.service';
@@ -9925,10 +10338,6 @@ export class DashboardClientePage {
   
   // ARRAY VUOTO (popolato dal DB)
   preventivi: Preventivo[] = [];
-
-  // Manteniamo questi mock solo per non rompere l'UI attuale
-  ordini: Ordine[] = []; 
-  storicoOrdini: Ordine[] = [];
 
   constructor(
     private interventiService: InterventiService,
@@ -10158,6 +10567,16 @@ async function seedUtenti() {
       }
     }
   );
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS catalogo (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nome TEXT NOT NULL,
+      categoria TEXT NOT NULL,
+      prezzo_base TEXT DEFAULT 'Su preventivo',
+      immagine TEXT
+    )
+  `);
 }
 
 module.exports = db;

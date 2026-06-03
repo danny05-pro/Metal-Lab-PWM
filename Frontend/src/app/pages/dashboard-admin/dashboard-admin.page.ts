@@ -4,57 +4,23 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
 import { AlertController } from '@ionic/angular';
 
-
-
 import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonChip,
-  IonButton,
-  IonButtons,
-  IonIcon,
-  IonModal
+  IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent,
+  IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonChip, IonButton,
+  IonButtons, IonIcon, IonModal, IonItem, IonInput, IonSelect, IonSelectOption, IonFooter
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import {
-  arrowBackOutline,
-  createOutline,
-  addOutline,
-  peopleOutline,
-  saveOutline,
-  trashOutline
-} from 'ionicons/icons';
+import { arrowBackOutline, createOutline, addOutline, peopleOutline, saveOutline, trashOutline, closeOutline, cameraOutline } from 'ionicons/icons';
 
 import { Intervento } from 'src/app/models/intervento.model';
 import { Preventivo } from 'src/app/models/preventivo.model';
 import { InterventiService } from 'src/app/services/interventi.service';
 import { PreventiviService } from 'src/app/services/preventivi.service';
 
-interface VoceCatalogo {
-  id: number;
-  nome: string;
-  categoria: string;
-  prezzoBase: string;
-}
+// IMPORTIAMO IL NUOVO SERVICE
+import { CatalogoService, VoceCatalogo } from 'src/app/services/catalogo.service';
 
-interface EventoStorico {
-  id: number;
-  dataFormattata: string;
-  descrizione: string;
-  cliente: string;
-  tipo: 'Ordine' | 'Intervento' | 'Preventivo';
-  stato: string;
-}
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -62,103 +28,110 @@ interface EventoStorico {
   styleUrls: ['./dashboard-admin.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    RouterLink,
-    FormsModule,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonCard,
-    IonCardContent,
-    IonCardHeader,
-    IonCardTitle,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonChip,
-    IonButton,
-    IonButtons,
-    IonIcon,
-    IonModal
+    CommonModule, RouterLink, FormsModule, IonContent, IonHeader, IonTitle,
+    IonToolbar, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid,
+    IonRow, IonCol, IonChip, IonButton, IonButtons, IonIcon, IonModal, IonItem,
+    IonInput, IonSelect, IonSelectOption, IonFooter
   ]
 })
 export class DashboardAdminPage implements OnInit {
 
-  // Metriche globali (inizializzate a 0)
+  // Metriche globali
   totalePreventivi = 0;
   ordiniAttivi = 0;
   interventiAperti = 0;
   vociCatalogo = 0; 
 
-  // Array pronti per il backend
+  // Array
   interventi: Intervento[] = [];
   preventivi: Preventivo[] = [];
   catalogo: VoceCatalogo[] = [];
-  storicoGlobale: EventoStorico[] = [];
+  storicoGlobale: any[] = [];
 
   isModalOpen = false;
   modalMode: 'crea' | 'modifica' = 'crea';
   formCatalogo: Partial<VoceCatalogo> = {};
 
   constructor(
-  private alertController: AlertController,
-  private interventiService: InterventiService,
-  private preventiviService: PreventiviService
-) {
-  addIcons({
-    arrowBackOutline,
-    createOutline,
-    addOutline,
-    peopleOutline,
-    saveOutline,
-    trashOutline
-  });
-}
-
- ngOnInit() {
-  this.caricaInterventiAdmin();
-  this.caricaPreventiviAdmin();
-}
-caricaInterventiAdmin() {
-  this.interventiService.getInterventiAdmin().subscribe({
-    next: (interventi) => {
-      this.interventi = interventi;
-      this.interventiAperti = interventi.filter(
-        intervento =>
-          intervento.stato_admin !== 'Rifiutato' &&
-          intervento.stato_risposta_cliente !== 'Intervento annullato' &&
-          intervento.stato_lavorazione !== 'Terminato'
-      ).length;
-    },
-    error: (err) => {
-      console.error('Errore caricamento interventi admin:', err);
-    }
-  });
-}
-
-caricaPreventiviAdmin() {
-    this.preventiviService.getPreventiviAdmin().subscribe({
-      next: (datiReali) => {
-        this.preventivi = datiReali;
-        
-        // Aggiorna anche il contatore in alto ("Preventivi Da Gestire")
-        this.totalePreventivi = datiReali.filter(p => p.stato_admin === 'Da valutare').length;
-      },
-      error: (err) => {
-        console.error('Errore caricamento preventivi admin:', err);
-      }
+    private alertController: AlertController,
+    private interventiService: InterventiService,
+    private preventiviService: PreventiviService,
+    private catalogoService: CatalogoService // <--- INIETTATO QUI
+  ) {
+    addIcons({
+      arrowBackOutline, createOutline, addOutline, peopleOutline, 
+      saveOutline, trashOutline, closeOutline, cameraOutline
     });
   }
 
-  // --- LOGICA CATALOGO ---
-  modificaVoceCatalogo(id: number) {
-    this.modalMode = 'modifica';
+  ngOnInit() {
+    this.caricaInterventiAdmin();
+    this.caricaPreventiviAdmin();
+    this.caricaCatalogo(); 
+  }
+
+  // ... (caricaInterventiAdmin e caricaPreventiviAdmin rimangono INVARIATI) ...
+  caricaInterventiAdmin() {
+    this.interventiService.getInterventiAdmin().subscribe({
+      next: (interventi) => {
+        this.interventi = interventi;
+        this.interventiAperti = interventi.filter(
+          intervento =>
+            intervento.stato_admin !== 'Rifiutato' &&
+            intervento.stato_risposta_cliente !== 'Intervento annullato' &&
+            intervento.stato_lavorazione !== 'Terminato'
+        ).length;
+      },
+      error: (err) => console.error('Errore caricamento interventi admin:', err)
+    });
+  }
+
+  caricaPreventiviAdmin() {
+    this.preventiviService.getPreventiviAdmin().subscribe({
+      next: (datiReali) => {
+        this.preventivi = datiReali;
+        this.totalePreventivi = datiReali.filter(p => p.stato_admin === 'Da valutare').length;
+      },
+      error: (err) => console.error('Errore caricamento preventivi admin:', err)
+    });
+  }
+
+  // ==========================================
+  // NUOVA LOGICA CATALOGO CON CHIAMATE HTTP
+  // ==========================================
+
+  caricaCatalogo() {
+    this.catalogoService.getCatalogo().subscribe({
+      next: (dati) => {
+        // Mappiamo prezzo_base a prezzoBase per retrocompatibilità se necessario
+        this.catalogo = dati.map(v => ({
+            ...v,
+            prezzoBase: v.prezzo_base || v.prezzoBase
+        }));
+        this.vociCatalogo = this.catalogo.length;
+      },
+      error: (err) => console.error('Errore caricamento catalogo:', err)
+    });
+  }
+
+  aggiungiVoceCatalogo() {
+    this.modalMode = 'crea';
+    this.formCatalogo = { categoria: 'Prodotto' }; // Default iniziale
+    this.isModalOpen = true;
+  }
+
+  modificaVoceCatalogo(id: number | undefined) {
+    if (!id) return;
     const voce = this.catalogo.find(v => v.id === id);
     if (voce) {
+      this.modalMode = 'modifica';
       this.formCatalogo = { ...voce };
       this.isModalOpen = true;
     }
+  }
+
+  chiudiModale() {
+    this.isModalOpen = false;
   }
 
   get formCatalogoValido(): boolean {
@@ -168,59 +141,96 @@ caricaPreventiviAdmin() {
     );
   }
 
-  async eliminaVoceCatalogo(id: number) {
+nomeFileSelezionato: string = '';
+  fileDaCaricare: File | null = null;
+
+onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.fileDaCaricare = file;
+      this.nomeFileSelezionato = file.name;
+      
+      // Crea un URL locale per l'anteprima immediata
+      this.formCatalogo.immagine = URL.createObjectURL(file);
+    }
+  }
+
+  salvaVoceCatalogo() {
+    if (!this.formCatalogoValido) return;
+
+    const formData = new FormData();
+    formData.append('nome', this.formCatalogo.nome!);
+    formData.append('categoria', this.formCatalogo.categoria!);
+    formData.append('prezzoBase', this.formCatalogo.prezzoBase || 'Su preventivo');
+    
+    if (this.fileDaCaricare) {
+      formData.append('immagine', this.fileDaCaricare);
+    }
+
+    if (this.modalMode === 'crea') {
+      this.catalogoService.creaVoce(formData).subscribe({
+        next: () => {
+          this.resetFile();
+          this.caricaCatalogo();
+          this.chiudiModale();
+        },
+        error: (err) => console.error('Errore creazione:', err)
+      });
+    } else {
+      // ORA PASSIAMO formData ANCHE NELLA MODIFICA
+      if (this.formCatalogo.id) {
+        this.catalogoService.modificaVoce(this.formCatalogo.id, formData).subscribe({
+          next: () => {
+            this.resetFile();
+            this.caricaCatalogo();
+            this.chiudiModale();
+          },
+          error: (err) => console.error('Errore modifica:', err)
+        });
+      }
+    }
+  }
+
+  resetFile() {
+    this.fileDaCaricare = null;
+    this.nomeFileSelezionato = '';
+  }
+
+  async eliminaVoceCatalogo(id: number | undefined) {
+    if (!id) return;
+    
     const alert = await this.alertController.create({
       cssClass: 'custom-dark-alert', 
       header: 'Eliminare voce?',
       message: 'Sei sicuro di voler eliminare questa voce dal catalogo?',
       buttons: [
-        { text: 'Annulla', role: 'cancel' },
+        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
         {
           text: 'Elimina',
           role: 'destructive',
+          cssClass: 'dark-alert-btn-danger',
           handler: () => {
-            this.catalogo = this.catalogo.filter(v => v.id !== id);
-            this.vociCatalogo = this.catalogo.length; 
+            // CHIAMATA DELETE
+            this.catalogoService.eliminaVoce(id).subscribe({
+              next: () => {
+                this.caricaCatalogo(); 
+              },
+              error: (err) => console.error('Errore eliminazione voce catalogo:', err)
+            });
           }
         }
       ]
     });
     await alert.present();
   }
-
-  aggiungiVoceCatalogo() {
-    this.modalMode = 'crea';
-    this.formCatalogo = {}; 
-    this.isModalOpen = true;
+  // Helper per visualizzare le immagini nella lista
+  getImmagineUrl(immagine?: string): string {
+    const placeholder = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=200&auto=format&fit=crop';
+    
+    if (!immagine) return placeholder;
+    if (immagine.startsWith('http') || immagine.startsWith('blob:')) return immagine;
+    
+    return 'http://localhost:3000' + immagine;
   }
 
-  chiudiModale() {
-    this.isModalOpen = false;
-  }
-
-  salvaVoceCatalogo() {
-    if (!this.formCatalogoValido) return;
-
-    if (this.modalMode === 'crea') {
-      const nuovaVoce: VoceCatalogo = {
-        id: Date.now(),
-        nome: this.formCatalogo.nome || '',
-        categoria: this.formCatalogo.categoria || '',
-        prezzoBase: this.formCatalogo.prezzoBase || 'Su preventivo'
-      };
-      this.catalogo.push(nuovaVoce);
-    } else {
-      const index = this.catalogo.findIndex(v => v.id === this.formCatalogo.id);
-      if (index !== -1) {
-        this.catalogo[index] = {
-          id: this.formCatalogo.id!,
-          nome: this.formCatalogo.nome || '',
-          categoria: this.formCatalogo.categoria || '',
-          prezzoBase: this.formCatalogo.prezzoBase || 'Su preventivo'
-        };
-      }
-    }
-    this.vociCatalogo = this.catalogo.length;
-    this.chiudiModale();
-  }
 }

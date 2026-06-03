@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import {
@@ -24,9 +24,10 @@ import {
 
 import { Product } from '../../models/product.model';
 import { Service } from '../../models/service.model';
-
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
 import { ServiceCardComponent } from '../../components/service-card/service-card.component';
+import { CatalogoService } from '../../services/catalogo.service';
+
 
 @Component({
   selector: 'app-catalogo',
@@ -35,77 +36,68 @@ import { ServiceCardComponent } from '../../components/service-card/service-card
   standalone: true,
   imports: [
     RouterLink,
-
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonButton,
-    IonButtons,
-    IonSegment,
-    IonSegmentButton,
-    IonLabel,
-    IonIcon,
-
-    ProductCardComponent,
-    ServiceCardComponent
+    IonHeader, IonToolbar, IonTitle, IonContent, IonButton,
+    IonButtons, IonSegment, IonSegmentButton, IonLabel, IonIcon,
+    ProductCardComponent, ServiceCardComponent
   ]
 })
-export class CatalogoPage {
+export class CatalogoPage implements OnInit { // <-- Aggiunto implements OnInit
 
   selectedSection: 'prodotti' | 'servizi' | 'preferiti' = 'prodotti';
+  prodotti: Product[] = [];
+  servizi: Service[] = [];
 
-  prodotti: Product[] = [
-    {
-      id: 1,
-      nome: 'Staffa di fissaggio',
-      descrizione: 'Staffa metallica resistente per installazioni industriali.',
-      categoria: 'Componenti metallici',
-      materiale: 'Acciaio zincato',
-      prezzo: 18.50,
-      immagine: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=1200&auto=format&fit=crop',
-      preferito: false
-    },
-
-    {
-      id: 2,
-      nome: 'Piastra preforata',
-      descrizione: 'Piastra in ferro con fori standard per montaggio rapido.',
-      categoria: 'Piastre',
-      materiale: 'Ferro',
-      prezzo: 32,
-      immagine: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=1200&auto=format&fit=crop',
-      preferito: false
-    }
-  ];
-
-  servizi: Service[] = [
-    {
-      id: 1,
-      nome: 'Carpenteria metallica',
-      descrizione: 'Realizzazione di strutture in ferro, acciaio e inox su misura.',
-      categoria: 'Lavorazioni',
-      stato: 'Disponibile',
-      immagine: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=1200&auto=format&fit=crop',
-      preferito: false
-    },
-
-    {
-      id: 2,
-      nome: 'Manutenzione industriale',
-      descrizione: 'Interventi tecnici programmati o urgenti su impianti industriali.',
-      categoria: 'Manutenzione',
-      stato: 'Disponibile',
-      immagine: 'https://images.unsplash.com/photo-1535813547-99c456a41d4a?q=80&w=1200&auto=format&fit=crop',
-      preferito: false
-    }
-  ];
-
-  constructor() {
+  // Iniettiamo il service nel costruttore
+  constructor(private catalogoService: CatalogoService) {
     addIcons({
-      heart,
-      heartOutline,
-      arrowBackOutline
+      heart, heartOutline, arrowBackOutline
+    });
+  }
+
+  // Scatta appena apriamo la pagina
+  ngOnInit() {
+    this.caricaCatalogoReale();
+  }
+
+  caricaCatalogoReale() {
+    this.catalogoService.getCatalogo().subscribe({
+      next: (datiDB) => {
+        this.prodotti = [];
+        this.servizi = [];
+
+        const placeholder = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=1200&auto=format&fit=crop';
+
+        datiDB.forEach(voce => {
+          // AGGIUNGIAMO L'INDIRIZZO DEL SERVER (http://localhost:3000)
+          const immagineReale = voce.immagine ? 'http://localhost:3000' + voce.immagine : placeholder;
+
+          if (voce.categoria === 'Prodotto') {
+            this.prodotti.push({
+              id: voce.id,
+              nome: voce.nome,
+              categoria: voce.categoria,
+              descrizione: 'Prodotto in catalogo.',
+              materiale: '-', 
+              prezzo: 0, 
+              prezzoBase: voce.prezzo_base, 
+              immagine: immagineReale, // Ora ha l'URL completo!
+              preferito: false
+            });
+          } else {
+            this.servizi.push({
+              id: voce.id,
+              nome: voce.nome,
+              categoria: voce.categoria,
+              descrizione: 'Servizio professionale.',
+              stato: 'Disponibile',
+              prezzoBase: voce.prezzo_base,
+              immagine: immagineReale, // Ora ha l'URL completo!
+              preferito: false
+            });
+          }
+        });
+      },
+      error: (err) => console.error('Errore nel caricamento del catalogo:', err)
     });
   }
 
@@ -122,15 +114,10 @@ export class CatalogoPage {
   }
 
   get prodottiPreferiti(): Product[] {
-    return this.prodotti.filter(
-      prodotto => prodotto.preferito
-    );
+    return this.prodotti.filter(p => p.preferito);
   }
 
   get serviziPreferiti(): Service[] {
-    return this.servizi.filter(
-      servizio => servizio.preferito
-    );
+    return this.servizi.filter(s => s.preferito);
   }
-
 }

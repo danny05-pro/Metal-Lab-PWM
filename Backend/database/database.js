@@ -183,6 +183,16 @@ async function seedUtenti() {
       }
     }
   );
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS catalogo (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nome TEXT NOT NULL,
+      categoria TEXT NOT NULL,
+      prezzo_base TEXT DEFAULT 'Su preventivo',
+      immagine TEXT
+    )
+  `);
 }
 
 module.exports = db;

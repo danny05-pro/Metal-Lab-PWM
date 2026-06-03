@@ -21,6 +21,10 @@
       <ion-badge color="success">
         {{ servizio.stato }}
       </ion-badge>
+
+      <strong style="color: #f5a623; font-size: 1.2rem;">
+        {{ servizio.prezzoBase || 'Su preventivo' }}
+      </strong>
     </div>
 
     <ion-button fill="clear" class="btn-glass-favorite" (click)="onTogglePreferito(servizio)">

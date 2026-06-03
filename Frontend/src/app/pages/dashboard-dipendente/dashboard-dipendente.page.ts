@@ -28,8 +28,8 @@ interface AppuntamentoCalendario {
   id: number;
   dataFormattata: string;
   descrizione: string;
-  tipo: 'Intervento' | 'Ordine';
   dettaglio: string;
+  tipo?: string;
 }
 
 interface Storico {

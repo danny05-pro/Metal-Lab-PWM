@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 require('./database/database');
 
@@ -26,3 +27,5 @@ app.use('/api', routes);
 app.listen(PORT, () => {
   console.log(`Server in ascolto su http://localhost:${PORT}`);
 });
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

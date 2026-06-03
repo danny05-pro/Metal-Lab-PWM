@@ -21,10 +21,9 @@ import {
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { arrowBackOutline } from 'ionicons/icons';
+import { arrowBackOutline, documentTextOutline, constructOutline } from 'ionicons/icons';
 
 import { Preventivo } from 'src/app/models/preventivo.model';
-import { Ordine } from 'src/app/models/ordine.model';
 import { InterventiService } from '../../services/interventi.service';
 // IMPORTA IL SERVICE DEI PREVENTIVI
 import { PreventiviService } from '../../services/preventivi.service';
@@ -62,15 +61,11 @@ export class DashboardClientePage {
   // ARRAY VUOTO (popolato dal DB)
   preventivi: Preventivo[] = [];
 
-  // Manteniamo questi mock solo per non rompere l'UI attuale
-  ordini: Ordine[] = []; 
-  storicoOrdini: Ordine[] = [];
-
   constructor(
     private interventiService: InterventiService,
     private preventiviService: PreventiviService // INIETTA IL SERVICE
   ) {
-    addIcons({ arrowBackOutline });
+    addIcons({ arrowBackOutline, documentTextOutline, constructOutline });
   }
 
   ionViewWillEnter() {

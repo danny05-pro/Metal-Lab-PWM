@@ -4,6 +4,7 @@ export interface Service {
   descrizione: string;
   categoria: string;
   stato: string;
+  prezzoBase?: string; // <-- AGGIUNTO
   immagine: string;
   preferito: boolean;
 }

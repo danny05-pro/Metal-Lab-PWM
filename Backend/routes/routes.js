@@ -1,27 +1,23 @@
 const express = require('express');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
-// Controllers
 const authController = require('../controllers/authController');
 const dipendentiController = require('../controllers/dipendentiController');
-// 1. IMPORTIAMO IL NUOVO CONTROLLER
 const interventiController = require('../controllers/interventiController'); 
 const preventiviController = require('../controllers/preventiviController');
-// Middlewares
+const catalogoController = require('../controllers/catalogoController');
+
 const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// ==========================================
 // AREA AUTENTICAZIONE
-// ==========================================
 router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
 router.get('/auth/profile', authMiddleware.verifyToken, authController.profile);
 
-// ==========================================
 // AREA CLIENTI
-// ==========================================
-// 2. LA NUOVA ROTTA PER LA RICHIESTA INTERVENTO
 router.post(
   '/interventi', 
   authMiddleware.verifyToken, 
@@ -43,7 +39,6 @@ router.post(
   preventiviController.creaPreventivo
 );
 
-// Aggiungi questa rotta sotto la POST /preventivi
 router.get(
   '/preventivi', 
   authMiddleware.verifyToken, 
@@ -51,17 +46,13 @@ router.get(
   preventiviController.getPreventiviCliente
 );
 
-// ==========================================
 // AREA ADMIN: GESTIONE DIPENDENTI
-// ==========================================
 router.get('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.getAll);
 router.post('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.create);
 router.put('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.update);
 router.delete('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.delete);
-// ==========================================
-// AREA ADMIN: GESTIONE INTERVENTI
-// ==========================================
 
+// AREA ADMIN: GESTIONE INTERVENTI
 router.get(
   '/admin/interventi',
   authMiddleware.verifyToken,
@@ -77,18 +68,18 @@ router.get(
 );
 
 
-// ==========================================
 // AREA ADMIN: GESTIONE INTERVENTI E PREVENTIVI
-// ==========================================
-
-
-
-// NUOVA ROTTA: Recupera tutti i preventivi per l'admin
 router.get(
   '/admin/preventivi',
   authMiddleware.verifyToken,
   authMiddleware.isAdmin,
   preventiviController.getPreventiviAdmin
 );
+
+// AREA ADMIN: GESTIONE CATALOGO
+router.get('/catalogo', catalogoController.getAll);
+router.post('/admin/catalogo', authMiddleware.verifyToken, authMiddleware.isAdmin, upload.single('immagine'), catalogoController.createItem);
+router.put('/admin/catalogo/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, upload.single('immagine'), catalogoController.updateItem);
+router.delete('/admin/catalogo/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, catalogoController.deleteItem);
 
 module.exports = router;

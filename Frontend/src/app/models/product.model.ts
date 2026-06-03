@@ -5,6 +5,7 @@ export interface Product {
   categoria: string;
   materiale: string;
   prezzo: number;
+  prezzoBase?: string; // <-- AGGIUNTO
   immagine: string;
   preferito: boolean;
 }

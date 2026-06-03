@@ -23,28 +23,23 @@
 
   <ion-grid>
     <ion-row class="summary-row">
-      <ion-col size="6" size-md="3">
+      <ion-col size="12" size-md="4">
         <div class="summary-card">
           <span class="summary-value">{{ totalePreventivi }}</span>
           <span class="summary-label">Preventivi Da Gestire</span>
         </div>
       </ion-col>
-      <ion-col size="6" size-md="3">
-        <div class="summary-card">
-          <span class="summary-value">{{ ordiniAttivi }}</span>
-          <span class="summary-label">Ordini in Corso</span>
-        </div>
-      </ion-col>
-      <ion-col size="6" size-md="3">
+
+      <ion-col size="12" size-md="4">
         <div class="summary-card">
           <span class="summary-value">{{ interventiAperti }}</span>
           <span class="summary-label">Interventi Aperti</span>
         </div>
       </ion-col>
-      <ion-col size="6" size-md="3">
+      <ion-col size="12" size-md="4">
         <div class="summary-card">
           <span class="summary-value">{{ vociCatalogo }}</span>
-          <span class="summary-label">Voci a Catalogo</span>
+          <span class="summary-label">Voci in Catalogo</span>
         </div>
       </ion-col>
     </ion-row>
@@ -106,21 +101,31 @@
             </ion-button>
           </ion-card-header>
           <ion-card-content>
-            @for (voce of catalogo; track voce.id) {
-              <div class="dashboard-item">
-                <div class="item-header">
-                  <h3>{{ voce.nome }}</h3>
-                  <ion-chip>{{ voce.categoria }}</ion-chip>
+@for (voce of catalogo; track voce.id) {
+              <div class="dashboard-item catalog-list-item">
+                
+                <div class="catalog-thumbnail">
+                  <img [src]="getImmagineUrl(voce.immagine)" alt="Anteprima">
                 </div>
-                <p>Prezzo Base: {{ voce.prezzoBase }}</p>
-                <div class="item-actions">
-                  <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
-                    <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
-                  </ion-button>
-                  <ion-button fill="clear" color="danger" size="small" (click)="eliminaVoceCatalogo(voce.id)">
-                    <ion-icon slot="start" name="trash-outline"></ion-icon> Elimina
-                  </ion-button>
+
+                <div class="catalog-info">
+                  <div class="item-header">
+                    <h3>{{ voce.nome }}</h3>
+                    <ion-chip color="medium">{{ voce.categoria }}</ion-chip>
+                  </div>
+                  
+                  <p class="catalog-price">Prezzo Base: {{ voce.prezzoBase }}</p>
+                  
+                  <div class="item-actions">
+                    <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
+                      <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
+                    </ion-button>
+                    <ion-button fill="clear" color="danger" size="small" (click)="eliminaVoceCatalogo(voce.id)">
+                      <ion-icon slot="start" name="trash-outline"></ion-icon> Elimina
+                    </ion-button>
+                  </div>
                 </div>
+
               </div>
             } @empty {
               <div class="empty-section">Il catalogo è vuoto.</div>
@@ -158,7 +163,81 @@
     </ion-row>
   </ion-grid>
 
-  <ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
-    </ion-modal>
+<ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar color="dark">
+          <ion-title>{{ modalMode === 'crea' ? 'Nuova Voce' : 'Modifica Voce' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="chiudiModale()">
+              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding" style="--background: #151b23;">
+        
+@if (formCatalogo.immagine) {
+  <div style="text-align: center; margin-bottom: 20px;">
+    <img 
+      [src]="(formCatalogo.immagine.startsWith('blob:') || formCatalogo.immagine.startsWith('http')) 
+             ? formCatalogo.immagine 
+             : 'http://localhost:3000' + formCatalogo.immagine" 
+      alt="Anteprima" 
+      style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+  </div>
+}
+
+        <ion-item color="dark" class="custom-input-item">
+          <ion-input label="Nome Voce" labelPlacement="stacked" type="text" [(ngModel)]="formCatalogo.nome" placeholder="Es: Taglio Laser"></ion-input>
+        </ion-item>
+
+        <ion-item color="dark" class="custom-input-item" style="margin-top: 15px;">
+          <ion-select 
+            label="Categoria" 
+            labelPlacement="stacked" 
+            [(ngModel)]="formCatalogo.categoria" 
+            interface="popover" 
+            [interfaceOptions]="{ cssClass: 'status-popover-theme' }">
+            
+            <ion-select-option value="Prodotto">Prodotto</ion-select-option>
+            <ion-select-option value="Servizio">Servizio</ion-select-option>
+            
+          </ion-select>
+        </ion-item>
+
+        <ion-item color="dark" class="custom-input-item" style="margin-top: 15px;">
+          <ion-input label="Prezzo Base" labelPlacement="stacked" type="text" [(ngModel)]="formCatalogo.prezzoBase" placeholder="Es: Da 50€/mq (Opzionale)"></ion-input>
+        </ion-item>
+
+<div style="margin-top: 20px; display: flex; align-items: center; gap: 12px; padding: 0 4px;">
+  <ion-button fill="outline" class="btn-glass-upload" (click)="fileInput.click()">
+    <ion-icon slot="start" name="camera-outline"></ion-icon>
+    Carica Immagine
+  </ion-button>
+  
+  <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" accept="image/*">
+  
+  <span style="font-size: 0.85rem; color: #b7c0cc; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+    {{ nomeFileSelezionato || 'Nessun file' }}
+  </span>
+</div>
+      </ion-content>
+
+      <ion-footer class="ion-no-border">
+        <ion-toolbar style="--background: #0b0f14; padding: 16px;">
+          <ion-button 
+            expand="block" 
+            class="btn-glass-save" 
+            (click)="salvaVoceCatalogo()" 
+            [disabled]="!formCatalogoValido">
+            <ion-icon slot="start" name="save-outline"></ion-icon>
+            Salva nel Catalogo
+          </ion-button>
+        </ion-toolbar>
+      </ion-footer>
+    </ng-template>
+  </ion-modal>
 
 </ion-content>
