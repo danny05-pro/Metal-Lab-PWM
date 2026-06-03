@@ -55,15 +55,6 @@ export interface Intervento {
 
   data_accettata?: string;
 
-  // Motivi/note del flusso cliente-admin
-  motivo_rifiuto_admin?: string;
-
-  motivo_rifiuto_cliente?: string;
-
-  note_cliente?: string;
-
-  note_admin?: string;
-
   created_at?: string;
 
   updated_at?: string;

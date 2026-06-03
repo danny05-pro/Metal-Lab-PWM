@@ -145,6 +145,35 @@ ion-card-title {
     transform: translateY(-2px);
   }
 }
+.btn-glass-reject {
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --background: rgba(235, 68, 90, 0.12);
+  --color: #eb445a;
+  --border-color: rgba(235, 68, 90, 0.2);
+
+  &:hover {
+    --background: #eb445a;
+    --border-color: #eb445a;
+    --color: #ffffff;
+    transform: translateY(-2px);
+  }
+}
 
 @media (max-width: 700px) {
   .detail-card {

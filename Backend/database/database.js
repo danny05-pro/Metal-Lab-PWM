@@ -46,7 +46,8 @@ db.serialize(() => {
           'Richiesto',
           'Rifiutato',
           'Data proposta',
-          'In attesa nuova valutazione'
+          'In attesa nuova valutazione',
+          'Intervento concordato'
         )
       ),
 

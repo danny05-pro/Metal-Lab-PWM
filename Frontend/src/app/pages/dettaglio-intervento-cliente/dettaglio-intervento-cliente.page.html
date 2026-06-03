@@ -5,62 +5,206 @@
         <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Dettaglio Intervento</ion-title>
+
+    <ion-title>
+      Dashboard Cliente
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+
   <section class="detail-header">
-    <h1>Intervento #{{ interventoId }}</h1>
-    <p>Riepilogo della richiesta di assistenza tecnica.</p>
+    <h1>
+      Intervento #{{ interventoId }}
+    </h1>
+
+    <p>
+      Dettaglio della tua richiesta di intervento e gestione della proposta data.
+    </p>
   </section>
 
   @if (intervento) {
+
     <ion-card class="detail-card">
       <ion-card-header>
-        <ion-card-title>Stato Intervento</ion-card-title>
+        <ion-card-title>
+          Dati Intervento
+        </ion-card-title>
       </ion-card-header>
+
       <ion-card-content>
+
         <div class="info-row">
-          <span>Stato</span>
-          <ion-chip>{{ intervento.stato_admin }}</ion-chip>
-        </div>
-        <div class="info-row">
-          <span>Priorità</span>
-          <strong>{{ intervento.priorita }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Data programmata</span>
-          <strong [style.color]="!intervento.data_proposta_admin ? '#eb445a' : 'white'">
-            {{ intervento.dataOra }}
+          <span>Descrizione</span>
+          <strong>
+            {{ intervento.descrizione }}
           </strong>
         </div>
+
         <div class="info-row">
-          <span>Tecnici assegnati</span>
-          <strong>{{ intervento.tecnicoAssegnato }}</strong>
+          <span>Luogo</span>
+          <strong>
+            {{ intervento.luogo }}
+          </strong>
         </div>
+
+        <div class="info-row">
+          <span>Priorità</span>
+          <strong>
+            {{ intervento.priorita }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Data richiesta</span>
+          <strong>
+            {{ intervento.data_richiesta || 'Non disponibile' }}
+          </strong>
+        </div>
+
+
+        <div class="info-row">
+          <span>Data accettata</span>
+          <strong>
+            {{ intervento.data_accettata || 'Non ancora accettata' }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Risposta cliente</span>
+          <ion-chip>
+            {{ intervento.stato_risposta_cliente }}
+          </ion-chip>
+        </div>
+
+        <div class="info-row">
+          <span>Stato lavorazione</span>
+          <ion-chip>
+            {{ intervento.stato_lavorazione }}
+          </ion-chip>
+        </div>
+
       </ion-card-content>
     </ion-card>
 
     <ion-card class="detail-card">
       <ion-card-header>
-        <ion-card-title>Dati della richiesta</ion-card-title>
+        <ion-card-title>
+          Risposta alla proposta
+        </ion-card-title>
       </ion-card-header>
+
       <ion-card-content>
-        <div class="info-row">
-          <span>Descrizione intervento</span>
-          <strong>{{ intervento.descrizione }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Luogo intervento</span>
-          <strong>{{ intervento.luogo }}</strong>
-        </div>
-        
-        <div class="info-row">
-          <span>Data preferita richiesta</span>
-          <strong>{{ intervento.dataPreferitaFormattata }}</strong>
-        </div>
+
+        @if (puoRispondereAllaProposta) {
+
+          <div class="proposal-box">
+            Data proposta dall'admin:
+            <strong>
+              {{ intervento.data_proposta_admin }}
+            </strong>
+          </div>
+
+          <div class="actions">
+
+            <ion-button
+              expand="block"
+              class="btn-glass-accept"
+              (click)="accettaDataAdmin()">
+              <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+              Accetta data proposta
+            </ion-button>
+
+            <ion-item
+              button="true"
+              detail="false"
+              id="apri-calendario-nuova-data"
+              class="calendar-trigger-item">
+
+              <ion-label position="stacked">
+                Nuova data da proporre
+              </ion-label>
+
+              <ion-input
+                [readonly]="true"
+                placeholder="Seleziona una data"
+                [value]="nuovaDataFormattata">
+              </ion-input>
+
+              <ion-icon
+                slot="end"
+                name="calendar-outline"
+                style="color: #f5a623; font-size: 22px; margin-top: 14px;">
+              </ion-icon>
+
+            </ion-item>
+
+            <ion-modal
+              trigger="apri-calendario-nuova-data"
+              class="dark-calendar-modal">
+
+              <ng-template>
+
+                <ion-datetime
+                  presentation="date"
+                  [(ngModel)]="nuovaDataCliente"
+                  [min]="dataMinima"
+                  class="custom-amber-calendar"
+                  [showDefaultButtons]="true"
+                  doneText="Conferma"
+                  cancelText="Annulla">
+                </ion-datetime>
+
+              </ng-template>
+
+            </ion-modal>
+
+            <ion-button
+              expand="block"
+              class="btn-glass-propose"
+              [disabled]="!nuovaDataCliente"
+              (click)="confermaNuovaData()">
+              <ion-icon slot="start" name="calendar-outline"></ion-icon>
+              Proponi nuova data
+            </ion-button>
+
+            <ion-button
+              expand="block"
+              class="btn-glass-reject"
+              (click)="annullaIntervento()">
+              <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+              Annulla intervento
+            </ion-button>
+
+          </div>
+
+        } @else {
+
+          <div class="proposal-box empty">
+            Nessuna proposta in attesa di risposta.
+          </div>
+
+        }
+
       </ion-card-content>
     </ion-card>
+
+    } @else {
+
+
+    <div class="ion-padding ion-text-center">
+      @if (caricamento) {
+        <p>
+          Caricamento dati...
+        </p>
+      } @else {
+        <p>
+          Intervento non trovato.
+        </p>
+      }
+    </div>
+
   }
+
 </ion-content>

@@ -59,22 +59,7 @@ router.post('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.i
 router.put('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.update);
 router.delete('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.delete);
 // ==========================================
-// AREA ADMIN: GESTIONE INTERVENTI
-// ==========================================
-
-router.get(
-  '/admin/interventi',
-  authMiddleware.verifyToken,
-  authMiddleware.isAdmin,
-  interventiController.getInterventiAdmin
-);
-
-router.get(
-  '/admin/interventi/:id',
-  authMiddleware.verifyToken,
-  authMiddleware.isAdmin,
-  interventiController.getInterventoById
-);
+// AREA ADMIN: GESTI
 
 
 // ==========================================
@@ -91,4 +76,30 @@ router.get(
   preventiviController.getPreventiviAdmin
 );
 
+router.put(
+  '/admin/interventi/:id/proponi-data',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.adminProponeData
+);
+
+router.put(
+  '/admin/interventi/:id/rifiuta',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.adminRifiutaIntervento
+);
+
+router.put(
+  '/interventi/:id/risposta-cliente',
+  authMiddleware.verifyToken,
+  authMiddleware.isCliente,
+  interventiController.clienteRispondeData
+);
+router.get(
+  '/interventi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isCliente,
+  interventiController.getInterventoClienteById
+);
 module.exports = router;
