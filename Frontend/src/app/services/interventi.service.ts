@@ -47,6 +47,14 @@ export class InterventiService {
       }
     );
   }
+  getInterventoClienteById(id: number | string): Observable<Intervento> {
+  return this.http.get<Intervento>(
+    `${this.apiUrl}/${id}`,
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
 
   getInterventiAdmin(): Observable<Intervento[]> {
     return this.http.get<Intervento[]>(
@@ -65,4 +73,48 @@ export class InterventiService {
       }
     );
   }
+adminProponeData(
+  interventoId: number | string,
+  dati: {
+    data_proposta_admin?: string;
+    usa_data_cliente?: boolean;
+  }
+): Observable<any> {
+  return this.http.put(
+    `${this.adminApiUrl}/${interventoId}/proponi-data`,
+    dati,
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+adminRifiutaIntervento(
+  interventoId: number | string
+): Observable<any> {
+  return this.http.put(
+    `${this.adminApiUrl}/${interventoId}/rifiuta`,
+    {},
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+clienteRispondeData(
+  interventoId: number | string,
+  dati: {
+    azione: 'accetta_data' | 'proponi_nuova_data' | 'annulla_intervento';
+    nuova_data?: string;
+  }
+): Observable<any> {
+  return this.http.put(
+    `${this.apiUrl}/${interventoId}/risposta-cliente`,
+    dati,
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
 }

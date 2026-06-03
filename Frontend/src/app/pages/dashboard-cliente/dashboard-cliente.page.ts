@@ -63,7 +63,8 @@ export class DashboardClientePage {
 
   constructor(
     private interventiService: InterventiService,
-    private preventiviService: PreventiviService // INIETTA IL SERVICE
+    private preventiviService: PreventiviService,
+    
   ) {
     addIcons({ arrowBackOutline, documentTextOutline, constructOutline });
   }
@@ -100,4 +101,6 @@ export class DashboardClientePage {
       }
     });
   }
+
+  
 }

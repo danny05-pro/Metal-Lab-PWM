@@ -53,15 +53,25 @@
           </ion-card-header>
           <ion-card-content>
            @for (preventivo of preventivi; track preventivo.id) {
-            <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-admin', preventivo.id]">
+            <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-admin', preventivo.id]" routerDirection="forward">
               <div class="item-header">
-                <h3>{{ preventivo.servizio }}</h3>
-                <ion-chip color="warning">{{ preventivo.stato_admin }}</ion-chip>
+                <h3>{{ preventivo.descrizione }}</h3>
+                
+                
+                <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
+                  
+                  <ion-chip 
+                    [color]="preventivo.stato_risposta_cliente === 'Accettato' ? 'success' : (preventivo.stato_risposta_cliente === 'Rifiutato' ? 'danger' : 'warning')" 
+                    style="margin: 0; font-size: 0.75rem;">
+                    {{ preventivo.stato_risposta_cliente }}
+                  </ion-chip>
+                </div>
+
               </div>
               <p>Cliente: {{ preventivo.cliente_nome }} {{ preventivo.cliente_cognome }} | Preventivo #{{ preventivo.id }}</p>
             </div>
            } @empty {
-             <div class="empty-section">Nessun nuovo preventivo da gestire.</div>
+             <div class="empty-section">Nessun preventivo da gestire.</div>
            }
           </ion-card-content>
         </ion-card>

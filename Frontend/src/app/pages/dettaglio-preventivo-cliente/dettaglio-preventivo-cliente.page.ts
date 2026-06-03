@@ -1,15 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Necessario per @if, @for
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // CORRETTO: import da @angular/router
+import { CommonModule } from '@angular/common'; 
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'; 
 
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
   IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
 } from '@ionic/angular/standalone';
 
+import {AlertController } from '@ionic/angular';
+
 import { addIcons } from 'ionicons';
 import { arrowBackOutline } from 'ionicons/icons';
-import { Preventivo } from '../../models/preventivo.model';
+
+// Importiamo il service
+import { PreventiviService } from '../../services/preventivi.service';
 
 @Component({
   selector: 'app-dettaglio-preventivo-cliente',
@@ -17,50 +21,105 @@ import { Preventivo } from '../../models/preventivo.model';
   styleUrls: ['./dettaglio-preventivo-cliente.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    RouterLink,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonChip
+    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
+    IonButtons, IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle,
+    IonCardContent, IonChip
   ]
 })
 export class DettaglioPreventivoClientePage implements OnInit {
 
   preventivoId = '';
-  preventivo: Preventivo | null = null; 
+  preventivo: any = null; // <-- CORREZIONE 1: "any" sblocca l'errore di Angular!
+  caricamento = true;
 
   constructor(
     private route: ActivatedRoute, 
-    private router: Router
+    private router: Router,
+    private alertController: AlertController,
+    private preventiviService: PreventiviService 
   ) {
     addIcons({ arrowBackOutline });
     this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
   }
 
   ngOnInit() {
-    // Qui in futuro caricherai i dati reali.
-    // Per ora, se vuoi vedere la pagina renderizzata, 
-    // potresti inizializzare preventivo con dati mock.
+    if (this.preventivoId) {
+      this.caricaPreventivo();
+    }
   }
 
-  accettaPreventivo() {
-    if (!this.preventivo) return;
-    this.preventivo.stato_risposta_cliente = 'Accettato';
-    this.router.navigate(['/dashboard-cliente']);
+  caricaPreventivo() {
+    this.caricamento = true;
+    this.preventiviService.getPreventivoClienteById(this.preventivoId).subscribe({
+      next: (dati: any) => {
+        this.preventivo = dati;
+        this.caricamento = false;
+      },
+      error: (err: any) => {
+        console.error('Errore recupero preventivo', err);
+        this.caricamento = false;
+      }
+    });
   }
 
-  rifiutaPreventivo() {
-    if (!this.preventivo) return;
-    this.preventivo.stato_risposta_cliente = 'Rifiutato';
-    this.router.navigate(['/dashboard-cliente']);
+  // <-- CORREZIONE 2: Ora i bottoni chiamano il VERO database
+  async accettaPreventivo() {
+    const alert = await this.alertController.create({
+      cssClass: 'custom-dark-alert',
+      header: 'Conferma Accettazione',
+      message: `Vuoi accettare ufficialmente il preventivo di € ${this.preventivo.prezzo_proposto}?`,
+      buttons: [
+        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
+        {
+          text: 'Accetta', 
+          cssClass: 'dark-alert-btn-confirm',
+          handler: () => {
+            this.eseguiRisposta('accetta');
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
+
+  async rifiutaPreventivo() {
+    const alert = await this.alertController.create({
+      cssClass: 'custom-dark-alert',
+      header: 'Rifiuta Preventivo',
+      message: 'Sei sicuro di voler rifiutare questa proposta? L\'azione è irreversibile.',
+      buttons: [
+        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
+        {
+          text: 'Rifiuta', 
+          role: 'destructive', 
+          cssClass: 'dark-alert-btn-danger',
+          handler: () => {
+            this.eseguiRisposta('rifiuta');
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+   private eseguiRisposta(azione: 'accetta' | 'rifiuta') {
+    this.preventiviService.rispondiPreventivo(this.preventivoId, azione).subscribe({
+      next: () => {
+        // Appena il server risponde "OK", torniamo alla dashboard!
+        this.router.navigate(['/dashboard-cliente']);
+      },
+      error: async (err) => {
+        console.error('Errore risposta preventivo:', err);
+        const alertError = await this.alertController.create({
+          cssClass: 'custom-dark-alert',
+          header: 'Errore',
+          message: 'Impossibile inviare la risposta. Riprova.',
+          buttons: ['OK']
+        });
+        await alertError.present();
+      }
+    });
+  }
+
+
 }
