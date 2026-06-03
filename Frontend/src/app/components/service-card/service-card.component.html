@@ -23,19 +23,8 @@
       </ion-badge>
     </div>
 
-    <ion-button
-      expand="block"
-      fill="outline"
-      color="warning"
-      (click)="onTogglePreferito(servizio)">
-
-      <ion-icon
-        slot="start"
-        [name]="servizio.preferito ? 'heart' : 'heart-outline'">
-      </ion-icon>
-
-      {{ servizio.preferito ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti' }}
-
+    <ion-button fill="clear" class="btn-glass-favorite" (click)="onTogglePreferito(servizio)">
+      <ion-icon slot="icon-only" [name]="servizio.preferito ? 'heart' : 'heart-outline'"></ion-icon>
     </ion-button>
   </ion-card-content>
 

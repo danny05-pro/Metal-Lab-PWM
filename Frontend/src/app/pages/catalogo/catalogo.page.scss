@@ -21,16 +21,27 @@ ion-content {
   line-height: 1.6;
 }
 
-  .catalog-segment {
-  max-width: 720px;
-  margin: 20px auto 30px;
-  padding: 0 18px;
+.catalog-segment {
+  max-width: 600px;
+  margin: 20px auto 40px;
+  background: #151b23; /* Sfondo scuro del contenitore */
+  border-radius: 16px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 
-    ion-segment-button {
-      --color: #b7c0cc;         /* Colore del testo NON selezionato */
-      --color-checked: #ffffff; /* Colore del testo SELEZIONATO */
-    }
+  ion-segment-button {
+    --color: #8b95a5; /* Grigio spento quando non selezionato */
+    --color-checked: #f5a623; /* Ambra quando selezionato */
+    --indicator-color: rgba(245, 166, 35, 0.15); /* Sfondo ambra semitrasparente */
+    --indicator-box-shadow: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 12px;
+    min-height: 40px;
+    margin: 0 2px;
+    transition: 0.3s ease;
   }
+}
 
 
 .catalog-grid {
