@@ -92,6 +92,46 @@ db.serialize(() => {
     )
   `);
 
+  db.run(`
+  CREATE TABLE IF NOT EXISTS preventivi (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    
+    -- Collegamento con la tabella users
+    cliente_id INTEGER NOT NULL,
+    
+    -- Dati tecnici raccolti dal form della dashboard cliente
+    descrizione TEXT NOT NULL,
+    servizio TEXT NOT NULL,
+    materiale TEXT NOT NULL,
+    dimensioni TEXT NOT NULL,
+    finitura TEXT,
+    allegato TEXT,
+    
+    -- Prezzo inserito dall'admin (nasce vuoto NULL)
+    prezzo_proposto REAL DEFAULT NULL,
+    
+    -- 1. STATO LATO ADMIN (Gestione interna)
+    stato_admin TEXT NOT NULL DEFAULT 'Da valutare' CHECK (
+      stato_admin IN (
+        'Da valutare',      -- Il cliente ha appena inviato la richiesta
+        'Prezzo proposto',  -- L'admin ha valutato la fattibilità e ha inserito una cifra
+        'Rifiutato'         -- L'admin scarta la richiesta (es. lavorazione non fattibile)
+      )
+    ),
+    
+    -- 2. STATO LATO CLIENTE (Risposta all'offerta economica)
+    stato_risposta_cliente TEXT NOT NULL DEFAULT 'In attesa' CHECK (
+      stato_risposta_cliente IN (
+        'In attesa',  -- Il prezzo non c'è ancora, o il cliente non l'ha ancora letto
+        'Accettato',  -- Il cliente conferma il preventivo e si può procedere
+        'Rifiutato'   -- Il cliente ritiene il prezzo troppo alto e rifiuta
+      )
+    ),
+    
+    -- Vincolo di integrità referenziale
+    FOREIGN KEY (cliente_id) REFERENCES users(id) ON DELETE CASCADE
+  )
+`);
   seedUtenti();
 
 });

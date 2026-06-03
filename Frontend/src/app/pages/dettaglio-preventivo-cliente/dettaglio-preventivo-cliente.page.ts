@@ -1,26 +1,15 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Necessario per @if, @for
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // CORRETTO: import da @angular/router
 
 import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonChip
+  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
+  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-
-import {
-  arrowBackOutline
-} from 'ionicons/icons';
+import { arrowBackOutline } from 'ionicons/icons';
+import { Preventivo } from '../../models/preventivo.model';
 
 @Component({
   selector: 'app-dettaglio-preventivo-cliente',
@@ -28,6 +17,7 @@ import {
   styleUrls: ['./dettaglio-preventivo-cliente.page.scss'],
   standalone: true,
   imports: [
+    CommonModule,
     RouterLink,
     IonContent,
     IonHeader,
@@ -43,46 +33,34 @@ import {
     IonChip
   ]
 })
-export class DettaglioPreventivoClientePage {
+export class DettaglioPreventivoClientePage implements OnInit {
 
   preventivoId = '';
+  preventivo: Preventivo | null = null; 
 
-  preventivo = {
-    id: 1,
-    descrizione: 'Struttura metallica industriale',
-    servizio: 'Carpenteria metallica',
-    materiale: 'Acciaio zincato',
-    dimensioni: '3x2m',
-    finitura: 'Zincatura',
-    allegato: 'disegno-struttura.pdf',
-    dataRichiesta: '2026-05-10',
-    stato: 'In lavorazione',
-    prezzoProposto: 850
-  };
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router
+  ) {
+    addIcons({ arrowBackOutline });
+    this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
+  }
 
-  constructor(private route: ActivatedRoute, private router: Router) {
-
-    addIcons({
-      arrowBackOutline
-    });
-
-    this.preventivoId =
-      this.route.snapshot.paramMap.get('id') || '';
-
+  ngOnInit() {
+    // Qui in futuro caricherai i dati reali.
+    // Per ora, se vuoi vedere la pagina renderizzata, 
+    // potresti inizializzare preventivo con dati mock.
   }
 
   accettaPreventivo() {
-    this.preventivo.stato = 'Accettato dal cliente';
-    setTimeout(() => {
-      this.router.navigate(['/dashboard-cliente']);
-    }, 5);
+    if (!this.preventivo) return;
+    this.preventivo.stato_risposta_cliente = 'Accettato';
+    this.router.navigate(['/dashboard-cliente']);
   }
 
   rifiutaPreventivo() {
-    this.preventivo.stato = 'Rifiutato dal cliente';
-    setTimeout(() => {
-      this.router.navigate(['/dashboard-cliente']);
-    }, 5);
+    if (!this.preventivo) return;
+    this.preventivo.stato_risposta_cliente = 'Rifiutato';
+    this.router.navigate(['/dashboard-cliente']);
   }
-
 }

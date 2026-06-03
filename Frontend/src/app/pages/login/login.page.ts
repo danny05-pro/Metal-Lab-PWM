@@ -1,11 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import {
   IonHeader,
@@ -25,13 +20,10 @@ import {
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import {
-  arrowBackOutline,
-  alertCircleOutline
-} from 'ionicons/icons';
+import { arrowBackOutline, alertCircleOutline } from 'ionicons/icons';
 
-// 1. Importiamo il Service di Autenticazione
-import { AuthService } from '../../services/auth.service';
+// IMPORT CORRETTO E SICURO
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -59,14 +51,11 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginPage {
 
-  modalita: 'login' | 'register' = 'login';
   email = '';
   password = '';
   returnUrl = '/home';
-  
   erroreLogin = ''; 
 
-  // 2. Iniettiamo l'AuthService invece di HttpClient
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -77,15 +66,11 @@ export class LoginPage {
       alertCircleOutline
     });
 
-    this.returnUrl =
-      this.route.snapshot.queryParamMap.get('returnUrl')
-      || '/home';
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/home';
   }
   
   accedi() {
-    if (!this.loginValido) {
-      return;
-    }
+    if (!this.loginValido) return;
 
     this.erroreLogin = ''; 
 
@@ -94,7 +79,6 @@ export class LoginPage {
       password: this.password
     };
 
-    // 3. Usiamo il service per fare la chiamata
     this.authService.login(body).subscribe({
       next: (response: any) => {
         console.log('Login riuscito:', response);
@@ -105,11 +89,12 @@ export class LoginPage {
         
         sessionStorage.setItem('utenteLoggato', 'true');
         
-        // Estraiamo il ruolo (supporta sia che dal server arrivi come 'user' o come 'utente')
+        // Salviamo il ruolo per la logica presente nella HomePage
         const ruolo = response.utente?.ruolo || response.user?.ruolo || '';
         sessionStorage.setItem('ruoloUtente', ruolo);
 
-        this.router.navigate([this.returnUrl]);
+        // Ora torniamo alla home, dove la logica dei bottoni farà il resto
+        this.router.navigate(['/home']);
       },
       error: (err: any) => {
         console.error('Errore login:', err);

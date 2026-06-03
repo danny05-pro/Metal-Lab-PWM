@@ -1,123 +1,104 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="dark">
     <ion-buttons slot="start">
-
       <ion-button routerLink="/dashboard-cliente">
         <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
-
     </ion-buttons>
-    <ion-title>
-      Dashboard Cliente
-    </ion-title>
+    <ion-title>Dettaglio Preventivo</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <section class="detail-header">
-    <h1>
-      Preventivo #{{ preventivoId }}
-    </h1>
-    <p>
-      Riepilogo della tua richiesta e stato di avanzamento.
-    </p>
-  </section>
+  @if (preventivo) {
+    <section class="detail-header">
+      <h1>Preventivo #{{ preventivoId }}</h1>
+      <p>Riepilogo della tua richiesta e stato di avanzamento.</p>
+    </section>
 
-  <ion-card class="detail-card">
-    <ion-card-header>
-      <ion-card-title>
-        Stato Preventivo
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <div class="info-row">
-        <span>Data richiesta</span>
-        <strong>{{ preventivo.dataRichiesta }}</strong>
-      </div>
-      <div class="info-row">
-        <span>Stato</span>
-        <ion-chip>
-          {{ preventivo.stato }}
-        </ion-chip>
-      </div>
-
-      @if (preventivo.prezzoProposto) {
-        <div class="price-box">
-          Prezzo proposto da Metal Lab:
-          <strong>€ {{ preventivo.prezzoProposto }}</strong>
-        </div>
-      } @else {
-        <div class="price-box empty">
-          Nessun prezzo ancora proposto.
-        </div>
-      }
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card class="detail-card">
-    <ion-card-header>
-      <ion-card-title>
-        Dati Tecnici Richiesta
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <div class="description-box">
-        <h3>Descrizione</h3>
-        <p>{{ preventivo.descrizione }}</p>
-      </div>
-      <div class="info-row">
-        <span>Servizio richiesto</span>
-        <strong>{{ preventivo.servizio }}</strong>
-      </div>
-      <div class="info-row">
-        <span>Materiale</span>
-        <strong>{{ preventivo.materiale }}</strong>
-      </div>
-      <div class="info-row">
-        <span>Dimensioni</span>
-        <strong>{{ preventivo.dimensioni }}</strong>
-      </div>
-      <div class="info-row">
-        <span>Finitura</span>
-        <strong>{{ preventivo.finitura }}</strong>
-      </div>
-      <div class="info-row">
-        <span>Allegato tecnico</span>
-        <strong>{{ preventivo.allegato }}</strong>
-      </div>
-    </ion-card-content>
-  </ion-card>
-
-  @if (preventivo.prezzoProposto) {
     <ion-card class="detail-card">
       <ion-card-header>
-        <ion-card-title>
-          Risposta alla proposta
-        </ion-card-title>
+        <ion-card-title>Stato Preventivo</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <p class="response-text">
-          Puoi accettare o rifiutare il prezzo proposto da Metal Lab.
-        </p>
-
-        <div class="actions">
-          <ion-button
-            expand="block"
-            class="btn-glass-accept"
-            (click)="accettaPreventivo()">
-            Accetta preventivo
-          </ion-button>
-
-          <ion-button
-            expand="block"
-            class="btn-glass-reject"
-            (click)="rifiutaPreventivo()">
-            Rifiuta preventivo
-          </ion-button>
+        <div class="info-row">
+          <span>Stato Amministrazione</span>
+          <ion-chip>{{ preventivo.stato_admin }}</ion-chip>
         </div>
         
+        <div class="info-row">
+          <span>La tua risposta</span>
+          <ion-chip>{{ preventivo.stato_risposta_cliente }}</ion-chip>
+        </div>
+
+        @if (preventivo.prezzoProposto) {
+          <div class="price-box">
+            Prezzo proposto da Metal Lab:
+            <strong>€ {{ preventivo.prezzoProposto }}</strong>
+          </div>
+        } @else {
+          <div class="price-box empty">
+            Nessun prezzo ancora proposto.
+          </div>
+        }
       </ion-card-content>
     </ion-card>
-  }
 
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Dati Tecnici Richiesta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="description-box">
+          <h3>Descrizione</h3>
+          <p>{{ preventivo.descrizione }}</p>
+        </div>
+        <div class="info-row">
+          <span>Servizio richiesto</span>
+          <strong>{{ preventivo.servizio }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Materiale</span>
+          <strong>{{ preventivo.materiale }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Dimensioni</span>
+          <strong>{{ preventivo.dimensioni }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Finitura</span>
+          <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Allegato tecnico</span>
+          <strong>{{ preventivo.allegato || 'Nessun allegato' }}</strong>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    @if (preventivo.stato_admin === 'Prezzo proposto' && preventivo.stato_risposta_cliente === 'In attesa') {
+      <ion-card class="detail-card">
+        <ion-card-header>
+          <ion-card-title>Risposta alla proposta</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p class="response-text">
+            Puoi accettare o rifiutare il prezzo proposto da Metal Lab.
+          </p>
+          <div class="actions">
+            <ion-button expand="block" class="btn-glass-accept" (click)="accettaPreventivo()">
+              Accetta preventivo
+            </ion-button>
+            <ion-button expand="block" class="btn-glass-reject" (click)="rifiutaPreventivo()">
+              Rifiuta preventivo
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+  } @else {
+    <div class="ion-padding ion-text-center">
+      <p>Caricamento preventivo in corso...</p>
+    </div>
+  }
 </ion-content>

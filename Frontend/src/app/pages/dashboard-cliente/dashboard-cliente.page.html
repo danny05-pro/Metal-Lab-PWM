@@ -57,7 +57,9 @@
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]">
                 <div class="item-header">
                   <h3>{{ preventivo.descrizione }}</h3>
-                  <ion-chip [class.status-completed]="preventivo.stato === 'Completato'">{{ preventivo.stato }}</ion-chip>
+                  <ion-chip>
+                    {{ preventivo.stato_admin }} | {{ preventivo.stato_risposta_cliente }}
+                  </ion-chip>
                 </div>
                 <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
               </div>

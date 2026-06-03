@@ -54,46 +54,43 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/interventi/interventi.page')
     .then( m => m.InterventiPage)
   },
- {
-  path: 'dettaglio-preventivo-admin/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page')
-      .then(m => m.DettaglioPreventivoAdminPage)
-},
-  
+  {
+    path: 'dettaglio-preventivo-admin/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page')
+        .then(m => m.DettaglioPreventivoAdminPage)
+  },
   {
     path: 'gestione-dipendenti',
     loadComponent: () => import('./pages/gestione-dipendenti/gestione-dipendenti.page')
     .then( m => m.GestioneDipendentiPage)
   },
   {
-  path: 'dettaglio-preventivo-cliente/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page')
-      .then(m => m.DettaglioPreventivoClientePage)
-},
-{
-  path: 'dettaglio-intervento-cliente/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page')
-      .then(m => m.DettaglioInterventoClientePage)
-},
-{
-  path: 'dettaglio-intervento-admin/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page')
-      .then(m => m.DettaglioInterventoAdminPage)
-},
-{
-  path: 'dettaglio-intervento-dipendente/:id',
-  loadComponent: () =>
-    import('./pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page')
-      .then(m => m.DettaglioInterventoDipendentePage)
-},
+    path: 'dettaglio-preventivo-cliente/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page')
+        .then(m => m.DettaglioPreventivoClientePage)
+  },
+  {
+    path: 'dettaglio-intervento-cliente/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page')
+        .then(m => m.DettaglioInterventoClientePage)
+  },
+  {
+    path: 'dettaglio-intervento-admin/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page')
+        .then(m => m.DettaglioInterventoAdminPage)
+  },
+  {
+    path: 'dettaglio-intervento-dipendente/:id',
+    loadComponent: () =>
+      import('./pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page')
+        .then(m => m.DettaglioInterventoDipendentePage)
+  },
   {
     path: '**',
     redirectTo: 'home'
   }
-
-
 ];

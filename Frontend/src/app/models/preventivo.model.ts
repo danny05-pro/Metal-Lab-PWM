@@ -1,6 +1,8 @@
 export interface Preventivo {
   id: number;
 
+  cliente_id?: number;
+
   descrizione: string;
 
   servizio: string;
@@ -11,20 +13,28 @@ export interface Preventivo {
 
   finitura: string;
 
-  stato:
-    | 'In attesa'
+  // --- STATO LATO ADMIN ---
+  stato_admin:
+    | 'Da valutare'
     | 'Prezzo proposto'
-    | 'Accettato dal cliente'
-    | 'Rifiutato'
-    | 'Rifiutato dal cliente'
-    | 'In lavorazione'
-    | 'Completato';
+    | 'Rifiutato';
 
-  dataRichiesta: string;
+  // --- STATO LATO CLIENTE ---
+  stato_risposta_cliente:
+    | 'In attesa'
+    | 'Accettato'
+    | 'Rifiutato';
 
-  cliente?: string;
+  // I campi uniti tramite JOIN (quando l'admin legge i dati)
+  cliente?: string; 
 
   emailCliente?: string;
+
+  cliente_nome?: string;
+
+  cliente_cognome?: string;
+
+  cliente_telefono?: string;
 
   allegato?: string;
 

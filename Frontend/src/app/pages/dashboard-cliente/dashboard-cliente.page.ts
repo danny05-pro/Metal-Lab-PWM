@@ -26,6 +26,8 @@ import { arrowBackOutline } from 'ionicons/icons';
 import { Preventivo } from 'src/app/models/preventivo.model';
 import { Ordine } from 'src/app/models/ordine.model';
 import { InterventiService } from '../../services/interventi.service';
+// IMPORTA IL SERVICE DEI PREVENTIVI
+import { PreventiviService } from '../../services/preventivi.service';
 
 @Component({
   selector: 'app-dashboard-cliente',
@@ -54,97 +56,53 @@ import { InterventiService } from '../../services/interventi.service';
 })
 export class DashboardClientePage { 
 
-  // --- VARIABILI COLLEGATE AL DATABASE (REALI) ---
   tuttiGliInterventi: any[] = [];
   interventiFuturi: any[] = [];
+  
+  // ARRAY VUOTO (popolato dal DB)
+  preventivi: Preventivo[] = [];
 
-  // --- VARIABILI MOCKATE ---
-  preventivi: Preventivo[] = [
-    {
-      id: 1,
-      descrizione: 'Struttura metallica industriale',
-      servizio: 'Saldatura',
-      materiale: 'Acciaio',
-      dimensioni: '3x2m', 
-      finitura: 'Zincatura',
-      stato: 'In lavorazione',
-      dataRichiesta: '2026-05-10'
-    },
-    {
-      id: 2,
-      descrizione: 'Cancello automatico',
-      servizio: 'Taglio laser',
-      materiale: 'Alluminio',
-      dimensioni: '2x1m',
-      finitura: 'Verniciatura',
-      stato: 'Completato',
-      dataRichiesta: '2026-05-01'
-    }
-  ];
+  // Manteniamo questi mock solo per non rompere l'UI attuale
+  ordini: Ordine[] = []; 
+  storicoOrdini: Ordine[] = [];
 
-  ordini: Ordine[] = [
-    {
-      id: 1,
-      descrizione: 'Ordine profilati metallici',
-      stato: 'Pronto per il ritiro', 
-      dataConsegnaPrevista: '2026-05-25'
-    },
-    {
-      id: 2,
-      descrizione: 'Bulloneria speciale ad alta resistenza',
-      stato: 'In lavorazione', 
-      dataConsegnaPrevista: '2026-05-28'
-    }
-  ];
-
-  storicoOrdini: Ordine[] = [
-    {
-      id: 101,
-      descrizione: 'Fornitura staffe di giunzione V1',
-      stato: 'Consegnato', 
-      dataConsegnaPrevista: '2026-04-14'
-    },
-    {
-      id: 102,
-      descrizione: 'Piastre preforate su misura',
-      stato: 'Consegnato', 
-      dataConsegnaPrevista: '2026-03-28'
-    }
-  ];
-
-  constructor(private interventiService: InterventiService) {
+  constructor(
+    private interventiService: InterventiService,
+    private preventiviService: PreventiviService // INIETTA IL SERVICE
+  ) {
     addIcons({ arrowBackOutline });
   }
 
-  // Scatta automaticamente ogni volta che entri in questa pagina
   ionViewWillEnter() {
     this.caricaInterventi();
+    this.caricaPreventivi(); // CHIAMA IL CARICAMENTO DATI REALI
   }
 
   caricaInterventi() {
     this.interventiService.getInterventiCliente().subscribe({
       next: (dati) => {
         this.tuttiGliInterventi = dati;
-
         const oggi = new Date();
         oggi.setHours(0, 0, 0, 0);
-
         this.interventiFuturi = dati.filter(intervento => {
-         const dataDaUsare =
-  intervento.data_accettata ||
-  intervento.data_proposta_admin ||
-  intervento.data_proposta_cliente ||
-  intervento.data_richiesta;
-
-if (!dataDaUsare) {
-  return false;
-}
-
-const dataIntervento = new Date(dataDaUsare);
-          return dataIntervento >= oggi;
+          const dataDaUsare = intervento.data_accettata || intervento.data_proposta_admin || intervento.data_proposta_cliente || intervento.data_richiesta;
+          if (!dataDaUsare) return false;
+          return new Date(dataDaUsare) >= oggi;
         });
       },
       error: (err) => console.error('Errore caricamento interventi', err)
+    });
+  }
+
+  // NUOVA FUNZIONE PER CARICARE I PREVENTIVI DAL DB
+  caricaPreventivi() {
+    this.preventiviService.getPreventivi().subscribe({
+      next: (dati) => {
+        this.preventivi = dati;
+      },
+      error: (err) => {
+        console.error('Errore caricamento preventivi:', err);
+      }
     });
   }
 }

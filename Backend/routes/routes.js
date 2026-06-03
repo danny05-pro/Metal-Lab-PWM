@@ -5,7 +5,7 @@ const authController = require('../controllers/authController');
 const dipendentiController = require('../controllers/dipendentiController');
 // 1. IMPORTIAMO IL NUOVO CONTROLLER
 const interventiController = require('../controllers/interventiController'); 
-
+const preventiviController = require('../controllers/preventiviController');
 // Middlewares
 const authMiddleware = require('../middlewares/authMiddleware');
 
@@ -34,6 +34,21 @@ router.get(
   authMiddleware.verifyToken, 
   authMiddleware.isCliente, 
   interventiController.getInterventiCliente
+);
+
+router.post(
+  '/preventivi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  preventiviController.creaPreventivo
+);
+
+// Aggiungi questa rotta sotto la POST /preventivi
+router.get(
+  '/preventivi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  preventiviController.getPreventiviCliente
 );
 
 // ==========================================
