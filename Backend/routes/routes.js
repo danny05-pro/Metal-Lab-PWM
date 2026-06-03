@@ -75,4 +75,20 @@ router.get(
   authMiddleware.isAdmin,
   interventiController.getInterventoById
 );
+
+
+// ==========================================
+// AREA ADMIN: GESTIONE INTERVENTI E PREVENTIVI
+// ==========================================
+
+
+
+// NUOVA ROTTA: Recupera tutti i preventivi per l'admin
+router.get(
+  '/admin/preventivi',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  preventiviController.getPreventiviAdmin
+);
+
 module.exports = router;

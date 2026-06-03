@@ -26,3 +26,31 @@ exports.findByClienteId = (cliente_id) => {
     );
   });
 };
+
+
+
+exports.findAllForAdmin = () => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `
+        SELECT
+          preventivi.*,
+          users.nome AS cliente_nome,
+          users.cognome AS cliente_cognome,
+          users.email AS cliente_email,
+          users.telefono AS cliente_telefono
+        FROM preventivi
+        JOIN users ON users.id = preventivi.cliente_id
+        ORDER BY preventivi.id DESC
+      `,
+      [],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      }
+    );
+  });
+};

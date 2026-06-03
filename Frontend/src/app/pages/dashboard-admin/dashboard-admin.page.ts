@@ -4,21 +4,41 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
 import { AlertController } from '@ionic/angular';
 
+
+
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonCard,
-  IonCardContent, IonCardHeader, IonCardTitle, IonGrid,
-  IonRow, IonCol, IonChip, IonButton, IonButtons, IonIcon, IonModal
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonChip,
+  IonButton,
+  IonButtons,
+  IonIcon,
+  IonModal
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
 import {
-  arrowBackOutline, createOutline, addOutline,
-  peopleOutline, saveOutline, trashOutline
+  arrowBackOutline,
+  createOutline,
+  addOutline,
+  peopleOutline,
+  saveOutline,
+  trashOutline
 } from 'ionicons/icons';
 
 import { Intervento } from 'src/app/models/intervento.model';
 import { Preventivo } from 'src/app/models/preventivo.model';
 import { InterventiService } from 'src/app/services/interventi.service';
+import { PreventiviService } from 'src/app/services/preventivi.service';
 
 interface VoceCatalogo {
   id: number;
@@ -42,50 +62,38 @@ interface EventoStorico {
   styleUrls: ['./dashboard-admin.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, RouterLink, FormsModule, IonContent, IonHeader,
-    IonTitle, IonToolbar, IonCard, IonCardContent, IonCardHeader,
-    IonCardTitle, IonGrid, IonRow, IonCol, IonChip, IonButton,
-    IonButtons, IonIcon, IonModal
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonChip,
+    IonButton,
+    IonButtons,
+    IonIcon,
+    IonModal
   ]
 })
 export class DashboardAdminPage implements OnInit {
 
-  // Metriche globali
+  // Metriche globali (inizializzate a 0)
   totalePreventivi = 0;
   ordiniAttivi = 0;
   interventiAperti = 0;
   vociCatalogo = 0; 
 
-  // --- VARIABILI CHE MANCAVANO (quelle che causavano il crash) ---
-  tuttiGliInterventi: any[] = [];
-  interventiFuturi: any[] = [];
-  ordini: any[] = [];
-  storicoOrdini: any[] = [];
-  // -------------------------------------------------------------
-
+  // Array pronti per il backend
   interventi: Intervento[] = [];
-  preventivi: Preventivo[] = [{
-      id: 1,
-      cliente_id: 1,
-      descrizione: 'Struttura metallica industriale',
-      servizio: 'Saldatura',
-      materiale: 'Acciaio',
-      dimensioni: '3x2m',
-      finitura: 'Zincatura',
-      stato_admin: 'Da valutare',
-      stato_risposta_cliente: 'In attesa'
-    },
-    {
-      id: 2,
-      cliente_id: 2,
-      descrizione: 'Cancello automatico',
-      servizio: 'Taglio laser',
-      materiale: 'Alluminio',
-      dimensioni: '2x1m',
-      finitura: 'Verniciatura',
-      stato_admin: 'Prezzo proposto',
-      stato_risposta_cliente: 'In attesa'
-    }];
+  preventivi: Preventivo[] = [];
   catalogo: VoceCatalogo[] = [];
   storicoGlobale: EventoStorico[] = [];
 
@@ -94,44 +102,125 @@ export class DashboardAdminPage implements OnInit {
   formCatalogo: Partial<VoceCatalogo> = {};
 
   constructor(
-    private alertController: AlertController,
-    private interventiService: InterventiService
-  ) {
-    addIcons({
-      arrowBackOutline, createOutline, addOutline,
-      peopleOutline, saveOutline, trashOutline
-    });
-  }
+  private alertController: AlertController,
+  private interventiService: InterventiService,
+  private preventiviService: PreventiviService
+) {
+  addIcons({
+    arrowBackOutline,
+    createOutline,
+    addOutline,
+    peopleOutline,
+    saveOutline,
+    trashOutline
+  });
+}
 
-  ngOnInit() {
-    this.caricaInterventiAdmin();
-  }
+ ngOnInit() {
+  this.caricaInterventiAdmin();
+  this.caricaPreventiviAdmin();
+}
+caricaInterventiAdmin() {
+  this.interventiService.getInterventiAdmin().subscribe({
+    next: (interventi) => {
+      this.interventi = interventi;
+      this.interventiAperti = interventi.filter(
+        intervento =>
+          intervento.stato_admin !== 'Rifiutato' &&
+          intervento.stato_risposta_cliente !== 'Intervento annullato' &&
+          intervento.stato_lavorazione !== 'Terminato'
+      ).length;
+    },
+    error: (err) => {
+      console.error('Errore caricamento interventi admin:', err);
+    }
+  });
+}
 
-  caricaInterventiAdmin() {
-    this.interventiService.getInterventiAdmin().subscribe({
-      next: (interventi) => {
-        // Sincronizziamo le variabili per l'HTML
-        this.interventi = interventi;
-        this.tuttiGliInterventi = interventi; 
+caricaPreventiviAdmin() {
+    this.preventiviService.getPreventiviAdmin().subscribe({
+      next: (datiReali) => {
+        this.preventivi = datiReali;
         
-        this.interventiAperti = interventi.filter(
-          intervento =>
-            intervento.stato_admin !== 'Rifiutato' &&
-            intervento.stato_risposta_cliente !== 'Intervento annullato' &&
-            intervento.stato_lavorazione !== 'Terminato'
-        ).length;
+        // Aggiorna anche il contatore in alto ("Preventivi Da Gestire")
+        this.totalePreventivi = datiReali.filter(p => p.stato_admin === 'Da valutare').length;
       },
       error: (err) => {
-        console.error('Errore caricamento interventi admin:', err);
+        console.error('Errore caricamento preventivi admin:', err);
       }
     });
   }
 
-  // --- LOGICA CATALOGO INVARIATA ---
-  modificaVoceCatalogo(id: number) { /* ... */ }
-  get formCatalogoValido(): boolean { /* ... */ return true; }
-  async eliminaVoceCatalogo(id: number) { /* ... */ }
-  aggiungiVoceCatalogo() { /* ... */ }
-  chiudiModale() { /* ... */ }
-  salvaVoceCatalogo() { /* ... */ }
+  // --- LOGICA CATALOGO ---
+  modificaVoceCatalogo(id: number) {
+    this.modalMode = 'modifica';
+    const voce = this.catalogo.find(v => v.id === id);
+    if (voce) {
+      this.formCatalogo = { ...voce };
+      this.isModalOpen = true;
+    }
+  }
+
+  get formCatalogoValido(): boolean {
+    return (
+      (this.formCatalogo.nome?.trim() ?? '') !== '' &&
+      (this.formCatalogo.categoria?.trim() ?? '') !== ''
+    );
+  }
+
+  async eliminaVoceCatalogo(id: number) {
+    const alert = await this.alertController.create({
+      cssClass: 'custom-dark-alert', 
+      header: 'Eliminare voce?',
+      message: 'Sei sicuro di voler eliminare questa voce dal catalogo?',
+      buttons: [
+        { text: 'Annulla', role: 'cancel' },
+        {
+          text: 'Elimina',
+          role: 'destructive',
+          handler: () => {
+            this.catalogo = this.catalogo.filter(v => v.id !== id);
+            this.vociCatalogo = this.catalogo.length; 
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  aggiungiVoceCatalogo() {
+    this.modalMode = 'crea';
+    this.formCatalogo = {}; 
+    this.isModalOpen = true;
+  }
+
+  chiudiModale() {
+    this.isModalOpen = false;
+  }
+
+  salvaVoceCatalogo() {
+    if (!this.formCatalogoValido) return;
+
+    if (this.modalMode === 'crea') {
+      const nuovaVoce: VoceCatalogo = {
+        id: Date.now(),
+        nome: this.formCatalogo.nome || '',
+        categoria: this.formCatalogo.categoria || '',
+        prezzoBase: this.formCatalogo.prezzoBase || 'Su preventivo'
+      };
+      this.catalogo.push(nuovaVoce);
+    } else {
+      const index = this.catalogo.findIndex(v => v.id === this.formCatalogo.id);
+      if (index !== -1) {
+        this.catalogo[index] = {
+          id: this.formCatalogo.id!,
+          nome: this.formCatalogo.nome || '',
+          categoria: this.formCatalogo.categoria || '',
+          prezzoBase: this.formCatalogo.prezzoBase || 'Su preventivo'
+        };
+      }
+    }
+    this.vociCatalogo = this.catalogo.length;
+    this.chiudiModale();
+  }
 }

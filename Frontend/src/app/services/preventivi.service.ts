@@ -36,4 +36,8 @@ export class PreventiviService {
   getPreventivi(): Observable<Preventivo[]> {
     return this.http.get<Preventivo[]>(this.apiUrl, { headers: this.getHeaders() });
   }
+  getPreventiviAdmin(): Observable<Preventivo[]> {
+    const adminUrl = 'http://localhost:3000/api/admin/preventivi';
+    return this.http.get<Preventivo[]>(adminUrl, { headers: this.getHeaders() });
+  }
 }

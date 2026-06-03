@@ -11,107 +11,154 @@
 
 <ion-content>
   <section class="dashboard-header">
-    <h1>Area Personale</h1>
-    <p>Benvenuto nel tuo pannello di controllo Metal Lab.</p>
+    <h1>Area Amministrativa</h1>
+    <p>Gestione globale della piattaforma, storico commesse e modifica listini.</p>
+    <div class="admin-actions">
+      <ion-button routerLink="/gestione-dipendenti">
+        <ion-icon slot="start" name="people-outline"></ion-icon>
+        Gestione Dipendenti
+      </ion-button>
+    </div>
   </section>
-
-  <div class="dashboard-actions">
-    <ion-button expand="block" routerLink="/preventivi">Richiedi Preventivo</ion-button>
-    <ion-button expand="block" routerLink="/interventi">Richiedi Intervento</ion-button>
-  </div>
 
   <ion-grid>
     <ion-row class="summary-row">
       <ion-col size="6" size-md="3">
         <div class="summary-card">
-          <span class="summary-value">{{ preventivi.length }}</span>
-          <span class="summary-label">Preventivi</span>
+          <span class="summary-value">{{ totalePreventivi }}</span>
+          <span class="summary-label">Preventivi Da Gestire</span>
         </div>
       </ion-col>
       <ion-col size="6" size-md="3">
         <div class="summary-card">
-          <span class="summary-value">{{ tuttiGliInterventi.length }}</span>
-          <span class="summary-label">Interventi</span>
+          <span class="summary-value">{{ ordiniAttivi }}</span>
+          <span class="summary-label">Ordini in Corso</span>
         </div>
       </ion-col>
       <ion-col size="6" size-md="3">
         <div class="summary-card">
-          <span class="summary-value">{{ ordini.length }}</span>
-          <span class="summary-label">Ordini in corso</span>
+          <span class="summary-value">{{ interventiAperti }}</span>
+          <span class="summary-label">Interventi Aperti</span>
         </div>
       </ion-col>
       <ion-col size="6" size-md="3">
         <div class="summary-card">
-          <span class="summary-value">{{ storicoOrdini.length }}</span>
-          <span class="summary-label">Storico Ordini</span>
+          <span class="summary-value">{{ vociCatalogo }}</span>
+          <span class="summary-label">Voci a Catalogo</span>
         </div>
       </ion-col>
     </ion-row>
 
     <ion-row class="details-row">
+      
       <ion-col size="12" size-md="6">
         <ion-card class="detail-section-card">
-          <ion-card-header><ion-card-title>I tuoi Preventivi</ion-card-title></ion-card-header>
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Preventivi</ion-card-title>
+          </ion-card-header>
           <ion-card-content>
-            @for (preventivo of preventivi; track preventivo.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]">
-                <div class="item-header">
-                  <h3>{{ preventivo.descrizione }}</h3>
-                  <ion-chip>
-                    {{ preventivo.stato_admin }} | {{ preventivo.stato_risposta_cliente }}
-                  </ion-chip>
-                </div>
-                <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
+           @for (preventivo of preventivi; track preventivo.id) {
+            <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-admin', preventivo.id]">
+              <div class="item-header">
+                <h3>{{ preventivo.servizio }}</h3>
+                <ion-chip color="warning">{{ preventivo.stato_admin }}</ion-chip>
               </div>
-            } @empty { <div class="empty-section">Nessun preventivo presente</div> }
+              <p>Cliente: {{ preventivo.cliente_nome }} {{ preventivo.cliente_cognome }} | Preventivo #{{ preventivo.id }}</p>
+            </div>
+           } @empty {
+             <div class="empty-section">Nessun nuovo preventivo da gestire.</div>
+           }
           </ion-card-content>
         </ion-card>
       </ion-col>
 
       <ion-col size="12" size-md="6">
         <ion-card class="detail-section-card">
-          <ion-card-header><ion-card-title>Interventi Tecnici</ion-card-title></ion-card-header>
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Interventi</ion-card-title>
+          </ion-card-header>
           <ion-card-content>
-            @for (intervento of tuttiGliInterventi; track intervento.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-cliente', intervento.id]">
+            @for (intervento of interventi; track intervento.id) {
+              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-admin', intervento.id]">
                 <div class="item-header">
                   <h3>{{ intervento.descrizione }}</h3>
-                  <ion-chip [color]="intervento.stato_admin === 'Accettato' ? 'success' : 'warning'">
+                  <ion-chip [color]="intervento.stato_admin === 'Data proposta' ? 'success' : 'warning'">
                     {{ intervento.stato_admin }}
                   </ion-chip>
                 </div>
-                <p>Luogo: {{ intervento.luogo }} | Richiesto il: {{ intervento.data_richiesta }}</p>
+                <p>Cliente: {{ intervento.cliente }} | Priorità: {{ intervento.priorita }}</p>
+                <p>Luogo: {{ intervento.luogo }}</p>
               </div>
             } @empty {
-              <div class="empty-section">Nessun intervento richiesto</div>
+              <div class="empty-section">Nessun intervento da gestire.</div>
             }
           </ion-card-content>
         </ion-card>
       </ion-col>
-      </ion-row>
 
-    <ion-row>
       <ion-col size="12">
-        <ion-card class="calendar-card">
-          <ion-card-header><ion-card-title>Calendario Attività</ion-card-title></ion-card-header>
+        <ion-card class="detail-section-card">
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Catalogo</ion-card-title>
+            <ion-button fill="clear" color="warning" size="small" (click)="aggiungiVoceCatalogo()">
+              <ion-icon slot="start" name="add-outline"></ion-icon>
+              Nuovo
+            </ion-button>
+          </ion-card-header>
           <ion-card-content>
-            @for (evento of interventiFuturi; track evento.id) {
-              <div class="calendar-item clickable" [routerLink]="['/dettaglio-intervento-cliente', evento.id]">
-                <div class="calendar-date">{{ evento.data_proposta_admin || 'In attesa' }}</div>
-                <div class="calendar-info">
-                  <h3>{{ evento.descrizione }}</h3>
-                  <p>Luogo: {{ evento.luogo }}</p>
-                  <ion-chip [color]="evento.stato_lavorazione === 'Terminato' ? 'success' : 'warning'">
-                    {{ evento.stato_lavorazione }}
-                  </ion-chip>
+            @for (voce of catalogo; track voce.id) {
+              <div class="dashboard-item">
+                <div class="item-header">
+                  <h3>{{ voce.nome }}</h3>
+                  <ion-chip>{{ voce.categoria }}</ion-chip>
+                </div>
+                <p>Prezzo Base: {{ voce.prezzoBase }}</p>
+                <div class="item-actions">
+                  <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
+                    <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
+                  </ion-button>
+                  <ion-button fill="clear" color="danger" size="small" (click)="eliminaVoceCatalogo(voce.id)">
+                    <ion-icon slot="start" name="trash-outline"></ion-icon> Elimina
+                  </ion-button>
                 </div>
               </div>
             } @empty {
-              <div class="empty-section">Nessuna attività pianificata.</div>
+              <div class="empty-section">Il catalogo è vuoto.</div>
             }
           </ion-card-content>
         </ion-card>
       </ion-col>
+
+      <ion-col size="12">
+        <ion-card class="detail-section-card calendar-card">
+          <ion-card-header>
+            <ion-card-title>Storico Globale Attività</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="timeline">
+              @for (evento of storicoGlobale; track evento.id) {
+                <div class="timeline-item">
+                  <div class="timeline-date"><strong>{{ evento.dataFormattata }}</strong></div>
+                  <div class="timeline-content">
+                    <h3>{{ evento.descrizione }}</h3>
+                    <p>Cliente: {{ evento.cliente }} | Tipo: {{ evento.tipo }}</p>
+                    <ion-chip [color]="evento.stato === 'Terminato' ? 'success' : 'primary'">
+                      {{ evento.stato }}
+                    </ion-chip>
+                  </div>
+                </div>
+              } @empty {
+                <div class="empty-section">Nessun evento registrato nello storico.</div>
+              }
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
     </ion-row>
   </ion-grid>
+
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
+    </ion-modal>
+
 </ion-content>

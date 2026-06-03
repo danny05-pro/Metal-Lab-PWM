@@ -41,3 +41,15 @@ exports.getPreventiviCliente = async (req, res) => {
     res.status(500).json({ message: 'Errore nel recupero preventivi.' });
   }
 };
+
+
+
+exports.getPreventiviAdmin = async (req, res) => {
+  try {
+    const preventivi = await Preventivo.findAllForAdmin();
+    return res.json(preventivi);
+  } catch (error) {
+    console.error('Errore nel recupero preventivi per admin:', error);
+    return res.status(500).json({ message: 'Errore nel caricamento dei dati.' });
+  }
+};
