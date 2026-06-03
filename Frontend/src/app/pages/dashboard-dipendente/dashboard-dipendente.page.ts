@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -23,13 +23,14 @@ import {
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, caretDownOutline } from 'ionicons/icons';
 import { Intervento } from 'src/app/models/intervento.model';
+import { InterventiService } from 'src/app/services/interventi.service';
 
 interface AppuntamentoCalendario {
   id: number;
   dataFormattata: string;
   descrizione: string;
-  dettaglio: string;
-  tipo?: string;
+  tipo: 'Intervento';
+  luogo: string;
 }
 
 interface Storico {
@@ -64,29 +65,66 @@ interface Storico {
     IonIcon
   ]
 })
-export class DashboardDipendentePage implements OnInit {
+export class DashboardDipendentePage {
 
   // Array inizializzati vuoti: i dati arriveranno dal backend
   appuntamentiCalendario: AppuntamentoCalendario[] = [];
   interventiAttivi: Intervento[] = [];
   storicoInterventi: Storico[] = [];
 
-  constructor() {
+  constructor( private interventiService: InterventiService) {
     addIcons({
       arrowBackOutline,
       caretDownOutline
     });
   }
 
-  ngOnInit() {
-    // TODO: Qui dovrai chiamare il tuo servizio per popolare gli array
-    // Esempio: this.caricaDati();
-  }
+ ionViewWillEnter() {
+  this.caricaInterventiAssegnati();
+}
 
   testoPrioritaData(intervento: Intervento): string {
     if (intervento.stato_lavorazione === 'Da programmare') {
       return `Da fissare - Priorità: ${intervento.priorita}`;
     }
-    return `${intervento.dataOra} - Priorità: ${intervento.priorita}`;
+    return `${intervento.data_accettata || intervento.data_proposta_admin || 'Da programmare'} - Priorità: ${intervento.priorita}`;
   }
+
+
+caricaInterventiAssegnati() {
+  this.interventiService.getInterventiDipendente().subscribe({
+    next: (interventi) => {
+      this.interventiAttivi = interventi.filter(
+        intervento => intervento.stato_lavorazione !== 'Terminato'
+      );
+
+      this.storicoInterventi = interventi
+        .filter(intervento => intervento.stato_lavorazione === 'Terminato')
+        .map(intervento => ({
+          id: intervento.id,
+          descrizione: intervento.descrizione,
+          stato: intervento.stato_lavorazione,
+          dataCompletamento: intervento.data_accettata || 'Non disponibile'
+        }));
+
+      this.appuntamentiCalendario = interventi
+        .filter(intervento => intervento.stato_lavorazione !== 'Terminato')
+        .map(intervento => ({
+          id: intervento.id,
+          dataFormattata:
+            intervento.data_accettata ||
+            intervento.data_proposta_admin ||
+            'Da programmare',
+          descrizione: intervento.descrizione,
+          tipo: 'Intervento' as const,
+          luogo: intervento.luogo
+        }));
+    },
+    error: (err) => {
+      console.error('Errore caricamento interventi dipendente:', err);
+    }
+  });
+}
+
+
 }

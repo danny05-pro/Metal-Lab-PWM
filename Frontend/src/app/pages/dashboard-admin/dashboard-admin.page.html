@@ -87,11 +87,24 @@
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-admin', intervento.id]">
                 <div class="item-header">
                   <h3>{{ intervento.descrizione }}</h3>
-                  <ion-chip [color]="intervento.stato_admin === 'Data proposta' ? 'success' : 'warning'">
-                    {{ intervento.stato_admin }}
-                  </ion-chip>
+              <ion-chip
+  [color]="
+    intervento.stato_lavorazione === 'Terminato'
+      ? 'success'
+      : intervento.stato_risposta_cliente === 'Intervento annullato' || intervento.stato_admin === 'Rifiutato'
+        ? 'danger'
+        : 'warning'
+  ">
+  {{
+    intervento.stato_lavorazione === 'Terminato'
+      ? intervento.stato_lavorazione
+      : intervento.stato_risposta_cliente === 'Intervento annullato'
+        ? intervento.stato_risposta_cliente
+        : intervento.stato_admin
+  }}
+</ion-chip>
                 </div>
-                <p>Cliente: {{ intervento.cliente }} | Priorità: {{ intervento.priorita }}</p>
+                <p>Cliente: {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }} | Priorità: {{ intervento.priorita }}</p>
                 <p>Luogo: {{ intervento.luogo }}</p>
               </div>
             } @empty {

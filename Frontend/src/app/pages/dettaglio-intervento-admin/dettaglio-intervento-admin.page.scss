@@ -174,6 +174,70 @@ ion-card-title {
     transform: translateY(-2px);
   }
 }
+.calendar-trigger-item {
+  --background: transparent;
+  --color: white;
+  --border-color: rgba(255, 255, 255, 0.12);
+  margin-bottom: 16px;
+}
+
+.calendar-trigger-item ion-label {
+  color: #f5a623 !important;
+  font-weight: 700;
+}
+
+.calendar-trigger-item ion-input,
+.calendar-trigger-item ion-textarea {
+  --color: white;
+  --placeholder-color: #8f9aaa;
+}
+
+ion-modal.dark-calendar-modal {
+  --width: max-content;
+  --height: max-content;
+  --background: transparent;
+  --box-shadow: none;
+  --border-radius: 24px;
+
+  align-items: center;
+  justify-content: center;
+
+  ion-datetime.custom-amber-calendar {
+    --background: #151b23;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+
+    color: #ffffff;
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255, 255, 255;
+
+    --ion-color-primary: #f5a623;
+    --ion-color-primary-rgb: 245, 166, 35;
+    --ion-color-primary-contrast: #0b0f14;
+    --ion-color-primary-contrast-rgb: 11, 15, 20;
+
+    &::part(month-year-button) {
+      pointer-events: none;
+      color: transparent;
+      text-shadow: 0 0 0 #f5a623;
+    }
+
+    &::part(prev-month-button),
+    &::part(next-month-button) {
+      color: #f5a623;
+      opacity: 1 !important;
+    }
+
+    &::part(prev-month-button):hover,
+    &::part(next-month-button):hover,
+    &::part(prev-month-button):active,
+    &::part(next-month-button):active {
+      background: #151b23 !important;
+      background-color: #151b23 !important;
+      opacity: 1 !important;
+    }
+  }
+}
 
 @media (max-width: 700px) {
   .detail-card {

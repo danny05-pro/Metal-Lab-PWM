@@ -17,19 +17,13 @@
 
   <ion-grid>
     <ion-row class="summary-row">
-      <ion-col size="4">
-        <div class="summary-card">
-          <span class="summary-value">{{ appuntamentiCalendario.length }}</span>
-          <span class="summary-label">In Programma</span>
-        </div>
-      </ion-col>
-      <ion-col size="4">
+      <ion-col size="6">
         <div class="summary-card">
           <span class="summary-value">{{ interventiAttivi.length }}</span>
-          <span class="summary-label">Interventi Attivi</span>
+          <span class="summary-label">Interventi assegnati</span>
         </div>
       </ion-col>
-      <ion-col size="4">
+      <ion-col size="6">
         <div class="summary-card">
           <span class="summary-value">{{ storicoInterventi.length }}</span>
           <span class="summary-label">Storico Completati</span>
@@ -51,10 +45,7 @@
                   <ion-chip>{{ intervento.stato_lavorazione }}</ion-chip>
                 </div>
                 <p>
-                  Cliente: {{ intervento.cliente }} | Priorità: {{ intervento.priorita }}
-                </p>
-                <p>
-                  {{ testoPrioritaData(intervento) }}
+                Cliente: {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }} | Priorità: {{ intervento.priorita }}
                 </p>
               </div>
             } @empty {
@@ -99,7 +90,7 @@
                   </div>
                   <div class="timeline-content">
                     <h3>{{ appuntamento.descrizione }}</h3>
-                    <p>Tipo: {{ appuntamento.tipo }} | Dettaglio: {{ appuntamento.dettaglio }}</p>
+                    <p>Tipo: {{ appuntamento.tipo }} | Luogo: {{ appuntamento.luogo }}</p>
                     <ion-chip [color]="appuntamento.tipo === 'Intervento' ? 'warning' : 'tertiary'">
                       {{ appuntamento.tipo }}
                     </ion-chip>

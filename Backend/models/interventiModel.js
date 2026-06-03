@@ -249,3 +249,141 @@ exports.clienteAnnullaIntervento = (id) => {
     );
   });
 };
+
+exports.assegnaDipendente = (intervento_id, dipendente_id) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `
+        INSERT OR IGNORE INTO dipendenti_interventi
+        (intervento_id, dipendente_id)
+        VALUES (?, ?)
+      `,
+      [intervento_id, dipendente_id],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({ changes: this.changes });
+        }
+      }
+    );
+  });
+};
+
+exports.findDipendentiAssegnati = (intervento_id) => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `
+        SELECT
+          users.id,
+          users.nome,
+          users.cognome,
+          users.email,
+          users.telefono,
+          users.ruolo
+        FROM dipendenti_interventi
+        JOIN users ON users.id = dipendenti_interventi.dipendente_id
+        WHERE dipendenti_interventi.intervento_id = ?
+      `,
+      [intervento_id],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      }
+    );
+  });
+};
+
+exports.findByDipendenteId = (dipendente_id) => {
+  return new Promise((resolve, reject) => {
+    db.all(
+      `
+        SELECT
+          interventi.*,
+          users.nome AS cliente_nome,
+          users.cognome AS cliente_cognome,
+          users.email AS cliente_email,
+          users.telefono AS cliente_telefono
+        FROM dipendenti_interventi
+        JOIN interventi ON interventi.id = dipendenti_interventi.intervento_id
+        JOIN users ON users.id = interventi.cliente_id
+        WHERE dipendenti_interventi.dipendente_id = ?
+        ORDER BY interventi.data_accettata DESC, interventi.data_richiesta DESC
+      `,
+      [dipendente_id],
+      (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      }
+    );
+  });
+};
+
+exports.findByIdForDipendente = (intervento_id, dipendente_id) => {
+  return new Promise((resolve, reject) => {
+    db.get(
+      `
+        SELECT
+          interventi.*,
+          users.nome AS cliente_nome,
+          users.cognome AS cliente_cognome,
+          users.email AS cliente_email,
+          users.telefono AS cliente_telefono
+        FROM dipendenti_interventi
+        JOIN interventi ON interventi.id = dipendenti_interventi.intervento_id
+        JOIN users ON users.id = interventi.cliente_id
+        WHERE interventi.id = ?
+          AND dipendenti_interventi.dipendente_id = ?
+      `,
+      [intervento_id, dipendente_id],
+      (err, row) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(row);
+        }
+      }
+    );
+  });
+};
+
+exports.updateStatoLavorazioneForDipendente = (
+  intervento_id,
+  dipendente_id,
+  stato_lavorazione
+) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `
+        UPDATE interventi
+        SET stato_lavorazione = ?
+        WHERE id = ?
+          AND id IN (
+            SELECT intervento_id
+            FROM dipendenti_interventi
+            WHERE dipendente_id = ?
+          )
+      `,
+      [
+        stato_lavorazione,
+        intervento_id,
+        dipendente_id
+      ],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            changes: this.changes
+          });
+        }
+      }
+    );
+  });
+};

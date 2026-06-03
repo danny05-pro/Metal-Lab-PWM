@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
@@ -34,7 +34,7 @@ import { CatalogoService, VoceCatalogo } from 'src/app/services/catalogo.service
     IonInput, IonSelect, IonSelectOption, IonFooter
   ]
 })
-export class DashboardAdminPage implements OnInit {
+export class DashboardAdminPage {
 
   // Metriche globali
   totalePreventivi = 0;
@@ -53,14 +53,52 @@ export class DashboardAdminPage implements OnInit {
   formCatalogo: Partial<VoceCatalogo> = {};
 
   constructor(
-    private alertController: AlertController,
-    private interventiService: InterventiService,
-    private preventiviService: PreventiviService,
-    private catalogoService: CatalogoService // <--- INIETTATO QUI
-  ) {
-    addIcons({
-      arrowBackOutline, createOutline, addOutline, peopleOutline, 
-      saveOutline, trashOutline, closeOutline, cameraOutline
+  private alertController: AlertController,
+  private interventiService: InterventiService,
+  private preventiviService: PreventiviService
+) {
+  addIcons({
+    arrowBackOutline,
+    createOutline,
+    addOutline,
+    peopleOutline,
+    saveOutline,
+    trashOutline
+  });
+}
+
+ionViewWillEnter() {
+  this.caricaInterventiAdmin();
+  this.caricaPreventiviAdmin();
+}
+caricaInterventiAdmin() {
+  this.interventiService.getInterventiAdmin().subscribe({
+    next: (interventi) => {
+      this.interventi = interventi;
+      this.interventiAperti = interventi.filter(
+        intervento =>
+          intervento.stato_admin !== 'Rifiutato' &&
+          intervento.stato_risposta_cliente !== 'Intervento annullato' &&
+          intervento.stato_lavorazione !== 'Terminato'
+      ).length;
+    },
+    error: (err) => {
+      console.error('Errore caricamento interventi admin:', err);
+    }
+  });
+}
+
+caricaPreventiviAdmin() {
+    this.preventiviService.getPreventiviAdmin().subscribe({
+      next: (datiReali) => {
+        this.preventivi = datiReali;
+        
+        // Aggiorna anche il contatore in alto ("Preventivi Da Gestire")
+        this.totalePreventivi = datiReali.filter(p => p.stato_admin === 'Da valutare').length;
+      },
+      error: (err) => {
+        console.error('Errore caricamento preventivi admin:', err);
+      }
     });
   }
 

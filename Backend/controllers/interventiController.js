@@ -92,7 +92,6 @@ exports.getInterventiAdmin = async (req, res) => {
 };
 
 
-
 exports.adminProponeData = async (req, res) => {
   try {
     const { id } = req.params;
@@ -264,6 +263,159 @@ exports.getInterventoById = async (req, res) => {
 
     return res.status(500).json({
       message: 'Errore durante il recupero del dettaglio intervento.'
+    });
+  }
+};
+
+exports.assegnaDipendente = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { dipendente_id } = req.body;
+
+    if (!dipendente_id) {
+      return res.status(400).json({
+        message: 'Dipendente obbligatorio.'
+      });
+    }
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    await Intervento.assegnaDipendente(id, dipendente_id);
+
+    const dipendenti = await Intervento.findDipendentiAssegnati(id);
+
+    return res.json({
+      message: 'Dipendente assegnato correttamente.',
+      dipendenti
+    });
+
+  } catch (error) {
+    console.error('Errore assegnazione dipendente:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante l’assegnazione del dipendente.'
+    });
+  }
+};
+
+exports.getDipendentiAssegnati = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const dipendenti = await Intervento.findDipendentiAssegnati(id);
+
+    return res.json(dipendenti);
+
+  } catch (error) {
+    console.error('Errore recupero dipendenti assegnati:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il recupero dei dipendenti assegnati.'
+    });
+  }
+};
+
+exports.getInterventiDipendente = async (req, res) => {
+  try {
+    const dipendente_id = req.user.id;
+
+    const interventi = await Intervento.findByDipendenteId(dipendente_id);
+
+    return res.json(interventi);
+
+  } catch (error) {
+    console.error('Errore recupero interventi dipendente:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il recupero degli interventi assegnati.'
+    });
+  }
+};
+
+exports.getInterventoDipendenteById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const dipendente_id = req.user.id;
+
+    const intervento = await Intervento.findByIdForDipendente(
+      id,
+      dipendente_id
+    );
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato o non assegnato a questo dipendente.'
+      });
+    }
+
+    return res.json(intervento);
+
+  } catch (error) {
+    console.error('Errore recupero dettaglio intervento dipendente:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il recupero del dettaglio intervento dipendente.'
+    });
+  }
+};
+
+exports.aggiornaStatoLavorazioneDipendente = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const dipendente_id = req.user.id;
+
+    const { stato_lavorazione } = req.body;
+
+    const statiConsentiti = [
+      'Programmato',
+      'In lavorazione',
+      'Terminato'
+    ];
+
+    if (!stato_lavorazione || !statiConsentiti.includes(stato_lavorazione)) {
+      return res.status(400).json({
+        message: 'Stato lavorazione non valido.'
+      });
+    }
+
+    const intervento = await Intervento.findByIdForDipendente(
+      id,
+      dipendente_id
+    );
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato o non assegnato a questo dipendente.'
+      });
+    }
+
+    await Intervento.updateStatoLavorazioneForDipendente(
+      id,
+      dipendente_id,
+      stato_lavorazione
+    );
+
+    const interventoAggiornato = await Intervento.findByIdForDipendente(
+      id,
+      dipendente_id
+    );
+
+    return res.json({
+      message: 'Stato intervento aggiornato correttamente.',
+      intervento: interventoAggiornato
+    });
+
+  } catch (error) {
+    console.error('Errore aggiornamento stato lavorazione:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante l’aggiornamento dello stato lavorazione.'
     });
   }
 };

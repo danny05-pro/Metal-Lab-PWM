@@ -125,7 +125,17 @@ export class DettaglioInterventoClientePage implements OnInit {
       !!this.intervento.data_proposta_admin
     );
   }
-
+get negoziazioneConclusa(): boolean {
+  return (
+    !!this.intervento &&
+    (
+      this.intervento.stato_admin === 'Intervento concordato' ||
+      this.intervento.stato_admin === 'Rifiutato' ||
+      this.intervento.stato_risposta_cliente === 'Data accettata' ||
+      this.intervento.stato_risposta_cliente === 'Intervento annullato'
+    )
+  );
+}
   get nuovaDataFormattata(): string {
     if (!this.nuovaDataCliente) {
       return '';

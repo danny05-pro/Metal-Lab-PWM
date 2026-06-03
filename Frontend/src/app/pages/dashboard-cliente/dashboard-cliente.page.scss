@@ -104,18 +104,12 @@ ion-card-title {
 
 ion-chip {
   margin: 0;
-  background: rgba(245, 166, 35, 0.12);
-  color: #f5a623;
   font-weight: 700;
   font-size: 0.8rem;
   --border-radius: 30px;
   border-radius: 30px;
   padding: 0 12px;
   
-  &.status-completed {
-    background: rgba(45, 211, 111, 0.12);
-    color: #2dd36f;
-  }
 }
 
 .empty-section {
