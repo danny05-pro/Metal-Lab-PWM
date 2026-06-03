@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
 
 import {
   IonContent,
@@ -14,11 +15,16 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-  IonChip
+  IonChip,
+  IonModal,
+  IonDatetime,
+  IonItem,
+  IonLabel,
+  IonInput
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { arrowBackOutline } from 'ionicons/icons';
+import { arrowBackOutline, calendarOutline } from 'ionicons/icons';
 
 import { Intervento } from 'src/app/models/intervento.model';
 import { InterventiService } from 'src/app/services/interventi.service';
@@ -41,7 +47,13 @@ import { InterventiService } from 'src/app/services/interventi.service';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonChip
+    IonChip,
+    FormsModule,
+IonModal,
+IonDatetime,
+IonItem,
+IonLabel,
+IonInput
   ]
 })
 export class DettaglioInterventoAdminPage implements OnInit {
@@ -52,7 +64,13 @@ export class DettaglioInterventoAdminPage implements OnInit {
 
   caricamento = true;
 
-  dipendentiDisponibili: string[] = [];
+dipendentiDisponibili: any[] = [];
+
+dipendentiAssegnati: any[] = [];
+
+  dataPropostaAdmin = '';
+
+  dataMinima = '';
 
   constructor(
     private router: Router,
@@ -61,14 +79,24 @@ export class DettaglioInterventoAdminPage implements OnInit {
     private interventiService: InterventiService
   ) {
     addIcons({
-      arrowBackOutline
+      arrowBackOutline, calendarOutline
     });
+    const domani = new Date();
+domani.setDate(domani.getDate() + 1);
+
+const tzoffset = domani.getTimezoneOffset() * 60000;
+
+this.dataMinima = new Date(
+  domani.getTime() - tzoffset
+).toISOString().split('T')[0];
   }
 
   ngOnInit() {
     this.interventoId = this.route.snapshot.paramMap.get('id') || '';
 
     this.caricaIntervento();
+    this.caricaDipendentiDisponibili();
+this.caricaDipendentiAssegnati();
   }
 
   caricaIntervento() {
@@ -86,50 +114,79 @@ export class DettaglioInterventoAdminPage implements OnInit {
     });
   }
 
-  async assegnaDipendente() {
-    if (!this.intervento) {
-      return;
+  caricaDipendentiDisponibili() {
+  this.interventiService.getDipendentiDisponibili().subscribe({
+    next: (dipendenti) => {
+      this.dipendentiDisponibili = dipendenti;
+    },
+    error: (err) => {
+      console.error('Errore caricamento dipendenti:', err);
     }
+  });
+}
 
-    const alert = await this.alertController.create({
-      header: 'Assegna dipendente',
-      message: 'Seleziona il dipendente da assegnare a questo intervento.',
-      cssClass: 'custom-dark-alert',
-      inputs: this.dipendentiDisponibili.map(dipendente => ({
-        type: 'radio',
-        label: dipendente,
-        value: dipendente
-      })),
-      buttons: [
-        {
-          text: 'Annulla',
-          role: 'cancel'
-        },
-        {
-          text: 'Conferma',
-          handler: (dipendenteSelezionato: string) => {
-            if (!dipendenteSelezionato || !this.intervento) {
-              return false;
-            }
+caricaDipendentiAssegnati() {
+  this.interventiService.getDipendentiAssegnati(this.interventoId).subscribe({
+    next: (dipendenti) => {
+      this.dipendentiAssegnati = dipendenti;
+    },
+    error: (err) => {
+      console.error('Errore caricamento dipendenti assegnati:', err);
+    }
+  });
+}
 
-            if (!this.intervento.dipendentiAssegnati) {
-              this.intervento.dipendentiAssegnati = [];
-            }
-
-            if (!this.intervento.dipendentiAssegnati.includes(dipendenteSelezionato)) {
-              this.intervento.dipendentiAssegnati.push(dipendenteSelezionato);
-            }
-
-            this.router.navigate(['/dashboard-admin']);
-
-            return true;
-          }
-        }
-      ]
-    });
-
-    await alert.present();
+ async assegnaDipendente() {
+  if (!this.intervento) {
+    return;
   }
+
+  if (this.intervento.stato_admin !== 'Intervento concordato') {
+    return;
+  }
+  const alert = await this.alertController.create({
+    header: 'Assegna dipendente',
+    message: 'Seleziona il dipendente da assegnare a questo intervento.',
+    cssClass: 'custom-dark-alert',
+    inputs: this.dipendentiDisponibili.map(dipendente => ({
+      type: 'radio',
+      label: `${dipendente.nome} ${dipendente.cognome}`,
+      value: dipendente.id
+    })),
+    buttons: [
+      {
+        text: 'Annulla',
+        role: 'cancel'
+      },
+      {
+        text: 'Conferma',
+        handler: (dipendenteId: number) => {
+          if (!dipendenteId) {
+            return false;
+          }
+
+          this.interventiService.assegnaDipendente(
+            this.interventoId,
+            dipendenteId
+          ).subscribe({
+            next: () => {
+              this.caricaDipendentiAssegnati();
+            },
+            error: (err) => {
+              console.error('Errore assegnazione dipendente:', err);
+            }
+          });
+
+          return true;
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
+
+
   accettaDataCliente() {
   if (!this.intervento) {
     return;
@@ -146,49 +203,35 @@ export class DettaglioInterventoAdminPage implements OnInit {
     }
   });
 }
-async proponiAltraData() {
-  const alert = await this.alertController.create({
-    header: 'Proponi nuova data',
-    message: 'Inserisci una data alternativa da proporre al cliente.',
-    cssClass: 'custom-dark-alert',
-    inputs: [
-      {
-        name: 'data',
-        type: 'date',
-        placeholder: 'Seleziona data'
-      }
-    ],
-    buttons: [
-      {
-        text: 'Annulla',
-        role: 'cancel'
-      },
-      {
-        text: 'Conferma',
-        handler: (data: any) => {
-          if (!data.data) {
-            return false;
-          }
+get dataAdminFormattata(): string {
+  if (!this.dataPropostaAdmin) {
+    return '';
+  }
 
-          this.interventiService.adminProponeData(this.interventoId, {
-            data_proposta_admin: data.data,
-            usa_data_cliente: false
-          }).subscribe({
-            next: () => {
-              this.caricaIntervento();
-            },
-            error: (err) => {
-              console.error('Errore proposta nuova data:', err);
-            }
-          });
+  const d = new Date(this.dataPropostaAdmin);
 
-          return true;
-        }
-      }
-    ]
+  return d.toLocaleDateString('it-IT');
+}
+
+confermaDataAdmin() {
+  if (!this.intervento || !this.dataPropostaAdmin) {
+    return;
+  }
+
+  const dataPulita = this.dataPropostaAdmin.split('T')[0];
+
+  this.interventiService.adminProponeData(this.interventoId, {
+    data_proposta_admin: dataPulita,
+    usa_data_cliente: false
+  }).subscribe({
+    next: () => {
+      this.dataPropostaAdmin = '';
+      this.caricaIntervento();
+    },
+    error: (err) => {
+      console.error('Errore proposta nuova data:', err);
+    }
   });
-
-  await alert.present();
 }
 async rifiutaIntervento() {
   if (!this.intervento) {

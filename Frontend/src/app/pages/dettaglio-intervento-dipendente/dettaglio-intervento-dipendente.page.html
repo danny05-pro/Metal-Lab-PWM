@@ -23,15 +23,15 @@
       <ion-card-content>
         <div class="info-row">
           <span>Cliente</span>
-          <strong>{{ intervento.cliente }}</strong>
+          <strong>{{ intervento.cliente_nome }} {{ intervento.cliente_cognome }}</strong>
         </div>
         <div class="info-row">
           <span>Email</span>
-          <strong>{{ intervento.emailCliente }}</strong>
+          <strong>{{ intervento.cliente_email }}</strong>
         </div>
         <div class="info-row">
           <span>Telefono</span>
-          <strong>{{ intervento.telefonoCliente }}</strong>
+          <strong>{{ intervento.cliente_telefono }}</strong>
         </div>
       </ion-card-content>
     </ion-card>
@@ -55,31 +55,23 @@
         </div>
         <div class="info-row">
           <span>Data intervento</span>
-          <strong>{{ intervento.dataOra }}</strong>
+          <strong>{{ intervento.data_accettata || intervento.data_proposta_admin || 'Da programmare' }}</strong>
         </div>
         <div class="info-row">
           <span>Stato lavorazione</span>
           <ion-chip>{{ intervento.stato_lavorazione }}</ion-chip>
         </div>
+        <div class="actions">
+  <ion-button
+    expand="block"
+    class="btn-glass-update"
+    (click)="modificaStatoIntervento()">
+    Modifica stato intervento
+  </ion-button>
+</div>
       </ion-card-content>
     </ion-card>
 
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>Aggiornamento Stato</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="info-row">
-          <span>Stato attuale</span>
-          <ion-chip>{{ intervento.stato_lavorazione }}</ion-chip>
-        </div>
-        <div class="actions">
-          <ion-button expand="block" class="btn-glass-update" (click)="modificaStatoIntervento()">
-            Modifica stato intervento
-          </ion-button>
-        </div>
-      </ion-card-content>
-    </ion-card>
   } @else {
     <div class="ion-padding ion-text-center">
       <p>Caricamento dati in corso...</p>

@@ -44,8 +44,22 @@ router.post('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.i
 router.put('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.update);
 router.delete('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.delete);
 // ==========================================
-// AREA ADMIN: GESTIONE INTERVENTI
+// AREA ADMIN: GESTI
+
+
 // ==========================================
+// AREA ADMIN: GESTIONE INTERVENTI E PREVENTIVI
+// ==========================================
+
+
+
+// NUOVA ROTTA: Recupera tutti i preventivi per l'admin
+router.get(
+  '/admin/preventivi',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  preventiviController.getPreventiviAdmin
+);
 
 router.get(
   '/admin/interventi',
@@ -80,10 +94,52 @@ router.put(
   authMiddleware.isCliente,
   interventiController.clienteRispondeData
 );
+
+
+
 router.get(
   '/interventi/:id',
   authMiddleware.verifyToken,
   authMiddleware.isCliente,
   interventiController.getInterventoClienteById
+);
+
+router.post(
+  '/admin/interventi/:id/dipendenti',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.assegnaDipendente
+);
+
+router.get(
+  '/admin/interventi/:id/dipendenti',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.getDipendentiAssegnati
+);
+
+// ==========================================
+// AREA DIPENDENTE: INTERVENTI ASSEGNATI
+// ==========================================
+
+router.get(
+  '/dipendente/interventi',
+  authMiddleware.verifyToken,
+  authMiddleware.isDipendente,
+  interventiController.getInterventiDipendente
+);
+
+router.get(
+  '/dipendente/interventi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isDipendente,
+  interventiController.getInterventoDipendenteById
+);
+
+router.put(
+  '/dipendente/interventi/:id/stato',
+  authMiddleware.verifyToken,
+  authMiddleware.isDipendente,
+  interventiController.aggiornaStatoLavorazioneDipendente
 );
 module.exports = router;

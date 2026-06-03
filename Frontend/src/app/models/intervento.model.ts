@@ -10,6 +10,7 @@ export interface Intervento {
   priorita: 'Bassa' | 'Media' | 'Alta';
 
   stato_admin:
+    | 'Intervento concordato'
     | 'Richiesto'
     | 'Rifiutato'
     | 'Data proposta'

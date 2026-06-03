@@ -63,6 +63,19 @@
           </strong>
         </div>
 
+        <div class="info-row">
+          <span>Data proposta da te</span>
+          <strong>
+            {{ intervento.data_proposta_cliente || 'Nessuna data proposta' }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Data proposta dall'admin</span>
+          <strong>
+            {{ intervento.data_proposta_admin || 'Nessuna proposta ricevuta' }}
+          </strong>
+        </div>
 
         <div class="info-row">
           <span>Data accettata</span>
@@ -72,126 +85,138 @@
         </div>
 
         <div class="info-row">
+          <span>Stato admin</span>
+        <ion-chip
+  [color]="intervento.stato_admin === 'Rifiutato' ? 'danger' : 'warning'">
+  {{ intervento.stato_admin }}
+</ion-chip>
+        </div>
+
+        <div class="info-row">
           <span>Risposta cliente</span>
-          <ion-chip>
-            {{ intervento.stato_risposta_cliente }}
-          </ion-chip>
+         <ion-chip
+  [color]="intervento.stato_risposta_cliente === 'Intervento annullato' ? 'danger' : 'warning'">
+  {{ intervento.stato_risposta_cliente }}
+</ion-chip>
         </div>
 
         <div class="info-row">
           <span>Stato lavorazione</span>
           <ion-chip>
-            {{ intervento.stato_lavorazione }}
-          </ion-chip>
+  {{ intervento.stato_lavorazione }}
+</ion-chip>
         </div>
 
       </ion-card-content>
     </ion-card>
 
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Risposta alla proposta
-        </ion-card-title>
-      </ion-card-header>
+    @if (!negoziazioneConclusa) {
 
-      <ion-card-content>
+      <ion-card class="detail-card">
+        <ion-card-header>
+          <ion-card-title>
+            Pannello di negoziazione
+          </ion-card-title>
+        </ion-card-header>
 
-        @if (puoRispondereAllaProposta) {
+        <ion-card-content>
 
-          <div class="proposal-box">
-            Data proposta dall'admin:
-            <strong>
-              {{ intervento.data_proposta_admin }}
-            </strong>
-          </div>
+          @if (puoRispondereAllaProposta) {
 
-          <div class="actions">
+            <div class="proposal-box">
+              Data proposta dall'admin:
+              <strong>
+                {{ intervento.data_proposta_admin }}
+              </strong>
+            </div>
 
-            <ion-button
-              expand="block"
-              class="btn-glass-accept"
-              (click)="accettaDataAdmin()">
-              <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
-              Accetta data proposta
-            </ion-button>
+            <div class="actions">
 
-            <ion-item
-              button="true"
-              detail="false"
-              id="apri-calendario-nuova-data"
-              class="calendar-trigger-item">
+              <ion-button
+                expand="block"
+                class="btn-glass-accept"
+                (click)="accettaDataAdmin()">
+                <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+                Accetta data proposta
+              </ion-button>
 
-              <ion-label position="stacked">
-                Nuova data da proporre
-              </ion-label>
+              <ion-item
+                button="true"
+                detail="false"
+                id="apri-calendario-nuova-data"
+                class="calendar-trigger-item">
 
-              <ion-input
-                [readonly]="true"
-                placeholder="Seleziona una data"
-                [value]="nuovaDataFormattata">
-              </ion-input>
+                <ion-label position="stacked">
+                  Nuova data da proporre
+                </ion-label>
 
-              <ion-icon
-                slot="end"
-                name="calendar-outline"
-                style="color: #f5a623; font-size: 22px; margin-top: 14px;">
-              </ion-icon>
+                <ion-input
+                  [readonly]="true"
+                  placeholder="Seleziona una data"
+                  [value]="nuovaDataFormattata">
+                </ion-input>
 
-            </ion-item>
+                <ion-icon
+                  slot="end"
+                  name="calendar-outline"
+                  style="color: #f5a623; font-size: 22px; margin-top: 14px;">
+                </ion-icon>
 
-            <ion-modal
-              trigger="apri-calendario-nuova-data"
-              class="dark-calendar-modal">
+              </ion-item>
 
-              <ng-template>
+              <ion-modal
+                trigger="apri-calendario-nuova-data"
+                class="dark-calendar-modal">
 
-                <ion-datetime
-                  presentation="date"
-                  [(ngModel)]="nuovaDataCliente"
-                  [min]="dataMinima"
-                  class="custom-amber-calendar"
-                  [showDefaultButtons]="true"
-                  doneText="Conferma"
-                  cancelText="Annulla">
-                </ion-datetime>
+                <ng-template>
 
-              </ng-template>
+                  <ion-datetime
+                    presentation="date"
+                    [(ngModel)]="nuovaDataCliente"
+                    [min]="dataMinima"
+                    class="custom-amber-calendar"
+                    [showDefaultButtons]="true"
+                    doneText="Conferma"
+                    cancelText="Annulla">
+                  </ion-datetime>
 
-            </ion-modal>
+                </ng-template>
 
-            <ion-button
-              expand="block"
-              class="btn-glass-propose"
-              [disabled]="!nuovaDataCliente"
-              (click)="confermaNuovaData()">
-              <ion-icon slot="start" name="calendar-outline"></ion-icon>
-              Proponi nuova data
-            </ion-button>
+              </ion-modal>
 
-            <ion-button
-              expand="block"
-              class="btn-glass-reject"
-              (click)="annullaIntervento()">
-              <ion-icon slot="start" name="close-circle-outline"></ion-icon>
-              Annulla intervento
-            </ion-button>
+              <ion-button
+                expand="block"
+                class="btn-glass-propose"
+                [disabled]="!nuovaDataCliente"
+                (click)="confermaNuovaData()">
+                <ion-icon slot="start" name="calendar-outline"></ion-icon>
+                Proponi nuova data
+              </ion-button>
 
-          </div>
+              <ion-button
+                expand="block"
+                class="btn-glass-reject"
+                (click)="annullaIntervento()">
+                <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+                Annulla intervento
+              </ion-button>
 
-        } @else {
+            </div>
 
-          <div class="proposal-box empty">
-            Nessuna proposta in attesa di risposta.
-          </div>
+          } @else {
 
-        }
+            <div class="proposal-box empty">
+              Nessuna proposta in attesa di risposta.
+            </div>
 
-      </ion-card-content>
-    </ion-card>
+          }
 
-    } @else {
+        </ion-card-content>
+      </ion-card>
 
+    }
+
+  } @else {
 
     <div class="ion-padding ion-text-center">
       @if (caricamento) {
