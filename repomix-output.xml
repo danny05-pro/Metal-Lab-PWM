@@ -9340,114 +9340,6 @@ exports.clienteAnnullaIntervento = (id) => {
 };
 </file>
 
-<file path="Backend/routes/routes.js">
-const express = require('express');
-
-// Controllers
-const authController = require('../controllers/authController');
-const dipendentiController = require('../controllers/dipendentiController');
-// 1. IMPORTIAMO IL NUOVO CONTROLLER
-const interventiController = require('../controllers/interventiController'); 
-const preventiviController = require('../controllers/preventiviController');
-// Middlewares
-const authMiddleware = require('../middlewares/authMiddleware');
-
-const router = express.Router();
-
-// ==========================================
-// AREA AUTENTICAZIONE
-// ==========================================
-router.post('/auth/register', authController.register);
-router.post('/auth/login', authController.login);
-router.get('/auth/profile', authMiddleware.verifyToken, authController.profile);
-
-// ==========================================
-// AREA CLIENTI
-// ==========================================
-// 2. LA NUOVA ROTTA PER LA RICHIESTA INTERVENTO
-router.post(
-  '/interventi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  interventiController.creaIntervento
-);
-
-router.get(
-  '/interventi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  interventiController.getInterventiCliente
-);
-
-router.post(
-  '/preventivi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  preventiviController.creaPreventivo
-);
-
-// Aggiungi questa rotta sotto la POST /preventivi
-router.get(
-  '/preventivi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  preventiviController.getPreventiviCliente
-);
-
-// ==========================================
-// AREA ADMIN: GESTIONE DIPENDENTI
-// ==========================================
-router.get('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.getAll);
-router.post('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.create);
-router.put('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.update);
-router.delete('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.delete);
-// ==========================================
-// AREA ADMIN: GESTI
-
-
-// ==========================================
-// AREA ADMIN: GESTIONE INTERVENTI E PREVENTIVI
-// ==========================================
-
-
-
-// NUOVA ROTTA: Recupera tutti i preventivi per l'admin
-router.get(
-  '/admin/preventivi',
-  authMiddleware.verifyToken,
-  authMiddleware.isAdmin,
-  preventiviController.getPreventiviAdmin
-);
-
-router.put(
-  '/admin/interventi/:id/proponi-data',
-  authMiddleware.verifyToken,
-  authMiddleware.isAdmin,
-  interventiController.adminProponeData
-);
-
-router.put(
-  '/admin/interventi/:id/rifiuta',
-  authMiddleware.verifyToken,
-  authMiddleware.isAdmin,
-  interventiController.adminRifiutaIntervento
-);
-
-router.put(
-  '/interventi/:id/risposta-cliente',
-  authMiddleware.verifyToken,
-  authMiddleware.isCliente,
-  interventiController.clienteRispondeData
-);
-router.get(
-  '/interventi/:id',
-  authMiddleware.verifyToken,
-  authMiddleware.isCliente,
-  interventiController.getInterventoClienteById
-);
-module.exports = router;
-</file>
-
 <file path="Frontend/src/app/models/intervento.model.ts">
 export interface Intervento {
   id: number;
@@ -10537,252 +10429,129 @@ clienteRispondeData(
 }
 </file>
 
-<file path="Backend/controllers/interventiController.js">
-const Intervento = require('../models/interventiModel');
+<file path="Backend/routes/routes.js">
+const express = require('express');
 
-exports.creaIntervento = async (req, res) => {
-  try {
-    const cliente_id = req.user.id; 
-    const { descrizione, luogo, priorita, data_proposta_cliente } = req.body;
+// Controllers
+const authController = require('../controllers/authController');
+const dipendentiController = require('../controllers/dipendentiController');
+// 1. IMPORTIAMO IL NUOVO CONTROLLER
+const interventiController = require('../controllers/interventiController'); 
+const preventiviController = require('../controllers/preventiviController');
+// Middlewares
+const authMiddleware = require('../middlewares/authMiddleware');
 
-    if (!descrizione || !luogo || !priorita) {
-      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
-    }
+const router = express.Router();
 
-    const data_richiesta = new Date().toISOString().split('T')[0];
+// ==========================================
+// AREA AUTENTICAZIONE
+// ==========================================
+router.post('/auth/register', authController.register);
+router.post('/auth/login', authController.login);
+router.get('/auth/profile', authMiddleware.verifyToken, authController.profile);
 
-    // Chiamiamo il Model e aspettiamo (await) che finisca di parlare col database
-    const nuovoIntervento = await Intervento.create({
-      cliente_id,
-      descrizione,
-      luogo,
-      priorita,
-      data_richiesta,
-      data_proposta_cliente
-    });
+// ==========================================
+// AREA CLIENTI
+// ==========================================
+// 2. LA NUOVA ROTTA PER LA RICHIESTA INTERVENTO
+router.post(
+  '/interventi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  interventiController.creaIntervento
+);
 
-    res.status(201).json({ 
-      message: 'Richiesta di intervento inviata con successo!',
-      intervento: nuovoIntervento 
-    });
+router.get(
+  '/interventi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  interventiController.getInterventiCliente
+);
 
-  } catch (error) {
-    console.error('Errore durante la creazione dell\'intervento:', error);
-    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
-  }
-};
+router.post(
+  '/preventivi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  preventiviController.creaPreventivo
+);
+
+// Aggiungi questa rotta sotto la POST /preventivi
+router.get(
+  '/preventivi', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  preventiviController.getPreventiviCliente
+);
+
+// ==========================================
+// AREA ADMIN: GESTIONE DIPENDENTI
+// ==========================================
+router.get('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.getAll);
+router.post('/gestione-dipendenti', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.create);
+router.put('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.update);
+router.delete('/gestione-dipendenti/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, dipendentiController.delete);
+// ==========================================
+// AREA ADMIN: GESTI
 
 
-exports.getInterventiCliente = async (req, res) => {
-  try {
-    // req.user.id esiste grazie al middleware verifyToken
-    const cliente_id = req.user.id;
-    
-    const interventi = await Intervento.findByClienteId(cliente_id);
-    
-    return res.json(interventi);
-    
-  } catch (error) {
-    console.error('Errore nel recupero degli interventi:', error);
-    return res.status(500).json({ message: 'Errore durante la lettura degli interventi.' });
-  }
-};
-exports.getInterventoClienteById = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const intervento = await Intervento.findById(id);
-
-    if (!intervento) {
-      return res.status(404).json({
-        message: 'Intervento non trovato.'
-      });
-    }
-
-    if (Number(intervento.cliente_id) !== Number(req.user.id)) {
-      return res.status(403).json({
-        message: 'Non puoi visualizzare un intervento non tuo.'
-      });
-    }
-
-    return res.json(intervento);
-
-  } catch (error) {
-    console.error('Errore recupero dettaglio intervento cliente:', error);
-
-    return res.status(500).json({
-      message: 'Errore durante il recupero del dettaglio intervento cliente.'
-    });
-  }
-};
-
-exports.getInterventiAdmin = async (req, res) => {
-  try {
-    const interventi = await Intervento.findAllForAdmin();
-
-    return res.json(interventi);
-
-  } catch (error) {
-    console.error('Errore recupero interventi admin:', error);
-
-    return res.status(500).json({
-      message: 'Errore durante il recupero degli interventi admin.'
-    });
-  }
-};
+// ==========================================
+// AREA ADMIN: GESTIONE INTERVENTI E PREVENTIVI
+// ==========================================
 
 
 
-exports.adminProponeData = async (req, res) => {
-  try {
-    const { id } = req.params;
+// NUOVA ROTTA: Recupera tutti i preventivi per l'admin
+router.get(
+  '/admin/preventivi',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  preventiviController.getPreventiviAdmin
+);
 
-    const {
-      data_proposta_admin,
-      usa_data_cliente
-    } = req.body;
+router.get(
+  '/admin/interventi',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.getInterventiAdmin
+);
 
-    const intervento = await Intervento.findById(id);
+router.get(
+  '/admin/interventi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.getInterventoById
+);
 
-    if (!intervento) {
-      return res.status(404).json({
-        message: 'Intervento non trovato.'
-      });
-    }
+router.put(
+  '/admin/interventi/:id/proponi-data',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.adminProponeData
+);
 
-    if (usa_data_cliente) {
-      if (!intervento.data_proposta_cliente) {
-        return res.status(400).json({
-          message: 'Il cliente non ha proposto nessuna data.'
-        });
-      }
+router.put(
+  '/admin/interventi/:id/rifiuta',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.adminRifiutaIntervento
+);
 
-      await Intervento.adminAccettaDataCliente(id);
+router.put(
+  '/interventi/:id/risposta-cliente',
+  authMiddleware.verifyToken,
+  authMiddleware.isCliente,
+  interventiController.clienteRispondeData
+);
 
-    } else {
-      if (!data_proposta_admin) {
-        return res.status(400).json({
-          message: 'La data proposta dall’admin è obbligatoria.'
-        });
-      }
 
-      await Intervento.adminProponeData(id, data_proposta_admin);
-    }
 
-    const interventoAggiornato = await Intervento.findById(id);
-
-    return res.json({
-      message: 'Data proposta correttamente.',
-      intervento: interventoAggiornato
-    });
-
-  } catch (error) {
-    console.error('Errore proposta data admin:', error);
-
-    return res.status(500).json({
-      message: 'Errore durante la proposta della data.'
-    });
-  }
-};
-
-exports.adminRifiutaIntervento = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const intervento = await Intervento.findById(id);
-
-    if (!intervento) {
-      return res.status(404).json({
-        message: 'Intervento non trovato.'
-      });
-    }
-
-    await Intervento.adminRifiutaIntervento(id);
-
-    const interventoAggiornato = await Intervento.findById(id);
-
-    return res.json({
-      message: 'Intervento rifiutato correttamente.',
-      intervento: interventoAggiornato
-    });
-
-  } catch (error) {
-    console.error('Errore rifiuto intervento admin:', error);
-
-    return res.status(500).json({
-      message: 'Errore durante il rifiuto dell’intervento.'
-    });
-  }
-};
-
-exports.clienteRispondeData = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const {
-  azione,
-  nuova_data
-} = req.body;
-
-    const intervento = await Intervento.findById(id);
-
-    if (!intervento) {
-      return res.status(404).json({
-        message: 'Intervento non trovato.'
-      });
-    }
-
-   if (Number(intervento.cliente_id) !== Number(req.user.id)) {
-      return res.status(403).json({
-        message: 'Non puoi rispondere a un intervento non tuo.'
-      });
-    }
-
-    if (azione === 'accetta_data') {
-      if (!intervento.data_proposta_admin) {
-        return res.status(400).json({
-          message: 'Non esiste ancora una data proposta dall’admin.'
-        });
-      }
-
-      await Intervento.clienteAccettaData(id);
-
-    } else if (azione === 'proponi_nuova_data') {
-  if (!nuova_data) {
-    return res.status(400).json({
-      message: 'La nuova data è obbligatoria.'
-    });
-  }
-
-  await Intervento.clienteProponeNuovaData(
-    id,
-    nuova_data
-  );
-}else if (azione === 'annulla_intervento') {
-  await Intervento.clienteAnnullaIntervento(
-    id
-  );
-}else {
-      return res.status(400).json({
-        message: 'Azione non valida.'
-      });
-    }
-
-    const interventoAggiornato = await Intervento.findById(id);
-
-    return res.json({
-      message: 'Risposta salvata correttamente.',
-      intervento: interventoAggiornato
-    });
-
-  } catch (error) {
-    console.error('Errore risposta cliente:', error);
-
-    return res.status(500).json({
-      message: 'Errore durante la risposta del cliente.'
-    });
-  }
-};
+router.get(
+  '/interventi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isCliente,
+  interventiController.getInterventoClienteById
+);
+module.exports = router;
 </file>
 
 <file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.ts">
@@ -11112,6 +10881,278 @@ export class DettaglioInterventoClientePage implements OnInit {
 }
 </file>
 
+<file path="Backend/controllers/interventiController.js">
+const Intervento = require('../models/interventiModel');
+
+exports.creaIntervento = async (req, res) => {
+  try {
+    const cliente_id = req.user.id; 
+    const { descrizione, luogo, priorita, data_proposta_cliente } = req.body;
+
+    if (!descrizione || !luogo || !priorita) {
+      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
+    }
+
+    const data_richiesta = new Date().toISOString().split('T')[0];
+
+    // Chiamiamo il Model e aspettiamo (await) che finisca di parlare col database
+    const nuovoIntervento = await Intervento.create({
+      cliente_id,
+      descrizione,
+      luogo,
+      priorita,
+      data_richiesta,
+      data_proposta_cliente
+    });
+
+    res.status(201).json({ 
+      message: 'Richiesta di intervento inviata con successo!',
+      intervento: nuovoIntervento 
+    });
+
+  } catch (error) {
+    console.error('Errore durante la creazione dell\'intervento:', error);
+    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
+  }
+};
+
+
+exports.getInterventiCliente = async (req, res) => {
+  try {
+    // req.user.id esiste grazie al middleware verifyToken
+    const cliente_id = req.user.id;
+    
+    const interventi = await Intervento.findByClienteId(cliente_id);
+    
+    return res.json(interventi);
+    
+  } catch (error) {
+    console.error('Errore nel recupero degli interventi:', error);
+    return res.status(500).json({ message: 'Errore durante la lettura degli interventi.' });
+  }
+};
+exports.getInterventoClienteById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    if (Number(intervento.cliente_id) !== Number(req.user.id)) {
+      return res.status(403).json({
+        message: 'Non puoi visualizzare un intervento non tuo.'
+      });
+    }
+
+    return res.json(intervento);
+
+  } catch (error) {
+    console.error('Errore recupero dettaglio intervento cliente:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il recupero del dettaglio intervento cliente.'
+    });
+  }
+};
+
+exports.getInterventiAdmin = async (req, res) => {
+  try {
+    const interventi = await Intervento.findAllForAdmin();
+
+    return res.json(interventi);
+
+  } catch (error) {
+    console.error('Errore recupero interventi admin:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il recupero degli interventi admin.'
+    });
+  }
+};
+
+
+
+exports.adminProponeData = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const {
+      data_proposta_admin,
+      usa_data_cliente
+    } = req.body;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    if (usa_data_cliente) {
+      if (!intervento.data_proposta_cliente) {
+        return res.status(400).json({
+          message: 'Il cliente non ha proposto nessuna data.'
+        });
+      }
+
+      await Intervento.adminAccettaDataCliente(id);
+
+    } else {
+      if (!data_proposta_admin) {
+        return res.status(400).json({
+          message: 'La data proposta dall’admin è obbligatoria.'
+        });
+      }
+
+      await Intervento.adminProponeData(id, data_proposta_admin);
+    }
+
+    const interventoAggiornato = await Intervento.findById(id);
+
+    return res.json({
+      message: 'Data proposta correttamente.',
+      intervento: interventoAggiornato
+    });
+
+  } catch (error) {
+    console.error('Errore proposta data admin:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante la proposta della data.'
+    });
+  }
+};
+
+exports.adminRifiutaIntervento = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    await Intervento.adminRifiutaIntervento(id);
+
+    const interventoAggiornato = await Intervento.findById(id);
+
+    return res.json({
+      message: 'Intervento rifiutato correttamente.',
+      intervento: interventoAggiornato
+    });
+
+  } catch (error) {
+    console.error('Errore rifiuto intervento admin:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il rifiuto dell’intervento.'
+    });
+  }
+};
+
+exports.clienteRispondeData = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const {
+  azione,
+  nuova_data
+} = req.body;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+   if (Number(intervento.cliente_id) !== Number(req.user.id)) {
+      return res.status(403).json({
+        message: 'Non puoi rispondere a un intervento non tuo.'
+      });
+    }
+
+    if (azione === 'accetta_data') {
+      if (!intervento.data_proposta_admin) {
+        return res.status(400).json({
+          message: 'Non esiste ancora una data proposta dall’admin.'
+        });
+      }
+
+      await Intervento.clienteAccettaData(id);
+
+    } else if (azione === 'proponi_nuova_data') {
+  if (!nuova_data) {
+    return res.status(400).json({
+      message: 'La nuova data è obbligatoria.'
+    });
+  }
+
+  await Intervento.clienteProponeNuovaData(
+    id,
+    nuova_data
+  );
+}else if (azione === 'annulla_intervento') {
+  await Intervento.clienteAnnullaIntervento(
+    id
+  );
+}else {
+      return res.status(400).json({
+        message: 'Azione non valida.'
+      });
+    }
+
+    const interventoAggiornato = await Intervento.findById(id);
+
+    return res.json({
+      message: 'Risposta salvata correttamente.',
+      intervento: interventoAggiornato
+    });
+
+  } catch (error) {
+    console.error('Errore risposta cliente:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante la risposta del cliente.'
+    });
+  }
+};
+
+
+exports.getInterventoById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    return res.json(intervento);
+
+  } catch (error) {
+    console.error('Errore recupero dettaglio intervento admin:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il recupero del dettaglio intervento.'
+    });
+  }
+};
+</file>
+
 <file path="Backend/database/database.js">
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
@@ -11232,7 +11273,7 @@ db.serialize(() => {
         'Da valutare',      -- Il cliente ha appena inviato la richiesta
         'Prezzo proposto',  -- L'admin ha valutato la fattibilità e ha inserito una cifra
         'Rifiutato'         -- L'admin scarta la richiesta (es. lavorazione non fattibile)
-      )
+        )
     ),
     
     -- 2. STATO LATO CLIENTE (Risposta all'offerta economica)

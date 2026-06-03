@@ -54,12 +54,17 @@
           <ion-card-header><ion-card-title>I tuoi Preventivi</ion-card-title></ion-card-header>
           <ion-card-content>
             @for (preventivo of preventivi; track preventivo.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]">
+              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]" routerDirection="forward">
                 <div class="item-header">
                   <h3>{{ preventivo.descrizione }}</h3>
-                  <ion-chip>
-                    {{ preventivo.stato_admin }} | {{ preventivo.stato_risposta_cliente }}
-                  </ion-chip>
+                  
+                  <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
+                    <ion-chip color="dark" style="margin: 0; font-size: 0.75rem;">
+                      {{ preventivo.stato_admin }}
+                    </ion-chip>
+                    
+                  </div>
+
                 </div>
                 <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
               </div>

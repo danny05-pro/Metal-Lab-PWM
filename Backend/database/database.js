@@ -116,7 +116,8 @@ db.serialize(() => {
       stato_admin IN (
         'Da valutare',      -- Il cliente ha appena inviato la richiesta
         'Prezzo proposto',  -- L'admin ha valutato la fattibilità e ha inserito una cifra
-        'Rifiutato'         -- L'admin scarta la richiesta (es. lavorazione non fattibile)
+        'Rifiutato',         -- L'admin scarta la richiesta (es. lavorazione non fattibile)
+        'Preventivo concordato'
         )
     ),
     

@@ -31,10 +31,10 @@
           <ion-chip>{{ preventivo.stato_risposta_cliente }}</ion-chip>
         </div>
 
-        @if (preventivo.prezzoProposto) {
+        @if (preventivo.prezzo_proposto) {
           <div class="price-box">
             Prezzo proposto da Metal Lab:
-            <strong>€ {{ preventivo.prezzoProposto }}</strong>
+            <strong>€ {{ preventivo.prezzo_proposto }}</strong>
           </div>
         } @else {
           <div class="price-box empty">
@@ -76,12 +76,12 @@
       </ion-card-content>
     </ion-card>
 
-    @if (preventivo.stato_admin === 'Prezzo proposto' && preventivo.stato_risposta_cliente === 'In attesa') {
-      <ion-card class="detail-card">
-        <ion-card-header>
-          <ion-card-title>Risposta alla proposta</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Risposta alla proposta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        @if (preventivo.stato_admin === 'Prezzo proposto' && preventivo.stato_risposta_cliente === 'In attesa') {
           <p class="response-text">
             Puoi accettare o rifiutare il prezzo proposto da Metal Lab.
           </p>
@@ -93,9 +93,22 @@
               Rifiuta preventivo
             </ion-button>
           </div>
-        </ion-card-content>
-      </ion-card>
-    }
+        } @else if (preventivo.stato_risposta_cliente !== 'In attesa') {
+          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
+            Hai già risposto a questo preventivo. Il ciclo è concluso.
+          </div>
+        } @else if (preventivo.stato_admin === 'Rifiutato') {
+          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
+            Metal Lab ha rifiutato la richiesta di lavorazione.
+          </div>
+        } @else {
+          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
+            In attesa che l'officina formuli un prezzo per la tua richiesta...
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
   } @else {
     <div class="ion-padding ion-text-center">
       <p>Caricamento preventivo in corso...</p>

@@ -43,6 +43,20 @@ router.post(
   preventiviController.creaPreventivo
 );
 
+router.get(
+  '/preventivi/:id', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  preventiviController.getPreventivoClienteById
+);
+
+router.put(
+  '/preventivi/:id/risposta', 
+  authMiddleware.verifyToken, 
+  authMiddleware.isCliente, 
+  preventiviController.clienteRispondePreventivo
+);
+
 // Aggiungi questa rotta sotto la POST /preventivi
 router.get(
   '/preventivi', 
@@ -74,6 +88,27 @@ router.get(
   authMiddleware.verifyToken,
   authMiddleware.isAdmin,
   preventiviController.getPreventiviAdmin
+);
+
+router.get(
+  '/admin/preventivi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  preventiviController.getPreventivoAdminById
+);
+
+router.put(
+  '/admin/preventivi/:id/proponi-prezzo',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  preventiviController.adminProponePrezzo
+);
+
+router.put(
+  '/admin/preventivi/:id/rifiuta',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  preventiviController.adminRifiutaPreventivo
 );
 
 router.get(
@@ -119,4 +154,6 @@ router.get(
   authMiddleware.isCliente,
   interventiController.getInterventoClienteById
 );
+
+
 module.exports = router;

@@ -1,24 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-
+import { CommonModule } from '@angular/common';
 import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonChip
+  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
+  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-
 import { arrowBackOutline } from 'ionicons/icons';
+
+import { PreventiviService } from 'src/app/services/preventivi.service';
 
 @Component({
   selector: 'app-dettaglio-preventivo-admin',
@@ -26,106 +17,98 @@ import { arrowBackOutline } from 'ionicons/icons';
   styleUrls: ['./dettaglio-preventivo-admin.page.scss'],
   standalone: true,
   imports: [
-    RouterLink,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonChip
+    CommonModule, RouterLink, IonContent, IonHeader, IonTitle,
+    IonToolbar, IonButtons, IonButton, IonIcon, IonCard,
+    IonCardHeader, IonCardTitle, IonCardContent, IonChip
   ]
 })
-export class DettaglioPreventivoAdminPage {
+export class DettaglioPreventivoAdminPage implements OnInit {
 
   preventivoId = '';
+  preventivo: any = null;
+  caricamento = true;
 
-  preventivo = {
-    id: 1,
-    cliente: 'Mario Rossi',
-    emailCliente: 'mario.rossi@email.it',
-    descrizione: 'Realizzazione struttura metallica industriale per area produttiva.',
-    servizio: 'Carpenteria metallica',
-    materiale: 'Acciaio zincato',
-    dimensioni: '3x2m',
-    finitura: 'Zincatura',
-    allegato: 'disegno-struttura.pdf',
-    dataRichiesta: '2026-05-18',
-    stato: 'In attesa',
-    prezzoProposto: null as number | null
-  };
-
-  constructor(private route: ActivatedRoute, private router: Router, private alertController: AlertController) {
-    addIcons({
-      arrowBackOutline
-    });
-
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private alertController: AlertController,
+    private preventiviService: PreventiviService 
+  ) {
+    addIcons({ arrowBackOutline });
     this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
   }
 
-  rifiutaPreventivo() {
-    this.preventivo.stato = 'Rifiutato';
-    this.preventivo.prezzoProposto = null;
-
-    setTimeout(() => {
-      this.router.navigate(['/dashboard-admin']);
-    }, 5);
+  ngOnInit() {
+    if (this.preventivoId) {
+      this.caricaPreventivo();
+    }
   }
 
-  async proponiPrezzo() {
-
-  const alert = await this.alertController.create({
-    header: 'Proponi prezzo',
-    message: 'Inserisci il prezzo da proporre al cliente.',
-    cssClass: 'custom-dark-alert',
-
-    inputs: [
-      {
-        name: 'prezzo',
-        type: 'number',
-        placeholder: 'Es. 250',
-        cssClass: 'dark-alert-input',
-        attributes: {
-          min: '1'
-        }
-      }
-    ],
-
-    buttons: [
-      {
-        text: 'Annulla',
-        role: 'cancel',
-        cssClass: 'dark-alert-btn-cancel'
+  caricaPreventivo() {
+    this.caricamento = true;
+    this.preventiviService.getPreventivoAdminById(this.preventivoId).subscribe({
+      next: (dati) => {
+        this.preventivo = dati;
+        this.caricamento = false;
       },
-      {
-        text: 'Conferma',
-        cssClass: 'dark-alert-btn-confirm',
-        handler: (data: any) => {
-
-          const prezzo = Number(data.prezzo);
-
-          if (isNaN(prezzo) || prezzo <= 0) {
-            return false;
-          }
-
-          this.preventivo.prezzoProposto = prezzo;
-          this.preventivo.stato = 'Prezzo proposto';
-
-          this.router.navigate(['/dashboard-admin']);
-
-          return true;
-
-        }
+      error: (err) => {
+        console.error('Errore recupero preventivo admin:', err);
+        this.caricamento = false;
       }
-    ]
-  });
+    });
+  }
 
-  await alert.present();
+  // --- LOGICA REALE: RIFIUTA ---
+  async rifiutaPreventivo() {
+    const alert = await this.alertController.create({
+      cssClass: 'custom-dark-alert',
+      header: 'Rifiuta Preventivo',
+      message: 'Sei sicuro di voler rifiutare la richiesta del cliente?',
+      buttons: [
+        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
+        {
+          text: 'Rifiuta', role: 'destructive', cssClass: 'dark-alert-btn-danger',
+          handler: () => {
+            // Chiamata vera al backend
+            this.preventiviService.adminRifiutaPreventivo(this.preventivoId).subscribe({
+              next: () => this.router.navigate(['/dashboard-admin']),
+              error: (err) => console.error('Errore rifiuto preventivo:', err)
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
 
-}
+  // --- LOGICA REALE: PROPONI PREZZO ---
+  async proponiPrezzo() {
+    const alert = await this.alertController.create({
+      header: 'Proponi prezzo',
+      message: 'Inserisci il prezzo in Euro.',
+      cssClass: 'custom-dark-alert',
+      inputs: [
+        { name: 'prezzo', type: 'number', placeholder: 'Es. 250', cssClass: 'dark-alert-input', attributes: { min: '1' } }
+      ],
+      buttons: [
+        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
+        {
+          text: 'Conferma', cssClass: 'dark-alert-btn-confirm',
+          handler: (data: any) => {
+            const prezzo = Number(data.prezzo);
+            if (isNaN(prezzo) || prezzo <= 0) return false;
+
+            // Chiamata vera al backend
+            this.preventiviService.adminProponePrezzo(this.preventivoId, prezzo).subscribe({
+              next: () => this.router.navigate(['/dashboard-admin']),
+              error: (err) => console.error('Errore proposta prezzo:', err)
+            });
+            
+            return true;
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
 }
