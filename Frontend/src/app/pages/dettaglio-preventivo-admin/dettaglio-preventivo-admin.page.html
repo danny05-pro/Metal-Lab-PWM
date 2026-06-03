@@ -93,9 +93,20 @@
           <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
         </div>
 
-        <div class="info-row">
-          <span>Allegato tecnico</span>
-          <strong>{{ preventivo.allegato || 'Nessun allegato' }}</strong>
+       <div class="info-row">
+          <span>Allegati tecnici</span>
+          @if (preventivo.allegatiArray && preventivo.allegatiArray.length > 0) {
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
+              @for (file of preventivo.allegatiArray; track $index) {
+                <ion-button fill="outline" color="warning" size="small" [href]="'http://localhost:3000' + file" target="_blank" style="margin: 0; --border-radius: 12px; height: 32px;">
+                  <ion-icon slot="start" name="document-attach-outline"></ion-icon>
+                  Allegato {{ $index + 1 }}
+                </ion-button>
+              }
+            </div>
+          } @else {
+            <strong>Nessun allegato</strong>
+          }
         </div>
       </ion-card-content>
     </ion-card>

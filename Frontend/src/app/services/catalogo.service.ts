@@ -19,8 +19,6 @@ export class CatalogoService {
 
   constructor(private http: HttpClient) {}
 
-  // Questo metodo crea gli header SOLO con il token. 
-  // NIENTE "Content-Type: application/json" qui!
   private getAuthHeaders(): HttpHeaders {
     let token = sessionStorage.getItem('token') || '';
     token = token.replace(/^"(.*)"$/, '$1');

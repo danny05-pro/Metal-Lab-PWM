@@ -1,6 +1,25 @@
 const express = require('express');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const path = require('path'); // Aggiungiamo path per gestire le estensioni
+
+// Configuriamo Multer per mantenere i nomi e le estensioni corrette
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // La cartella in cui salvare
+  },
+  filename: function (req, file, cb) {
+    // Estraiamo l'estensione originale (es. .jpg, .pdf, .png)
+    const ext = path.extname(file.originalname);
+    
+    // Creiamo un nome unico (per evitare che file con lo stesso nome si sovrascrivano)
+    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    
+    // Assembliamo il nome finale: es. "allegato-17000000000-12345.jpg"
+    cb(null, 'allegato-' + uniqueName + ext);
+  }
+});
+
+const upload = multer({ storage: storage });
 
 const authController = require('../controllers/authController');
 const dipendentiController = require('../controllers/dipendentiController');
@@ -36,6 +55,7 @@ router.post(
   '/preventivi', 
   authMiddleware.verifyToken, 
   authMiddleware.isCliente, 
+  upload.array('allegati', 5),
   preventiviController.creaPreventivo
 );
 

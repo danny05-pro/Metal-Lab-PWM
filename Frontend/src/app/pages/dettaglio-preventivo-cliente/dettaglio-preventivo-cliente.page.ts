@@ -10,7 +10,7 @@ import {
 import {AlertController } from '@ionic/angular';
 
 import { addIcons } from 'ionicons';
-import { arrowBackOutline } from 'ionicons/icons';
+import { arrowBackOutline, documentAttachOutline } from 'ionicons/icons';
 
 // Importiamo il service
 import { PreventiviService } from '../../services/preventivi.service';
@@ -38,7 +38,7 @@ export class DettaglioPreventivoClientePage implements OnInit {
     private alertController: AlertController,
     private preventiviService: PreventiviService 
   ) {
-    addIcons({ arrowBackOutline });
+    addIcons({ arrowBackOutline, documentAttachOutline });
     this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
   }
 
@@ -53,6 +53,7 @@ export class DettaglioPreventivoClientePage implements OnInit {
     this.preventiviService.getPreventivoClienteById(this.preventivoId).subscribe({
       next: (dati: any) => {
         this.preventivo = dati;
+        this.preventivo.allegatiArray = dati.allegato ? dati.allegato.split(',') : [];
         this.caricamento = false;
       },
       error: (err: any) => {

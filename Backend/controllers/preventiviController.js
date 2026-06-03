@@ -3,16 +3,21 @@ const Preventivo = require('../models/preventiviModel');
 exports.creaPreventivo = async (req, res) => {
   try {
     const cliente_id = req.user.id; 
-    const { descrizione, servizio, materiale, dimensioni, finitura, allegato } = req.body;
+    const { descrizione, servizio, materiale, dimensioni, finitura } = req.body;
 
     if (!descrizione || !servizio || !materiale || !dimensioni) {
       return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
     }
 
+    // Trasformiamo l'array di file nei percorsi fisici
+    const percorsiAllegati = req.files && req.files.length > 0 
+      ? req.files.map(f => `/uploads/${f.filename}`).join(',') 
+      : null;
+
     const nuovoPreventivo = await Preventivo.create({
       cliente_id, descrizione, servizio, materiale, dimensioni,
       finitura: finitura || null,
-      allegato: allegato || null
+      allegato: percorsiAllegati // <--- Salviamo la stringa con i percorsi reali!
     });
 
     res.status(201).json({ message: 'Preventivo inviato con successo!', preventivo: nuovoPreventivo });

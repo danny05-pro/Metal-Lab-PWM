@@ -23,15 +23,16 @@ export class PreventiviService {
 
   constructor(private http: HttpClient) {}
 
+// 1. Sostituisci getHeaders togliendo il Content-Type
   private getHeaders(): HttpHeaders {
     const token = sessionStorage.getItem('token');
     return new HttpHeaders({
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     });
   }
 
-  creaPreventivo(dati: PreventivoRichiesta): Observable<any> {
+  // 2. Modifica creaPreventivo per accettare FormData
+  creaPreventivo(dati: FormData): Observable<any> {
     return this.http.post(this.apiUrl, dati, { headers: this.getHeaders() });
   }
 

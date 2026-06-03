@@ -103,21 +103,17 @@
         </div>
       </div>
 
-     @if (allegatiNomi.length > 0) {
+@if (allegatiFiles.length > 0) {
         <div class="file-names-container">
-          
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <p style="margin: 0;">File selezionati ({{ allegatiNomi.length }}):</p>
-            
+            <p style="margin: 0;">File selezionati ({{ allegatiFiles.length }}):</p>
             <ion-button fill="clear" color="danger" size="small" (click)="svuotaAllegati()" style="margin: 0; --padding-start: 8px; --padding-end: 8px;">
-              <ion-icon slot="start" name="trash-outline"></ion-icon>
-              Svuota
+              <ion-icon slot="start" name="trash-outline"></ion-icon> Svuota
             </ion-button>
           </div>
-
           <ul>
-            @for (nome of allegatiNomi; track $index) {
-              <li class="file-name">{{ nome }}</li>
+            @for (file of allegatiFiles; track $index) {
+              <li class="file-name">{{ file.name }}</li>
             }
           </ul>
         </div>

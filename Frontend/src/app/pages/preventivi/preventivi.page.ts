@@ -62,7 +62,7 @@ export class PreventiviPage {
   materiale: string = '';
   dimensioni: string = '';
   finitura: string = '';
-  allegatiNomi: string[] = [];
+  allegatiFiles: File[] = [];
 
   preventivoInviato: boolean = false;
   isMac: boolean = false;
@@ -91,41 +91,41 @@ export class PreventiviPage {
     this.isMac = navigator.userAgent.toLowerCase().includes('mac');
   }
 
-  selezionaFile(event: Event) {
+selezionaFile(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.allegatiNomi = []; 
-
+    this.allegatiFiles = []; 
     if (input.files && input.files.length > 0) {
       for (let i = 0; i < input.files.length; i++) {
-        this.allegatiNomi.push(input.files[i].name);
+        this.allegatiFiles.push(input.files[i]); // Salviamo il file VERO
       }
     }
   }
 
   svuotaAllegati() {
-    this.allegatiNomi = [];
+    this.allegatiFiles = [];
   }
 
-  // 4. Invio REALE al database
-  inviaPreventivo() {
+inviaPreventivo() {
     if (!this.formValido) return;
 
-    // Convertiamo l'array di file in una stringa separata da virgole per rispettare la colonna SQLite
-    const stringaAllegati = this.allegatiNomi.length > 0 
-      ? this.allegatiNomi.join(', ') 
-      : undefined;
+    // 1. Creiamo il pacchetto dati FormData (abbandoniamo il vecchio oggetto "payload")
+    const formData = new FormData();
+    formData.append('descrizione', this.descrizione);
+    formData.append('servizio', this.servizio);
+    formData.append('materiale', this.materiale);
+    formData.append('dimensioni', this.dimensioni);
+    
+    if (this.finitura) {
+      formData.append('finitura', this.finitura);
+    }
 
-    const payload: PreventivoRichiesta = {
-      descrizione: this.descrizione,
-      servizio: this.servizio,
-      materiale: this.materiale,
-      dimensioni: this.dimensioni,
-      finitura: this.finitura || undefined, // Evitiamo stringhe vuote, passiamo undefined per generare NULL
-      allegato: stringaAllegati
-    };
+    // 2. Aggiungiamo tutti i file fisici uno ad uno
+    this.allegatiFiles.forEach(file => {
+      formData.append('allegati', file);
+    });
 
-    // Chiamata HTTP
-    this.preventiviService.creaPreventivo(payload).subscribe({
+    // 3. Passiamo direttamente formData al service
+    this.preventiviService.creaPreventivo(formData).subscribe({
       next: () => {
         this.preventivoInviato = true;
 

@@ -55,7 +55,8 @@ export class DashboardAdminPage {
   constructor(
   private alertController: AlertController,
   private interventiService: InterventiService,
-  private preventiviService: PreventiviService
+  private preventiviService: PreventiviService,
+  private catalogoService: CatalogoService
 ) {
   addIcons({
     arrowBackOutline,
@@ -70,6 +71,7 @@ export class DashboardAdminPage {
 ionViewWillEnter() {
   this.caricaInterventiAdmin();
   this.caricaPreventiviAdmin();
+  this.caricaCatalogo(); 
 }
 caricaInterventiAdmin() {
   this.interventiService.getInterventiAdmin().subscribe({
@@ -92,8 +94,6 @@ caricaPreventiviAdmin() {
     this.preventiviService.getPreventiviAdmin().subscribe({
       next: (datiReali) => {
         this.preventivi = datiReali;
-        
-        // Aggiorna anche il contatore in alto ("Preventivi Da Gestire")
         this.totalePreventivi = datiReali.filter(p => p.stato_admin === 'Da valutare').length;
       },
       error: (err) => {
@@ -102,37 +102,7 @@ caricaPreventiviAdmin() {
     });
   }
 
-  ngOnInit() {
-    this.caricaInterventiAdmin();
-    this.caricaPreventiviAdmin();
-    this.caricaCatalogo(); 
-  }
-
-  // ... (caricaInterventiAdmin e caricaPreventiviAdmin rimangono INVARIATI) ...
-  caricaInterventiAdmin() {
-    this.interventiService.getInterventiAdmin().subscribe({
-      next: (interventi) => {
-        this.interventi = interventi;
-        this.interventiAperti = interventi.filter(
-          intervento =>
-            intervento.stato_admin !== 'Rifiutato' &&
-            intervento.stato_risposta_cliente !== 'Intervento annullato' &&
-            intervento.stato_lavorazione !== 'Terminato'
-        ).length;
-      },
-      error: (err) => console.error('Errore caricamento interventi admin:', err)
-    });
-  }
-
-  caricaPreventiviAdmin() {
-    this.preventiviService.getPreventiviAdmin().subscribe({
-      next: (datiReali) => {
-        this.preventivi = datiReali;
-        this.totalePreventivi = datiReali.filter(p => p.stato_admin === 'Da valutare').length;
-      },
-      error: (err) => console.error('Errore caricamento preventivi admin:', err)
-    });
-  }
+ 
 
   // ==========================================
   // NUOVA LOGICA CATALOGO CON CHIAMATE HTTP
@@ -140,15 +110,15 @@ caricaPreventiviAdmin() {
 
   caricaCatalogo() {
     this.catalogoService.getCatalogo().subscribe({
-      next: (dati) => {
+      next: (dati: any) => {
         // Mappiamo prezzo_base a prezzoBase per retrocompatibilità se necessario
-        this.catalogo = dati.map(v => ({
+        this.catalogo = dati.map((v: any) => ({
             ...v,
             prezzoBase: v.prezzo_base || v.prezzoBase
         }));
         this.vociCatalogo = this.catalogo.length;
       },
-      error: (err) => console.error('Errore caricamento catalogo:', err)
+      error: (err: any) => console.error('Errore caricamento catalogo:', err)
     });
   }
 
