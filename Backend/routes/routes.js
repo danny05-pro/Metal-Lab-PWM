@@ -5,7 +5,7 @@ const authController = require('../controllers/authController');
 const dipendentiController = require('../controllers/dipendentiController');
 // 1. IMPORTIAMO IL NUOVO CONTROLLER
 const interventiController = require('../controllers/interventiController'); 
-const preventiviController = require('../controllers/preventiviController');
+
 // Middlewares
 const authMiddleware = require('../middlewares/authMiddleware');
 
@@ -36,21 +36,6 @@ router.get(
   interventiController.getInterventiCliente
 );
 
-router.post(
-  '/preventivi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  preventiviController.creaPreventivo
-);
-
-// Aggiungi questa rotta sotto la POST /preventivi
-router.get(
-  '/preventivi', 
-  authMiddleware.verifyToken, 
-  authMiddleware.isCliente, 
-  preventiviController.getPreventiviCliente
-);
-
 // ==========================================
 // AREA ADMIN: GESTIONE DIPENDENTI
 // ==========================================
@@ -75,20 +60,30 @@ router.get(
   authMiddleware.isAdmin,
   interventiController.getInterventoById
 );
-
-
-// ==========================================
-// AREA ADMIN: GESTIONE INTERVENTI E PREVENTIVI
-// ==========================================
-
-
-
-// NUOVA ROTTA: Recupera tutti i preventivi per l'admin
-router.get(
-  '/admin/preventivi',
+router.put(
+  '/admin/interventi/:id/proponi-data',
   authMiddleware.verifyToken,
   authMiddleware.isAdmin,
-  preventiviController.getPreventiviAdmin
+  interventiController.adminProponeData
 );
 
+router.put(
+  '/admin/interventi/:id/rifiuta',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.adminRifiutaIntervento
+);
+
+router.put(
+  '/interventi/:id/risposta-cliente',
+  authMiddleware.verifyToken,
+  authMiddleware.isCliente,
+  interventiController.clienteRispondeData
+);
+router.get(
+  '/interventi/:id',
+  authMiddleware.verifyToken,
+  authMiddleware.isCliente,
+  interventiController.getInterventoClienteById
+);
 module.exports = router;
