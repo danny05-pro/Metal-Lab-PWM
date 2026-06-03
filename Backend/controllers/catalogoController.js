@@ -60,3 +60,30 @@ exports.deleteItem = async (req, res) => {
     res.status(500).json({ message: 'Errore durante l\'eliminazione.' });
   }
 };
+
+exports.getPreferiti = async (req, res) => {
+  try {
+    const preferiti = await Catalogo.getPreferitiUtente(req.user.id);
+    res.json(preferiti);
+  } catch (error) {
+    res.status(500).json({ message: 'Errore recupero preferiti.' });
+  }
+};
+
+exports.addPreferito = async (req, res) => {
+  try {
+    await Catalogo.addPreferito(req.user.id, req.params.id);
+    res.json({ message: 'Aggiunto ai preferiti.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Errore aggiunta preferito.' });
+  }
+};
+
+exports.removePreferito = async (req, res) => {
+  try {
+    await Catalogo.removePreferito(req.user.id, req.params.id);
+    res.json({ message: 'Rimosso dai preferiti.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Errore rimozione preferito.' });
+  }
+};

@@ -43,3 +43,28 @@ exports.delete = (id) => {
     });
   });
 };
+
+exports.addPreferito = (userId, catalogoId) => {
+  return new Promise((resolve, reject) => {
+    db.run(`INSERT OR IGNORE INTO preferiti (user_id, catalogo_id) VALUES (?, ?)`, [userId, catalogoId], function (err) {
+      if (err) reject(err); else resolve(this.changes);
+    });
+  });
+};
+
+exports.removePreferito = (userId, catalogoId) => {
+  return new Promise((resolve, reject) => {
+    db.run(`DELETE FROM preferiti WHERE user_id = ? AND catalogo_id = ?`, [userId, catalogoId], function (err) {
+      if (err) reject(err); else resolve(this.changes);
+    });
+  });
+};
+
+exports.getPreferitiUtente = (userId) => {
+  return new Promise((resolve, reject) => {
+    // Restituisce solo un array di ID per facilitare il frontend
+    db.all(`SELECT catalogo_id FROM preferiti WHERE user_id = ?`, [userId], (err, rows) => {
+      if (err) reject(err); else resolve(rows.map(r => r.catalogo_id));
+    });
+  });
+};

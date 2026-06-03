@@ -1,26 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AlertController } from '@ionic/angular'; // <--- Importante per gli avvisi
 
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonButton,
-  IonButtons,
-  IonSegment,
-  IonSegmentButton,
-  IonLabel,
-  IonIcon
+  IonHeader, IonToolbar, IonTitle, IonContent, IonButton,
+  IonButtons, IonSegment, IonSegmentButton, IonLabel, IonIcon
 } from '@ionic/angular/standalone';
-
 import { addIcons } from 'ionicons';
-
-import {
-  heart,
-  heartOutline,
-  arrowBackOutline
-} from 'ionicons/icons';
+import { heart, heartOutline, arrowBackOutline } from 'ionicons/icons';
 
 import { Product } from '../../models/product.model';
 import { Service } from '../../models/service.model';
@@ -28,76 +15,88 @@ import { ProductCardComponent } from '../../components/product-card/product-card
 import { ServiceCardComponent } from '../../components/service-card/service-card.component';
 import { CatalogoService } from '../../services/catalogo.service';
 
-
 @Component({
   selector: 'app-catalogo',
   templateUrl: './catalogo.page.html',
   styleUrls: ['./catalogo.page.scss'],
   standalone: true,
   imports: [
-    RouterLink,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonButton,
+    RouterLink, IonHeader, IonToolbar, IonTitle, IonContent, IonButton,
     IonButtons, IonSegment, IonSegmentButton, IonLabel, IonIcon,
     ProductCardComponent, ServiceCardComponent
   ]
 })
-export class CatalogoPage implements OnInit { // <-- Aggiunto implements OnInit
+export class CatalogoPage implements OnInit {
 
   selectedSection: 'prodotti' | 'servizi' | 'preferiti' = 'prodotti';
   prodotti: Product[] = [];
   servizi: Service[] = [];
 
-  // Iniettiamo il service nel costruttore
-  constructor(private catalogoService: CatalogoService) {
-    addIcons({
-      heart, heartOutline, arrowBackOutline
-    });
+  constructor(
+    private catalogoService: CatalogoService,
+    private alertController: AlertController // <--- Iniettato
+  ) {
+    addIcons({ heart, heartOutline, arrowBackOutline });
   }
 
-  // Scatta appena apriamo la pagina
   ngOnInit() {
     this.caricaCatalogoReale();
   }
 
   caricaCatalogoReale() {
+    const token = sessionStorage.getItem('token');
+
     this.catalogoService.getCatalogo().subscribe({
       next: (datiDB) => {
-        this.prodotti = [];
-        this.servizi = [];
-
-        const placeholder = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=1200&auto=format&fit=crop';
-
-        datiDB.forEach(voce => {
-          // AGGIUNGIAMO L'INDIRIZZO DEL SERVER (http://localhost:3000)
-          const immagineReale = voce.immagine ? 'http://localhost:3000' + voce.immagine : placeholder;
-
-          if (voce.categoria === 'Prodotto') {
-            this.prodotti.push({
-              id: voce.id,
-              nome: voce.nome,
-              categoria: voce.categoria,
-              descrizione: 'Prodotto in catalogo.',
-              materiale: '-', 
-              prezzo: 0, 
-              prezzoBase: voce.prezzo_base, 
-              immagine: immagineReale, // Ora ha l'URL completo!
-              preferito: false
-            });
-          } else {
-            this.servizi.push({
-              id: voce.id,
-              nome: voce.nome,
-              categoria: voce.categoria,
-              descrizione: 'Servizio professionale.',
-              stato: 'Disponibile',
-              prezzoBase: voce.prezzo_base,
-              immagine: immagineReale, // Ora ha l'URL completo!
-              preferito: false
-            });
-          }
-        });
+        if (token) {
+          // Se è loggato, incrocia i dati del catalogo con l'array dei suoi preferiti
+          this.catalogoService.getPreferiti().subscribe({
+            next: (preferitiIds) => this.smistaDati(datiDB, preferitiIds),
+            error: () => this.smistaDati(datiDB, [])
+          });
+        } else {
+          // Utente non loggato, niente preferiti
+          this.smistaDati(datiDB, []);
+        }
       },
-      error: (err) => console.error('Errore nel caricamento del catalogo:', err)
+      error: (err) => console.error('Errore caricamento catalogo:', err)
+    });
+  }
+
+  // Helper per dividere i dati e assegnare lo stato "preferito"
+  smistaDati(datiDB: any[], preferitiIds: number[]) {
+    this.prodotti = [];
+    this.servizi = [];
+    const placeholder = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=1200&auto=format&fit=crop';
+
+    datiDB.forEach(voce => {
+      const immagineReale = voce.immagine ? (voce.immagine.startsWith('http') ? voce.immagine : 'http://localhost:3000' + voce.immagine) : placeholder;
+      const isPreferito = preferitiIds.includes(voce.id); // Controlla se l'ID è nel DB
+
+      if (voce.categoria === 'Prodotto') {
+        this.prodotti.push({
+          id: voce.id,
+          nome: voce.nome,
+          categoria: voce.categoria,
+          descrizione: 'Prodotto in catalogo.',
+          materiale: '-', 
+          prezzo: 0, 
+          prezzoBase: voce.prezzo_base || voce.prezzoBase, 
+          immagine: immagineReale,
+          preferito: isPreferito
+        });
+      } else {
+        this.servizi.push({
+          id: voce.id,
+          nome: voce.nome,
+          categoria: voce.categoria,
+          descrizione: 'Servizio professionale.',
+          stato: 'Disponibile',
+          prezzoBase: voce.prezzo_base || voce.prezzoBase,
+          immagine: immagineReale,
+          preferito: isPreferito
+        });
+      }
     });
   }
 
@@ -105,19 +104,41 @@ export class CatalogoPage implements OnInit { // <-- Aggiunto implements OnInit
     this.selectedSection = event.detail.value;
   }
 
-  toggleProdottoPreferito(prodotto: Product) {
-    prodotto.preferito = !prodotto.preferito;
+  // Avviso se non si è loggati
+  async controllaLogin(): Promise<boolean> {
+    if (!sessionStorage.getItem('token')) {
+      const alert = await this.alertController.create({
+        header: 'Accesso Richiesto',
+        message: 'Devi accedere al tuo account per salvare i preferiti.',
+        cssClass: 'custom-dark-alert',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return false;
+    }
+    return true;
   }
 
-  toggleServizioPreferito(servizio: Service) {
-    servizio.preferito = !servizio.preferito;
+  async toggleProdottoPreferito(prodotto: Product) {
+    if (!(await this.controllaLogin())) return;
+
+    if (prodotto.preferito) {
+      this.catalogoService.rimuoviPreferito(prodotto.id).subscribe(() => prodotto.preferito = false);
+    } else {
+      this.catalogoService.aggiungiPreferito(prodotto.id).subscribe(() => prodotto.preferito = true);
+    }
   }
 
-  get prodottiPreferiti(): Product[] {
-    return this.prodotti.filter(p => p.preferito);
+  async toggleServizioPreferito(servizio: Service) {
+    if (!(await this.controllaLogin())) return;
+
+    if (servizio.preferito) {
+      this.catalogoService.rimuoviPreferito(servizio.id).subscribe(() => servizio.preferito = false);
+    } else {
+      this.catalogoService.aggiungiPreferito(servizio.id).subscribe(() => servizio.preferito = true);
+    }
   }
 
-  get serviziPreferiti(): Service[] {
-    return this.servizi.filter(s => s.preferito);
-  }
+  get prodottiPreferiti(): Product[] { return this.prodotti.filter(p => p.preferito); }
+  get serviziPreferiti(): Service[] { return this.servizi.filter(s => s.preferito); }
 }

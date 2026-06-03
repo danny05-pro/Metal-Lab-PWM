@@ -82,4 +82,9 @@ router.post('/admin/catalogo', authMiddleware.verifyToken, authMiddleware.isAdmi
 router.put('/admin/catalogo/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, upload.single('immagine'), catalogoController.updateItem);
 router.delete('/admin/catalogo/:id', authMiddleware.verifyToken, authMiddleware.isAdmin, catalogoController.deleteItem);
 
+// AREA PREFERITI CATALOGO (Solo utenti loggati)
+router.get('/preferiti', authMiddleware.verifyToken, catalogoController.getPreferiti);
+router.post('/preferiti/:id', authMiddleware.verifyToken, catalogoController.addPreferito);
+router.delete('/preferiti/:id', authMiddleware.verifyToken, catalogoController.removePreferito);
+
 module.exports = router;

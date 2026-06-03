@@ -55,4 +55,17 @@ export class CatalogoService {
     const headers = this.getAuthHeaders().set('Content-Type', 'application/json');
     return this.http.delete<any>(`${this.apiUrl}/admin/catalogo/${id}`, { headers });
   }
+
+  // --- PREFERITI ---
+  getPreferiti(): Observable<number[]> {
+    return this.http.get<number[]>(`${this.apiUrl}/preferiti`, { headers: this.getAuthHeaders() });
+  }
+
+  aggiungiPreferito(id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/preferiti/${id}`, {}, { headers: this.getAuthHeaders() });
+  }
+
+  rimuoviPreferito(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/preferiti/${id}`, { headers: this.getAuthHeaders() });
+  }
 }

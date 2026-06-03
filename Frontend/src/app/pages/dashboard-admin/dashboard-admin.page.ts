@@ -155,7 +155,7 @@ onFileSelected(event: any) {
     }
   }
 
-  salvaVoceCatalogo() {
+ salvaVoceCatalogo() {
     if (!this.formCatalogoValido) return;
 
     const formData = new FormData();
@@ -163,8 +163,13 @@ onFileSelected(event: any) {
     formData.append('categoria', this.formCatalogo.categoria!);
     formData.append('prezzoBase', this.formCatalogo.prezzoBase || 'Su preventivo');
     
+    // LA MAGIA È QUI: 
     if (this.fileDaCaricare) {
+      // 1. Se l'admin ha caricato una foto nuova, inviamo il File fisico
       formData.append('immagine', this.fileDaCaricare);
+    } else if (this.formCatalogo.immagine) {
+      // 2. Se NON c'è un file nuovo, rimandiamo al server la vecchia stringa di testo (es. "/uploads/cacca.png")
+      formData.append('immagine', this.formCatalogo.immagine);
     }
 
     if (this.modalMode === 'crea') {
@@ -177,7 +182,6 @@ onFileSelected(event: any) {
         error: (err) => console.error('Errore creazione:', err)
       });
     } else {
-      // ORA PASSIAMO formData ANCHE NELLA MODIFICA
       if (this.formCatalogo.id) {
         this.catalogoService.modificaVoce(this.formCatalogo.id, formData).subscribe({
           next: () => {
@@ -190,7 +194,7 @@ onFileSelected(event: any) {
       }
     }
   }
-
+  
   resetFile() {
     this.fileDaCaricare = null;
     this.nomeFileSelezionato = '';

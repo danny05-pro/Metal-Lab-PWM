@@ -193,6 +193,17 @@ async function seedUtenti() {
       immagine TEXT
     )
   `);
+
+    db.run(`
+    CREATE TABLE IF NOT EXISTS preferiti (
+      user_id INTEGER NOT NULL,
+      catalogo_id INTEGER NOT NULL,
+      PRIMARY KEY (user_id, catalogo_id),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (catalogo_id) REFERENCES catalogo(id) ON DELETE CASCADE
+    )
+  `);
+
 }
 
 module.exports = db;
