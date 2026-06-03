@@ -209,5 +209,6 @@ export class DettaglioInterventoClientePage implements OnInit {
   });
 
   await alert.present();
-}}
+}
+}
 

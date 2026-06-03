@@ -191,29 +191,25 @@ async proponiAltraData() {
   await alert.present();
 }
 async rifiutaIntervento() {
+  if (!this.intervento) {
+    return;
+  }
+
   const alert = await this.alertController.create({
     header: 'Rifiuta intervento',
-    message: 'Inserisci il motivo del rifiuto.',
+    message: 'Vuoi rifiutare definitivamente questo intervento?',
     cssClass: 'custom-dark-alert',
-    inputs: [
-      {
-        name: 'motivo',
-        type: 'textarea',
-        placeholder: 'Motivo del rifiuto'
-      }
-    ],
     buttons: [
       {
-        text: 'Annulla',
+        text: 'Indietro',
         role: 'cancel'
       },
       {
-        text: 'Rifiuta',
+        text: 'Rifiuta intervento',
         role: 'destructive',
-        handler: (data: any) => {
+        handler: () => {
           this.interventiService.adminRifiutaIntervento(
-            this.interventoId,
-            data.motivo || ''
+            this.interventoId
           ).subscribe({
             next: () => {
               this.caricaIntervento();

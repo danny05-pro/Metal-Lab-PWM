@@ -84,6 +84,6 @@ router.get(
   '/interventi/:id',
   authMiddleware.verifyToken,
   authMiddleware.isCliente,
-  interventiController.getInterventoById
+  interventiController.getInterventoClienteById
 );
 module.exports = router;

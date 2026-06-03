@@ -63,32 +63,12 @@
           </strong>
         </div>
 
-        <div class="info-row">
-          <span>Data proposta da te</span>
-          <strong>
-            {{ intervento.data_proposta_cliente || 'Nessuna data proposta' }}
-          </strong>
-        </div>
-
-        <div class="info-row">
-          <span>Data proposta dall'admin</span>
-          <strong>
-            {{ intervento.data_proposta_admin || 'Nessuna proposta ricevuta' }}
-          </strong>
-        </div>
 
         <div class="info-row">
           <span>Data accettata</span>
           <strong>
             {{ intervento.data_accettata || 'Non ancora accettata' }}
           </strong>
-        </div>
-
-        <div class="info-row">
-          <span>Stato admin</span>
-          <ion-chip>
-            {{ intervento.stato_admin }}
-          </ion-chip>
         </div>
 
         <div class="info-row">
@@ -210,6 +190,7 @@
       </ion-card-content>
     </ion-card>
 
+    } @else {
 
 
     <div class="ion-padding ion-text-center">

@@ -55,10 +55,6 @@ export interface Intervento {
 
   data_accettata?: string;
 
-  note_cliente?: string;
-
-  note_admin?: string;
-
   created_at?: string;
 
   updated_at?: string;

@@ -47,6 +47,34 @@ exports.getInterventiCliente = async (req, res) => {
     return res.status(500).json({ message: 'Errore durante la lettura degli interventi.' });
   }
 };
+exports.getInterventoClienteById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    if (Number(intervento.cliente_id) !== Number(req.user.id)) {
+      return res.status(403).json({
+        message: 'Non puoi visualizzare un intervento non tuo.'
+      });
+    }
+
+    return res.json(intervento);
+
+  } catch (error) {
+    console.error('Errore recupero dettaglio intervento cliente:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante il recupero del dettaglio intervento cliente.'
+    });
+  }
+};
 
 exports.getInterventiAdmin = async (req, res) => {
   try {
@@ -141,7 +169,6 @@ exports.adminProponeData = async (req, res) => {
 exports.adminRifiutaIntervento = async (req, res) => {
   try {
     const { id } = req.params;
-    const { motivo_rifiuto_admin } = req.body;
 
     const intervento = await Intervento.findById(id);
 
@@ -151,10 +178,7 @@ exports.adminRifiutaIntervento = async (req, res) => {
       });
     }
 
-    await Intervento.adminRifiutaIntervento(
-      id,
-      motivo_rifiuto_admin || null
-    );
+    await Intervento.adminRifiutaIntervento(id);
 
     const interventoAggiornato = await Intervento.findById(id);
 
@@ -189,7 +213,7 @@ exports.clienteRispondeData = async (req, res) => {
       });
     }
 
-    if (intervento.cliente_id !== req.user.id) {
+   if (Number(intervento.cliente_id) !== Number(req.user.id)) {
       return res.status(403).json({
         message: 'Non puoi rispondere a un intervento non tuo.'
       });
@@ -213,13 +237,11 @@ exports.clienteRispondeData = async (req, res) => {
 
   await Intervento.clienteProponeNuovaData(
     id,
-    nuova_data,
-    null
+    nuova_data
   );
 }else if (azione === 'annulla_intervento') {
   await Intervento.clienteAnnullaIntervento(
-    id,
-    null
+    id
   );
 }else {
       return res.status(400).json({
@@ -239,44 +261,6 @@ exports.clienteRispondeData = async (req, res) => {
 
     return res.status(500).json({
       message: 'Errore durante la risposta del cliente.'
-    });
-  }
-};
-
-exports.getInterventiAdmin = async (req, res) => {
-  try {
-    const interventi = await Intervento.findAllForAdmin();
-
-    return res.json(interventi);
-
-  } catch (error) {
-    console.error('Errore nel recupero interventi admin:', error);
-
-    return res.status(500).json({
-      message: 'Errore durante la lettura degli interventi admin.'
-    });
-  }
-};
-
-exports.getInterventoById = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const intervento = await Intervento.findById(id);
-
-    if (!intervento) {
-      return res.status(404).json({
-        message: 'Intervento non trovato.'
-      });
-    }
-
-    return res.json(intervento);
-
-  } catch (error) {
-    console.error('Errore nel recupero dettaglio intervento:', error);
-
-    return res.status(500).json({
-      message: 'Errore durante la lettura del dettaglio intervento.'
     });
   }
 };

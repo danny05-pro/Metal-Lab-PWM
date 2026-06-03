@@ -90,14 +90,11 @@ adminProponeData(
 }
 
 adminRifiutaIntervento(
-  interventoId: number | string,
-  motivo_rifiuto_admin: string
+  interventoId: number | string
 ): Observable<any> {
   return this.http.put(
     `${this.adminApiUrl}/${interventoId}/rifiuta`,
-    {
-      motivo_rifiuto_admin
-    },
+    {},
     {
       headers: this.getHeaders()
     }
