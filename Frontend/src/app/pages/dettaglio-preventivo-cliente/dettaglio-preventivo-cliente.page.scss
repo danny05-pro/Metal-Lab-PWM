@@ -68,9 +68,8 @@ ion-card-title {
   line-height: 1.6;
 }
 
+/* RIMOSSI I COLORI FISSI PER FAR FUNZIONARE IL BINDING [color] */
 ion-chip {
-  background: rgba(245,166,35,0.12);
-  color: #f5a623;
   font-weight: 700;
 }
 
