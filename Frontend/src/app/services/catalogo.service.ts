@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface VoceCatalogo {
@@ -19,51 +19,37 @@ export class CatalogoService {
 
   constructor(private http: HttpClient) {}
 
-  private getAuthHeaders(): HttpHeaders {
-    let token = sessionStorage.getItem('token') || '';
-    token = token.replace(/^"(.*)"$/, '$1');
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  }
-
   // --- LE CHIAMATE ---
 
   getCatalogo(): Observable<any[]> {
     // Per la GET usiamo il formato standard
-    return this.http.get<any[]>(`${this.apiUrl}/catalogo`, { headers: this.getAuthHeaders() });
+    return this.http.get<any[]>(`${this.apiUrl}/catalogo`);
   }
 
   creaVoce(formData: FormData): Observable<any> {
     // Per i file, NON passare Content-Type. HttpClient lo farà per te.
-    return this.http.post<any>(`${this.apiUrl}/admin/catalogo`, formData, { 
-      headers: this.getAuthHeaders() 
-    });
+    return this.http.post<any>(`${this.apiUrl}/admin/catalogo`, formData);
   }
 
   modificaVoce(id: number, formData: FormData): Observable<any> {
     // Anche qui, inviamo FormData.
-    return this.http.put<any>(`${this.apiUrl}/admin/catalogo/${id}`, formData, { 
-      headers: this.getAuthHeaders() 
-    });
+    return this.http.put<any>(`${this.apiUrl}/admin/catalogo/${id}`, formData);
   }
 
   eliminaVoce(id: number): Observable<any> {
-    // Qui serve il Content-Type perché non mandiamo file
-    const headers = this.getAuthHeaders().set('Content-Type', 'application/json');
-    return this.http.delete<any>(`${this.apiUrl}/admin/catalogo/${id}`, { headers });
+    return this.http.delete<any>(`${this.apiUrl}/admin/catalogo/${id}`);
   }
 
   // --- PREFERITI ---
   getPreferiti(): Observable<number[]> {
-    return this.http.get<number[]>(`${this.apiUrl}/preferiti`, { headers: this.getAuthHeaders() });
+    return this.http.get<number[]>(`${this.apiUrl}/preferiti`);
   }
 
   aggiungiPreferito(id: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/preferiti/${id}`, {}, { headers: this.getAuthHeaders() });
+    return this.http.post<any>(`${this.apiUrl}/preferiti/${id}`, {});
   }
 
   rimuoviPreferito(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/preferiti/${id}`, { headers: this.getAuthHeaders() });
+    return this.http.delete<any>(`${this.apiUrl}/preferiti/${id}`);
   }
 }
