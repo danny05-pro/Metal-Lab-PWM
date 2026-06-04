@@ -66,7 +66,7 @@ router.get(
   preventiviController.getPreventivoClienteById
 );
 
-router.put(
+router.patch(
   '/preventivi/:id/risposta', 
   middleware.verifyToken, 
   middleware.isCliente, 
@@ -113,14 +113,14 @@ router.get(
   preventiviController.getPreventivoAdminById
 );
 
-router.put(
+router.patch(
   '/admin/preventivi/:id/proponi-prezzo',
   middleware.verifyToken,
   middleware.isAdmin,
   preventiviController.adminProponePrezzo
 );
 
-router.put(
+router.patch(
   '/admin/preventivi/:id/rifiuta',
   middleware.verifyToken,
   middleware.isAdmin,
@@ -140,21 +140,21 @@ router.get(
   middleware.isAdmin,
   interventiController.getInterventoById
 );
-router.put(
+router.patch(
   '/admin/interventi/:id/proponi-data',
   middleware.verifyToken,
   middleware.isAdmin,
   interventiController.adminProponeData
 );
 
-router.put(
+router.patch(
   '/admin/interventi/:id/rifiuta',
   middleware.verifyToken,
   middleware.isAdmin,
   interventiController.adminRifiutaIntervento
 );
 
-router.put(
+router.patch(
   '/interventi/:id/risposta-cliente',
   middleware.verifyToken,
   middleware.isCliente,
@@ -207,7 +207,7 @@ router.get(
   interventiController.getInterventoDipendenteById
 );
 
-router.put(
+router.patch(
   '/dipendente/interventi/:id/stato',
   middleware.verifyToken,
   middleware.isDipendente,

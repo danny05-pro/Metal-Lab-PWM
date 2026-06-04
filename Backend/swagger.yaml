@@ -1,0 +1,1688 @@
+openapi: 3.0.3
+info:
+  title: Metal Lab API
+  version: 1.0.0
+  description: |
+    Specifica OpenAPI per il backend Express di Metal Lab.
+    Le rotte applicative sono montate sotto `/api`; gli allegati caricati
+    sono serviti come file statici sotto `/uploads`.
+servers:
+  - url: http://localhost:3000
+    description: Server locale
+tags:
+  - name: Sistema
+    description: Stato del server e file statici
+  - name: Auth
+    description: Registrazione, login e profilo utente
+  - name: Catalogo
+    description: Consultazione catalogo e preferiti
+  - name: Preventivi Cliente
+    description: Operazioni preventivi disponibili ai clienti
+  - name: Preventivi Admin
+    description: Valutazione e gestione preventivi lato admin
+  - name: Interventi Cliente
+    description: Operazioni interventi disponibili ai clienti
+  - name: Interventi Admin
+    description: Pianificazione e assegnazione interventi lato admin
+  - name: Interventi Dipendente
+    description: Consultazione e avanzamento lavori dei dipendenti
+  - name: Gestione Dipendenti
+    description: CRUD dipendenti riservato agli admin
+paths:
+  /:
+    get:
+      tags:
+        - Sistema
+      summary: Verifica che il server sia attivo
+      responses:
+        '200':
+          description: Server attivo
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Server Metal Lab attivo
+
+  /uploads/{filename}:
+    get:
+      tags:
+        - Sistema
+      summary: Recupera un file caricato
+      parameters:
+        - $ref: '#/components/parameters/FilenameParam'
+      responses:
+        '200':
+          description: File restituito dal filesystem statico
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Registra un nuovo cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Registrazione completata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: Dati obbligatori mancanti, email non valida o password non valida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Email gia registrata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Autentica un utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login effettuato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Email o password mancanti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/auth/profile:
+    get:
+      tags:
+        - Auth
+      summary: Recupera il profilo dell'utente autenticato
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profilo utente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/catalogo:
+    get:
+      tags:
+        - Catalogo
+      summary: Elenca le voci del catalogo
+      responses:
+        '200':
+          description: Lista delle voci catalogo ordinate per categoria e nome
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogoItem'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/preferiti:
+    get:
+      tags:
+        - Catalogo
+      summary: Elenca gli ID delle voci catalogo preferite dall'utente
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Array di ID catalogo preferiti
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                example:
+                  - 1
+                  - 4
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/preferiti/{id}:
+    post:
+      tags:
+        - Catalogo
+      summary: Aggiunge una voce catalogo ai preferiti
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Preferito aggiunto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Catalogo
+      summary: Rimuove una voce catalogo dai preferiti
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Preferito rimosso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/preventivi:
+    post:
+      tags:
+        - Preventivi Cliente
+      summary: Crea una richiesta di preventivo
+      description: Richiede un utente autenticato con ruolo `cliente`. Accetta fino a 5 file nel campo `allegati`.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreatePreventivoRequest'
+      responses:
+        '201':
+          description: Preventivo inviato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreventivoMutationResponse'
+        '400':
+          description: Campi obbligatori mancanti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+        - Preventivi Cliente
+      summary: Elenca i preventivi del cliente autenticato
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista preventivi del cliente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Preventivo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/preventivi/{id}:
+    get:
+      tags:
+        - Preventivi Cliente
+      summary: Recupera il dettaglio di un preventivo del cliente
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Dettaglio preventivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Preventivo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/preventivi/{id}/risposta:
+    patch:
+      tags:
+        - Preventivi Cliente
+      summary: Accetta o rifiuta un preventivo con prezzo proposto
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RispostaPreventivoRequest'
+      responses:
+        '200':
+          description: Risposta salvata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreventivoMutationResponse'
+        '400':
+          description: Azione non consentita nello stato corrente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/preventivi:
+    get:
+      tags:
+        - Preventivi Admin
+      summary: Elenca tutti i preventivi con dati cliente
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista preventivi per admin
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PreventivoAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/preventivi/{id}:
+    get:
+      tags:
+        - Preventivi Admin
+      summary: Recupera il dettaglio di un preventivo per admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Dettaglio preventivo con dati cliente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreventivoAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/preventivi/{id}/proponi-prezzo:
+    patch:
+      tags:
+        - Preventivi Admin
+      summary: Propone un prezzo per un preventivo
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProponiPrezzoRequest'
+      responses:
+        '200':
+          description: Prezzo proposto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreventivoAdminMutationResponse'
+        '400':
+          description: Prezzo non valido o preventivo gia chiuso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/preventivi/{id}/rifiuta:
+    patch:
+      tags:
+        - Preventivi Admin
+      summary: Rifiuta un preventivo
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Preventivo rifiutato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          description: Preventivo gia chiuso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/interventi:
+    post:
+      tags:
+        - Interventi Cliente
+      summary: Crea una richiesta di intervento
+      description: Richiede un utente autenticato con ruolo `cliente`.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInterventoRequest'
+      responses:
+        '201':
+          description: Intervento creato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterventoMutationResponse'
+        '400':
+          description: Campi obbligatori mancanti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+        - Interventi Cliente
+      summary: Elenca gli interventi del cliente autenticato
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista interventi del cliente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Intervento'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/interventi/{id}:
+    get:
+      tags:
+        - Interventi Cliente
+      summary: Recupera il dettaglio di un intervento del cliente
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Dettaglio intervento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterventoAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/interventi/{id}/risposta-cliente:
+    patch:
+      tags:
+        - Interventi Cliente
+      summary: Risponde alla data proposta per un intervento
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RispostaDataInterventoRequest'
+      responses:
+        '200':
+          description: Risposta cliente salvata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterventoMutationResponse'
+        '400':
+          description: Azione non valida o dati mancanti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/interventi:
+    get:
+      tags:
+        - Interventi Admin
+      summary: Elenca tutti gli interventi con dati cliente
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista interventi per admin
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InterventoAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/interventi/{id}:
+    get:
+      tags:
+        - Interventi Admin
+      summary: Recupera il dettaglio di un intervento per admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Dettaglio intervento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterventoAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/interventi/{id}/proponi-data:
+    patch:
+      tags:
+        - Interventi Admin
+      summary: Propone una data o accetta quella indicata dal cliente
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProponiDataInterventoRequest'
+      responses:
+        '200':
+          description: Data proposta correttamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterventoMutationResponse'
+        '400':
+          description: Data mancante o non disponibile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/interventi/{id}/rifiuta:
+    patch:
+      tags:
+        - Interventi Admin
+      summary: Rifiuta un intervento
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Intervento rifiutato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterventoMutationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/interventi/{id}/dipendenti:
+    get:
+      tags:
+        - Interventi Admin
+      summary: Elenca i dipendenti assegnati a un intervento
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Dipendenti assegnati
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Interventi Admin
+      summary: Assegna un dipendente a un intervento
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssegnaDipendenteRequest'
+      responses:
+        '200':
+          description: Dipendente assegnato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DipendentiAssegnatiResponse'
+        '400':
+          description: Dipendente obbligatorio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - Interventi Admin
+      summary: Sostituisce la lista dei dipendenti assegnati
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AggiornaDipendentiRequest'
+      responses:
+        '200':
+          description: Dipendenti assegnati aggiornati
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DipendentiAssegnatiResponse'
+        '400':
+          description: Lista dipendenti non valida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/dipendente/interventi:
+    get:
+      tags:
+        - Interventi Dipendente
+      summary: Elenca gli interventi assegnati al dipendente autenticato
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Interventi assegnati
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InterventoAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/dipendente/interventi/{id}:
+    get:
+      tags:
+        - Interventi Dipendente
+      summary: Recupera un intervento assegnato al dipendente autenticato
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Dettaglio intervento assegnato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterventoAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/dipendente/interventi/{id}/stato:
+    patch:
+      tags:
+        - Interventi Dipendente
+      summary: Aggiorna lo stato di lavorazione di un intervento assegnato
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AggiornaStatoLavorazioneRequest'
+      responses:
+        '200':
+          description: Stato aggiornato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterventoMutationResponse'
+        '400':
+          description: Stato lavorazione non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/gestione-dipendenti:
+    get:
+      tags:
+        - Gestione Dipendenti
+      summary: Elenca tutti i dipendenti
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista dipendenti
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Gestione Dipendenti
+      summary: Crea un nuovo dipendente
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DipendenteRequest'
+      responses:
+        '201':
+          description: Dipendente creato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: Email gia in uso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/gestione-dipendenti/{id}:
+    put:
+      tags:
+        - Gestione Dipendenti
+      summary: Modifica un dipendente
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DipendenteUpdateRequest'
+      responses:
+        '200':
+          description: Dipendente aggiornato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Gestione Dipendenti
+      summary: Elimina un dipendente
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Dipendente eliminato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/catalogo:
+    post:
+      tags:
+        - Catalogo
+      summary: Crea una voce del catalogo
+      description: Richiede un utente autenticato con ruolo `admin`.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CatalogoCreateRequest'
+      responses:
+        '201':
+          description: Voce catalogo creata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogoItem'
+        '400':
+          description: Nome o categoria mancanti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/catalogo/{id}:
+    put:
+      tags:
+        - Catalogo
+      summary: Modifica una voce del catalogo
+      description: Richiede un utente autenticato con ruolo `admin`.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CatalogoUpdateRequest'
+      responses:
+        '200':
+          description: Voce catalogo aggiornata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Catalogo
+      summary: Elimina una voce del catalogo
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Voce catalogo eliminata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      description: Identificativo numerico della risorsa
+      schema:
+        type: integer
+        minimum: 1
+      example: 1
+    FilenameParam:
+      name: filename
+      in: path
+      required: true
+      description: Nome del file salvato nella cartella uploads
+      schema:
+        type: string
+      example: allegato-1780563762895-561925806.pdf
+
+  responses:
+    Unauthorized:
+      description: Token mancante o non fornito
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Token non valido oppure utente autenticato ma non autorizzato per il ruolo richiesto
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Risorsa non trovata
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: Errore interno del server
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Errore durante l'operazione.
+        error:
+          type: string
+          nullable: true
+          example: Dettaglio tecnico dell'errore
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Operazione completata con successo.
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+        nome:
+          type: string
+          example: Luigi
+        cognome:
+          type: string
+          example: Ferri
+        telefono:
+          type: string
+          nullable: true
+          example: '3331234567'
+        email:
+          type: string
+          format: email
+          example: dipendente@metallab.it
+        ruolo:
+          type: string
+          enum:
+            - cliente
+            - admin
+            - dipendente
+          example: dipendente
+
+    RegisterRequest:
+      type: object
+      required:
+        - nome
+        - cognome
+        - telefono
+        - email
+        - password
+      properties:
+        nome:
+          type: string
+          example: Mario
+        cognome:
+          type: string
+          example: Rossi
+        telefono:
+          type: string
+          example: '3331234567'
+        email:
+          type: string
+          format: email
+          example: mario.rossi@example.com
+        password:
+          type: string
+          format: password
+          description: Minimo 6 caratteri, una maiuscola, una minuscola, un numero e un carattere speciale.
+          example: Cliente123!
+
+    RegisterResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Registrazione completata
+        user:
+          $ref: '#/components/schemas/User'
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: admin@metallab.it
+        password:
+          type: string
+          format: password
+          example: Admin123!
+
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Login effettuato
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        user:
+          $ref: '#/components/schemas/User'
+
+    DipendenteRequest:
+      type: object
+      required:
+        - nome
+        - cognome
+        - email
+        - telefono
+        - password
+      properties:
+        nome:
+          type: string
+          example: Luigi
+        cognome:
+          type: string
+          example: Ferri
+        email:
+          type: string
+          format: email
+          example: dipendente@metallab.it
+        telefono:
+          type: string
+          example: '3331234567'
+        password:
+          type: string
+          format: password
+          example: Dipendente123!
+
+    DipendenteUpdateRequest:
+      type: object
+      required:
+        - nome
+        - cognome
+        - email
+        - telefono
+      properties:
+        nome:
+          type: string
+          example: Luigi
+        cognome:
+          type: string
+          example: Ferri
+        email:
+          type: string
+          format: email
+          example: dipendente@metallab.it
+        telefono:
+          type: string
+          example: '3331234567'
+        password:
+          type: string
+          format: password
+          description: Opzionale in modifica; se presente viene salvata cifrata.
+          example: NuovaPassword123!
+
+    CatalogoItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nome:
+          type: string
+          example: Taglio laser
+        categoria:
+          type: string
+          example: Lavorazioni
+        prezzo_base:
+          type: string
+          example: Su preventivo
+        prezzoBase:
+          type: string
+          description: Campo restituito dalla creazione in base al body ricevuto dal controller.
+          example: Su preventivo
+        immagine:
+          type: string
+          nullable: true
+          example: /uploads/allegato-1780511795833-951911185.jpg
+
+    CatalogoCreateRequest:
+      type: object
+      required:
+        - nome
+        - categoria
+      properties:
+        nome:
+          type: string
+          example: Taglio laser
+        categoria:
+          type: string
+          example: Lavorazioni
+        prezzoBase:
+          type: string
+          example: Su preventivo
+        immagine:
+          type: string
+          format: binary
+          description: File immagine opzionale.
+
+    CatalogoUpdateRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Taglio laser
+        categoria:
+          type: string
+          example: Lavorazioni
+        prezzoBase:
+          type: string
+          example: Su preventivo
+        immagine:
+          oneOf:
+            - type: string
+              format: binary
+            - type: string
+          description: Nuovo file immagine multipart oppure path immagine esistente se non si carica un nuovo file.
+
+    CreatePreventivoRequest:
+      type: object
+      required:
+        - descrizione
+        - servizio
+        - materiale
+        - dimensioni
+      properties:
+        descrizione:
+          type: string
+          example: Realizzazione staffa metallica su misura.
+        servizio:
+          type: string
+          example: Taglio e piegatura
+        materiale:
+          type: string
+          example: Acciaio inox
+        dimensioni:
+          type: string
+          example: 40x20x5 cm
+        finitura:
+          type: string
+          nullable: true
+          example: Satinata
+        allegati:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+            format: binary
+          description: Allegati opzionali, massimo 5 file.
+
+    Preventivo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 12
+        cliente_id:
+          type: integer
+          example: 5
+        descrizione:
+          type: string
+          example: Realizzazione staffa metallica su misura.
+        servizio:
+          type: string
+          example: Taglio e piegatura
+        materiale:
+          type: string
+          example: Acciaio inox
+        dimensioni:
+          type: string
+          example: 40x20x5 cm
+        finitura:
+          type: string
+          nullable: true
+          example: Satinata
+        allegato:
+          type: string
+          nullable: true
+          description: Percorsi degli allegati separati da virgola.
+          example: /uploads/allegato-1780563762895-561925806.pdf
+        prezzo_proposto:
+          type: number
+          format: float
+          nullable: true
+          example: 250.5
+        stato_admin:
+          type: string
+          enum:
+            - Da valutare
+            - Prezzo proposto
+            - Rifiutato
+            - Preventivo concordato
+          example: Da valutare
+        stato_risposta_cliente:
+          type: string
+          enum:
+            - In attesa
+            - Accettato
+            - Rifiutato
+          example: In attesa
+
+    PreventivoAdmin:
+      allOf:
+        - $ref: '#/components/schemas/Preventivo'
+        - type: object
+          properties:
+            cliente_nome:
+              type: string
+              example: Mario
+            cliente_cognome:
+              type: string
+              example: Rossi
+            cliente_email:
+              type: string
+              format: email
+              example: mario.rossi@example.com
+            cliente_telefono:
+              type: string
+              example: '3331234567'
+
+    PreventivoMutationResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Preventivo inviato con successo!
+        preventivo:
+          $ref: '#/components/schemas/Preventivo'
+
+    PreventivoAdminMutationResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Prezzo proposto con successo.
+        preventivo:
+          $ref: '#/components/schemas/PreventivoAdmin'
+
+    RispostaPreventivoRequest:
+      type: object
+      required:
+        - azione
+      properties:
+        azione:
+          type: string
+          enum:
+            - accetta
+            - rifiuta
+          example: accetta
+
+    ProponiPrezzoRequest:
+      type: object
+      required:
+        - prezzo
+      properties:
+        prezzo:
+          type: number
+          format: float
+          minimum: 0.01
+          example: 250.5
+
+    CreateInterventoRequest:
+      type: object
+      required:
+        - descrizione
+        - luogo
+        - priorita
+      properties:
+        descrizione:
+          type: string
+          example: Manutenzione cancello industriale.
+        luogo:
+          type: string
+          example: Via Roma 10, Milano
+        priorita:
+          type: string
+          enum:
+            - Bassa
+            - Media
+            - Alta
+          example: Media
+        data_proposta_cliente:
+          type: string
+          format: date
+          nullable: true
+          example: '2026-06-20'
+
+    Intervento:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 7
+        cliente_id:
+          type: integer
+          example: 5
+        descrizione:
+          type: string
+          example: Manutenzione cancello industriale.
+        luogo:
+          type: string
+          example: Via Roma 10, Milano
+        priorita:
+          type: string
+          enum:
+            - Bassa
+            - Media
+            - Alta
+          example: Media
+        stato_admin:
+          type: string
+          enum:
+            - Richiesto
+            - Rifiutato
+            - Data proposta
+            - In attesa nuova valutazione
+            - Intervento concordato
+          example: Richiesto
+        stato_risposta_cliente:
+          type: string
+          enum:
+            - In attesa
+            - Data accettata
+            - Nuova data proposta
+            - Intervento annullato
+          example: In attesa
+        stato_lavorazione:
+          type: string
+          enum:
+            - Da programmare
+            - Programmato
+            - In lavorazione
+            - Terminato
+          example: Da programmare
+        data_richiesta:
+          type: string
+          example: '2026-06-04'
+        data_proposta_cliente:
+          type: string
+          nullable: true
+          example: '2026-06-20'
+        data_proposta_admin:
+          type: string
+          nullable: true
+          example: '2026-06-22'
+        data_accettata:
+          type: string
+          nullable: true
+          example: '2026-06-22'
+        numero_dipendenti:
+          type: integer
+          example: 2
+
+    InterventoAdmin:
+      allOf:
+        - $ref: '#/components/schemas/Intervento'
+        - type: object
+          properties:
+            cliente_nome:
+              type: string
+              example: Mario
+            cliente_cognome:
+              type: string
+              example: Rossi
+            cliente_email:
+              type: string
+              format: email
+              example: mario.rossi@example.com
+            cliente_telefono:
+              type: string
+              example: '3331234567'
+
+    InterventoMutationResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Richiesta di intervento inviata con successo!
+        intervento:
+          $ref: '#/components/schemas/InterventoAdmin'
+
+    ProponiDataInterventoRequest:
+      type: object
+      properties:
+        data_proposta_admin:
+          type: string
+          format: date
+          example: '2026-06-22'
+        usa_data_cliente:
+          type: boolean
+          example: false
+      description: Se `usa_data_cliente` e true, il backend usa `data_proposta_cliente`; altrimenti richiede `data_proposta_admin`.
+
+    RispostaDataInterventoRequest:
+      type: object
+      required:
+        - azione
+      properties:
+        azione:
+          type: string
+          enum:
+            - accetta_data
+            - proponi_nuova_data
+            - annulla_intervento
+          example: accetta_data
+        nuova_data:
+          type: string
+          format: date
+          description: Obbligatoria quando `azione` vale `proponi_nuova_data`.
+          example: '2026-06-25'
+
+    AssegnaDipendenteRequest:
+      type: object
+      required:
+        - dipendente_id
+      properties:
+        dipendente_id:
+          type: integer
+          minimum: 1
+          example: 2
+
+    AggiornaDipendentiRequest:
+      type: object
+      required:
+        - dipendente_ids
+      properties:
+        dipendente_ids:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+          example:
+            - 2
+            - 3
+
+    DipendentiAssegnatiResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Dipendenti assegnati aggiornati correttamente.
+        dipendenti:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    AggiornaStatoLavorazioneRequest:
+      type: object
+      required:
+        - stato_lavorazione
+      properties:
+        stato_lavorazione:
+          type: string
+          enum:
+            - Programmato
+            - In lavorazione
+            - Terminato
+          example: In lavorazione

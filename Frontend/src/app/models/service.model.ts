@@ -2,9 +2,10 @@ export interface Service {
   id: number;
   nome: string;
   descrizione: string;
-  categoria: string;
+  categoria: 'Servizio';
   stato: string;
-  prezzoBase?: string; // <-- AGGIUNTO
-  immagine: string;
+  prezzo_base?: string;
+  prezzoBase?: string;
+  immagine?: string;
   preferito: boolean;
 }

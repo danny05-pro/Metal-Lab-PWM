@@ -80,7 +80,7 @@ adminProponeData(
     usa_data_cliente?: boolean;
   }
 ): Observable<any> {
-  return this.http.put(
+  return this.http.patch(
     `${this.adminApiUrl}/${interventoId}/proponi-data`,
     dati,
     {
@@ -92,7 +92,7 @@ adminProponeData(
 adminRifiutaIntervento(
   interventoId: number | string
 ): Observable<any> {
-  return this.http.put(
+  return this.http.patch(
     `${this.adminApiUrl}/${interventoId}/rifiuta`,
     {},
     {
@@ -108,7 +108,7 @@ clienteRispondeData(
     nuova_data?: string;
   }
 ): Observable<any> {
-  return this.http.put(
+  return this.http.patch(
     `${this.apiUrl}/${interventoId}/risposta-cliente`,
     dati,
     {
@@ -174,7 +174,7 @@ aggiornaStatoLavorazioneDipendente(
   interventoId: number | string,
   stato_lavorazione: 'Programmato' | 'In lavorazione' | 'Terminato'
 ): Observable<any> {
-  return this.http.put(
+  return this.http.patch(
     `http://localhost:3000/api/dipendente/interventi/${interventoId}/stato`,
     {
       stato_lavorazione
@@ -201,4 +201,3 @@ aggiornaDipendentiAssegnati(
 }
 
 }
-

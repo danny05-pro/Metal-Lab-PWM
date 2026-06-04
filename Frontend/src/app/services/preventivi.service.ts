@@ -50,12 +50,12 @@ export class PreventiviService {
   }
 
   adminProponePrezzo(id: number | string, prezzo: number): Observable<any> {
-    return this.http.put(`${this.adminApiUrl}/${id}/proponi-prezzo`, { prezzo }, { headers: this.getHeaders() });
+    return this.http.patch(`${this.adminApiUrl}/${id}/proponi-prezzo`, { prezzo }, { headers: this.getHeaders() });
   }
 
   // Admin rifiuta il preventivo
   adminRifiutaPreventivo(id: number | string): Observable<any> {
-    return this.http.put(`${this.adminApiUrl}/${id}/rifiuta`, {}, { headers: this.getHeaders() });
+    return this.http.patch(`${this.adminApiUrl}/${id}/rifiuta`, {}, { headers: this.getHeaders() });
   }
 
   // Recupera il dettaglio di un singolo preventivo per il CLIENTE
@@ -65,6 +65,6 @@ export class PreventiviService {
 
   // Invia al backend la scelta del cliente (accetta o rifiuta)
   rispondiPreventivo(id: number | string, azione: 'accetta' | 'rifiuta'): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}/risposta`, { azione }, { headers: this.getHeaders() });
+    return this.http.patch(`${this.apiUrl}/${id}/risposta`, { azione }, { headers: this.getHeaders() });
   }
 }
