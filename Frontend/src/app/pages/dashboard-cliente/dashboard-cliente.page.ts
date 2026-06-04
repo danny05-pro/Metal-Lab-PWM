@@ -36,6 +36,7 @@ export class DashboardClientePage {
   tuttiGliInterventi: any[] = [];
   interventiFuturi: any[] = [];
   preventivi: Preventivo[] = [];
+  nomeCliente = '';
 
   constructor(
     private interventiService: InterventiService,
@@ -50,6 +51,7 @@ export class DashboardClientePage {
   }
 
   ionViewWillEnter() {
+    this.nomeCliente = sessionStorage.getItem('nomeUtente') || 'Cliente';
     this.caricaInterventi();
     this.caricaPreventivi(); 
   }
