@@ -46,14 +46,25 @@
 
         <div class="info-row">
           <span>Stato Admin</span>
-          <ion-chip>
+          <ion-chip
+            [color]="
+              preventivo.stato_admin === 'Preventivo concordato' ? 'success' :
+              preventivo.stato_admin === 'Rifiutato' ? 'danger' :
+              preventivo.stato_admin === 'Prezzo proposto' ? 'tertiary' :
+              'warning'
+            ">
             {{ preventivo.stato_admin }}
           </ion-chip>
         </div>
         
         <div class="info-row">
           <span>Risposta Cliente</span>
-          <ion-chip>
+          <ion-chip
+            [color]="
+              preventivo.stato_risposta_cliente === 'Accettato' ? 'success' :
+              preventivo.stato_risposta_cliente === 'Rifiutato' ? 'danger' :
+              'warning'
+            ">
             {{ preventivo.stato_risposta_cliente }}
           </ion-chip>
         </div>

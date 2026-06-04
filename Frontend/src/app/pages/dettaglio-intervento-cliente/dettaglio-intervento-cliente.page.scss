@@ -74,13 +74,11 @@ ion-card-title {
   line-height: 1.5;
 }
 
+/* LA CLASSE MODIFICATA: tolto il background e il color fissi */
 .info-row ion-chip {
   width: fit-content;
   justify-self: end;
   margin: 0;
-
-  background: rgba(245, 166, 35, 0.12);
-  color: #f5a623;
   font-weight: 800;
 
   --border-radius: 30px;

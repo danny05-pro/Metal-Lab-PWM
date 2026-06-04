@@ -57,18 +57,28 @@
           <span>Data intervento</span>
           <strong>{{ intervento.data_accettata || intervento.data_proposta_admin || 'Da programmare' }}</strong>
         </div>
+        
         <div class="info-row">
           <span>Stato lavorazione</span>
-          <ion-chip>{{ intervento.stato_lavorazione }}</ion-chip>
+          <ion-chip
+            [color]="
+              intervento.stato_lavorazione === 'Terminato' ? 'success' :
+              intervento.stato_lavorazione === 'In lavorazione' ? 'tertiary' :
+              intervento.stato_lavorazione === 'Programmato' ? 'primary' :
+              'warning'
+            ">
+            {{ intervento.stato_lavorazione }}
+          </ion-chip>
         </div>
+        
         <div class="actions">
-  <ion-button
-    expand="block"
-    class="btn-glass-update"
-    (click)="modificaStatoIntervento()">
-    Modifica stato intervento
-  </ion-button>
-</div>
+          <ion-button
+            expand="block"
+            class="btn-glass-update"
+            (click)="modificaStatoIntervento()">
+            Modifica stato intervento
+          </ion-button>
+        </div>
       </ion-card-content>
     </ion-card>
 
