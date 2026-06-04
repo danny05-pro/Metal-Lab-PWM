@@ -419,3 +419,40 @@ exports.aggiornaStatoLavorazioneDipendente = async (req, res) => {
     });
   }
 };
+
+exports.aggiornaDipendentiAssegnati = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { dipendente_ids } = req.body;
+
+    if (!Array.isArray(dipendente_ids)) {
+      return res.status(400).json({
+        message: 'La lista dei dipendenti deve essere un array.'
+      });
+    }
+
+    const intervento = await Intervento.findById(id);
+
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
+
+    await Intervento.aggiornaDipendentiAssegnati(id, dipendente_ids);
+
+    const dipendenti = await Intervento.findDipendentiAssegnati(id);
+
+    return res.json({
+      message: 'Dipendenti assegnati aggiornati correttamente.',
+      dipendenti
+    });
+
+  } catch (error) {
+    console.error('Errore aggiornamento dipendenti assegnati:', error);
+
+    return res.status(500).json({
+      message: 'Errore durante l’aggiornamento dei dipendenti assegnati.'
+    });
+  }
+};

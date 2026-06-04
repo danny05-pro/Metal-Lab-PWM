@@ -390,3 +390,64 @@ exports.updateStatoLavorazioneForDipendente = (
     );
   });
 };
+
+exports.aggiornaDipendentiAssegnati = (intervento_id, dipendente_ids) => {
+  return new Promise((resolve, reject) => {
+    db.serialize(() => {
+      db.run('BEGIN TRANSACTION');
+
+      db.run(
+        `
+          DELETE FROM dipendenti_interventi
+          WHERE intervento_id = ?
+        `,
+        [intervento_id],
+        (err) => {
+          if (err) {
+            db.run('ROLLBACK');
+            return reject(err);
+          }
+
+          if (!dipendente_ids || dipendente_ids.length === 0) {
+            db.run('COMMIT', (commitErr) => {
+              if (commitErr) {
+                reject(commitErr);
+              } else {
+                resolve({ changes: 0 });
+              }
+            });
+
+            return;
+          }
+
+          const stmt = db.prepare(
+            `
+              INSERT INTO dipendenti_interventi
+              (intervento_id, dipendente_id)
+              VALUES (?, ?)
+            `
+          );
+
+          for (const dipendente_id of dipendente_ids) {
+            stmt.run(intervento_id, dipendente_id);
+          }
+
+          stmt.finalize((finalizeErr) => {
+            if (finalizeErr) {
+              db.run('ROLLBACK');
+              return reject(finalizeErr);
+            }
+
+            db.run('COMMIT', (commitErr) => {
+              if (commitErr) {
+                reject(commitErr);
+              } else {
+                resolve({ changes: dipendente_ids.length });
+              }
+            });
+          });
+        }
+      );
+    });
+  });
+};

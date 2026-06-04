@@ -176,7 +176,12 @@ router.post(
   authMiddleware.isAdmin,
   interventiController.assegnaDipendente
 );
-
+router.put(
+  '/admin/interventi/:id/dipendenti',
+  authMiddleware.verifyToken,
+  authMiddleware.isAdmin,
+  interventiController.aggiornaDipendentiAssegnati
+);
 router.get(
   '/admin/interventi/:id/dipendenti',
   authMiddleware.verifyToken,

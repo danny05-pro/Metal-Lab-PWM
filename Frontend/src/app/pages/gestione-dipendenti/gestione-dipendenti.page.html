@@ -124,7 +124,7 @@
               <ion-input
                 type="tel"
                 [(ngModel)]="formDipendente.telefono"
-                placeholder="Es. 3331234567">
+                placeholder="Inserisci un numero di telefono valido">
               </ion-input>
             </div>
           </div>
@@ -137,7 +137,7 @@
               <ion-input
                 type="password"
                 [(ngModel)]="formDipendente.password"
-                [placeholder]="modalMode === 'crea' ? 'Imposta una password' : 'Lascia vuoto per non cambiarla'">
+                [placeholder]="modalMode === 'crea' ? 'Imposta una password sicura' : 'Lascia vuoto per non cambiarla'">
                 <ion-input-password-toggle slot="end"></ion-input-password-toggle>
               </ion-input>
             </div>

@@ -141,17 +141,26 @@ caricaDipendentiAssegnati() {
     return;
   }
 
-  if (this.intervento.stato_admin !== 'Intervento concordato' || this.intervento.stato_lavorazione === 'Terminato') {
-      return;
-    }
+  if (
+    this.intervento.stato_admin !== 'Intervento concordato' ||
+    this.intervento.stato_lavorazione === 'Terminato'
+  ) {
+    return;
+  }
+
+  const idsGiaAssegnati = this.dipendentiAssegnati.map(
+    dipendente => Number(dipendente.id)
+  );
+
   const alert = await this.alertController.create({
-    header: 'Assegna dipendente',
-    message: 'Seleziona il dipendente da assegnare a questo intervento.',
+    header: 'Assegna dipendenti',
+    message: 'Seleziona uno o più dipendenti da assegnare a questo intervento.',
     cssClass: 'custom-dark-alert',
     inputs: this.dipendentiDisponibili.map(dipendente => ({
-      type: 'radio',
+      type: 'checkbox',
       label: `${dipendente.nome} ${dipendente.cognome}`,
-      value: dipendente.id
+      value: Number(dipendente.id),
+      checked: idsGiaAssegnati.includes(Number(dipendente.id))
     })),
     buttons: [
       {
@@ -160,20 +169,19 @@ caricaDipendentiAssegnati() {
       },
       {
         text: 'Conferma',
-        handler: (dipendenteId: number) => {
-          if (!dipendenteId) {
-            return false;
-          }
+        handler: (dipendenteIds: number[]) => {
+          const idsSelezionati = dipendenteIds || [];
 
-          this.interventiService.assegnaDipendente(
+          this.interventiService.aggiornaDipendentiAssegnati(
             this.interventoId,
-            dipendenteId
+            idsSelezionati
           ).subscribe({
-            next: () => {
-              this.caricaDipendentiAssegnati();
+            next: (res) => {
+              this.dipendentiAssegnati = res.dipendenti;
+              this.caricaIntervento();
             },
             error: (err) => {
-              console.error('Errore assegnazione dipendente:', err);
+              console.error('Errore aggiornamento dipendenti assegnati:', err);
             }
           });
 

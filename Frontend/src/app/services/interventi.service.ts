@@ -185,5 +185,20 @@ aggiornaStatoLavorazioneDipendente(
   );
 }
 
+aggiornaDipendentiAssegnati(
+  interventoId: number | string,
+  dipendenteIds: number[]
+): Observable<any> {
+  return this.http.put(
+    `${this.adminApiUrl}/${interventoId}/dipendenti`,
+    {
+      dipendente_ids: dipendenteIds
+    },
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
 }
 
