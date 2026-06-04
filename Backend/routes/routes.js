@@ -178,8 +178,8 @@ router.post(
 );
 router.put(
   '/admin/interventi/:id/dipendenti',
-  authMiddleware.verifyToken,
-  authMiddleware.isAdmin,
+  middleware.verifyToken,
+  middleware.isAdmin,
   interventiController.aggiornaDipendentiAssegnati
 );
 router.get(

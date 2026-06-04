@@ -49,6 +49,15 @@ export class DashboardAdminPage {
   isModalOpen = false;
   modalMode: 'crea' | 'modifica' = 'crea';
   formCatalogo: Partial<VoceCatalogo> = {};
+  
+  get prodottiCatalogo(): VoceCatalogo[] {
+    return this.catalogo.filter(v => v.categoria === 'Prodotto');
+  }
+
+  get serviziCatalogo(): VoceCatalogo[] {
+    return this.catalogo.filter(v => v.categoria === 'Servizio');
+  }
+
 
   constructor(
     private alertController: AlertController,
