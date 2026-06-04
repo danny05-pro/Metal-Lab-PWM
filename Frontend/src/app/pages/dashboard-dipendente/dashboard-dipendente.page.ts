@@ -44,6 +44,7 @@ export class DashboardDipendentePage {
 
   interventiAttivi: Intervento[] = [];
   storicoInterventi: Storico[] = [];
+  nomeDipendente = '';
 
   constructor(private interventiService: InterventiService) {
     addIcons({
@@ -56,6 +57,7 @@ export class DashboardDipendentePage {
 
   ionViewWillEnter() {
     this.caricaInterventiAssegnati();
+    this.nomeDipendente = sessionStorage.getItem('nomeUtente') || 'Dipendente';
   }
 
   caricaInterventiAssegnati() {

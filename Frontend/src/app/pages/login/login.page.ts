@@ -89,9 +89,10 @@ export class LoginPage {
         
         sessionStorage.setItem('utenteLoggato', 'true');
         
-        // Salviamo il ruolo per la logica presente nella HomePage
-        const ruolo = response.utente?.ruolo || response.user?.ruolo || '';
-        sessionStorage.setItem('ruoloUtente', ruolo);
+        // Salviamo tutti i dati dell'utente nel SessionStorage
+        const user = response.utente || response.user || {};
+        sessionStorage.setItem('ruoloUtente', user.ruolo || '');
+        sessionStorage.setItem('nomeUtente', user.nome || '');
 
         // Ora torniamo alla home, dove la logica dei bottoni farà il resto
         this.router.navigate(['/home']);
