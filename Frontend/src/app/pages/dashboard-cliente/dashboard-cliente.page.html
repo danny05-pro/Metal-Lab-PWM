@@ -20,7 +20,6 @@
       <ion-icon slot="start" name="document-text-outline"></ion-icon>
       Richiedi Preventivo
     </ion-button>
-    
     <ion-button expand="block" routerLink="/interventi">
       <ion-icon slot="start" name="construct-outline"></ion-icon>
       Richiedi Intervento
@@ -41,26 +40,24 @@
           <span class="summary-label">Interventi</span>
         </div>
       </ion-col>
-     
     </ion-row>
 
     <ion-row class="details-row">
       <ion-col size="12" size-md="6">
         <ion-card class="detail-section-card">
           <ion-card-header><ion-card-title>I tuoi Preventivi</ion-card-title></ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
             @for (preventivo of preventivi; track preventivo.id) {
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]" routerDirection="forward">
                 <div class="item-header">
                   <h3>{{ preventivo.descrizione }}</h3>
                   
                   <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
-                    <ion-chip color="dark" style="margin: 0; font-size: 0.75rem;">
-                      {{ preventivo.stato_admin }}
+                    <ion-chip [color]="getStatoPreventivoUX(preventivo).color" style="margin: 0; font-size: 0.75rem;">
+                      <ion-icon [name]="getStatoPreventivoUX(preventivo).icon"></ion-icon>
+                      <ion-label>{{ getStatoPreventivoUX(preventivo).label }}</ion-label>
                     </ion-chip>
-                    
                   </div>
-
                 </div>
                 <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
               </div>
@@ -72,27 +69,15 @@
       <ion-col size="12" size-md="6">
         <ion-card class="detail-section-card">
           <ion-card-header><ion-card-title>Interventi Tecnici</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (intervento of tuttiGliInterventi; track intervento.id) {
+          <ion-card-content class="scrollable-list">
+            @for (intervento of tuttiGliInterventi; track intervento.id ) {
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-cliente', intervento.id]">
                 <div class="item-header">
                   <h3>{{ intervento.descrizione }}</h3>
-<ion-chip
-  [color]="
-    intervento.stato_lavorazione === 'Terminato'
-      ? 'success'
-      : intervento.stato_risposta_cliente === 'Intervento annullato' || intervento.stato_admin === 'Rifiutato'
-        ? 'danger'
-        : 'warning'
-  ">
-  {{
-    intervento.stato_lavorazione === 'Terminato'
-      ? intervento.stato_lavorazione
-      : intervento.stato_risposta_cliente === 'Intervento annullato'
-        ? intervento.stato_risposta_cliente
-        : intervento.stato_admin
-  }}
-</ion-chip>
+                  <ion-chip [color]="getStatoInterventoUX(intervento).color" style="margin: 0; font-size: 0.75rem;">
+                    <ion-icon [name]="getStatoInterventoUX(intervento).icon"></ion-icon>
+                    <ion-label>{{ getStatoInterventoUX(intervento).label }}</ion-label>
+                  </ion-chip>
                 </div>
                 <p>Luogo: {{ intervento.luogo }} | Richiesto il: {{ intervento.data_richiesta }}</p>
               </div>
@@ -102,26 +87,28 @@
           </ion-card-content>
         </ion-card>
       </ion-col>
-      </ion-row>
+    </ion-row>
 
     <ion-row>
       <ion-col size="12">
         <ion-card class="calendar-card">
           <ion-card-header><ion-card-title>Calendario Attività</ion-card-title></ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
             @for (evento of interventiFuturi; track evento.id) {
               <div class="calendar-item clickable" [routerLink]="['/dettaglio-intervento-cliente', evento.id]">
-                <div class="calendar-date">{{ evento.data_proposta_admin || 'In attesa' }}</div>
+                <div class="calendar-date">{{ evento.data_accettata || evento.data_proposta_admin || 'Data da definire' }}</div>
+                
                 <div class="calendar-info">
                   <h3>{{ evento.descrizione }}</h3>
                   <p>Luogo: {{ evento.luogo }}</p>
-                  <ion-chip [color]="evento.stato_lavorazione === 'Terminato' ? 'success' : 'warning'">
-                    {{ evento.stato_lavorazione }}
+                  <ion-chip [color]="getStatoInterventoUX(evento).color" style="margin: 0; font-size: 0.75rem;">
+                    <ion-icon [name]="getStatoInterventoUX(evento).icon"></ion-icon>
+                    <ion-label>{{ getStatoInterventoUX(evento).label }}</ion-label>
                   </ion-chip>
                 </div>
               </div>
             } @empty {
-              <div class="empty-section">Nessuna attività pianificata.</div>
+              <div class="empty-section">Nessun intervento operativo al momento.</div>
             }
           </ion-card-content>
         </ion-card>

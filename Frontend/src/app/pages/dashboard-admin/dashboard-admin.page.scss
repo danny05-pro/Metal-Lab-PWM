@@ -80,66 +80,10 @@ ion-card-title {
   font-weight: 800;
 }
 
-/* Stili specifici per il Calendario/Storico (Timeline) */
-.calendar-card {
-  margin-bottom: 24px;
-}
-
-.timeline {
-  position: relative;
-  padding-left: 20px;
-  margin-top: 10px;
-  border-left: 2px solid rgba(245, 166, 35, 0.3);
-}
-
-.timeline-item {
-  position: relative;
-  margin-bottom: 24px;
-  padding-left: 20px;
-}
-
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  left: -27px; /* Centra il pallino sulla linea */
-  top: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #f5a623;
-  border: 2px solid #151b23;
-}
-
-.timeline-item:last-child {
-  margin-bottom: 0;
-}
-
-.timeline-date {
-  color: #f5a623;
-  font-size: 0.95rem;
-  margin-bottom: 6px;
-}
-
-.timeline-content h3 {
-  color: white;
-  margin: 0 0 4px;
-  font-size: 1.05rem;
-  font-weight: 700;
-}
-
-.timeline-content p {
-  color: #b7c0cc;
-  margin: 0 0 8px;
-  font-size: 0.9rem;
-}
-
-/* Stili per le liste Interventi e Storico */
+/* Stili per le liste Interventi e Preventivi */
 .dashboard-item {
-  /* Aggiunto padding orizzontale per far respirare l'alone dell'hover */
   padding: 16px; 
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  
-  /* Arrotonda l'alone di selezione dell'intera riga al passaggio del mouse! */
   border-radius: 18px; 
   margin-bottom: 4px;
 }
@@ -172,12 +116,9 @@ ion-chip {
   margin: 0;
   font-weight: 700;
   font-size: 0.8rem;
-  
-  /* MAGIA APPLE: Forza la forma a "pillola" perfettamente arrotondata */
   --border-radius: 30px;
   border-radius: 30px;
   padding: 0 12px;
-  
 }
 
 .empty-section {
@@ -195,13 +136,6 @@ ion-chip {
 .clickable:hover {
   background: rgba(255, 255, 255, 0.04);
   transform: translateY(-1px);
-}
-
-.open-detail-text {
-  margin-top: 8px !important;
-  color: #f5a623 !important;
-  font-weight: 700;
-  font-size: 0.85rem !important;
 }
 
 .admin-actions {
@@ -303,7 +237,6 @@ ion-modal.dark-modal {
   font-weight: 700;
   letter-spacing: -0.2px;
 
-  /* Struttura Vetro */
   --border-radius: 16px;
   --border-width: 1px;
   --border-style: solid;
@@ -316,12 +249,10 @@ ion-modal.dark-modal {
   transform: translateZ(0);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Colori Ambra (Stato riposo) */
   --background: rgba(245, 166, 35, 0.12);
   --color: #f5a623;
   --border-color: rgba(245, 166, 35, 0.2);
 
-  /* Effetto Hover (Pieno - Stile pulsante Admin) */
   &:hover {
     --background: #f5a623;
     --border-color: #f5a623;
@@ -329,7 +260,6 @@ ion-modal.dark-modal {
     transform: translateY(-2px);
   }
 
-  /* Stato Disabilitato */
   &.button-disabled {
     opacity: 0.5;
     --background: rgba(255, 255, 255, 0.05);
@@ -400,10 +330,36 @@ ion-modal.dark-modal {
 .item-actions {
   display: flex;
   gap: 12px;
-  margin-left: -8px; /* Riallinea i bottoni a sinistra */
+  margin-left: -8px; 
   
   ion-button {
     margin: 0;
     font-weight: 600;
+  }
+}
+
+/* --- Stile per le liste con altezza fissa e scrollbar --- */
+.scrollable-list {
+  max-height: 340px; 
+  overflow-y: auto;
+  padding-right: 6px; 
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(245, 166, 35, 0.2); 
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(245, 166, 35, 0.6); 
   }
 }

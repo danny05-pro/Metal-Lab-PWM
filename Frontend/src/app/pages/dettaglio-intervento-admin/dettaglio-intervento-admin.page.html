@@ -184,7 +184,7 @@
 
           <div class="actions">
 
-            @if (intervento.stato_admin === 'Intervento concordato') {
+            @if (intervento.stato_admin === 'Intervento concordato' && intervento.stato_lavorazione !== 'Terminato') {
 
               <ion-button
                 expand="block"

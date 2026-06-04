@@ -141,9 +141,9 @@ caricaDipendentiAssegnati() {
     return;
   }
 
-  if (this.intervento.stato_admin !== 'Intervento concordato') {
-    return;
-  }
+  if (this.intervento.stato_admin !== 'Intervento concordato' || this.intervento.stato_lavorazione === 'Terminato') {
+      return;
+    }
   const alert = await this.alertController.create({
     header: 'Assegna dipendente',
     message: 'Seleziona il dipendente da assegnare a questo intervento.',

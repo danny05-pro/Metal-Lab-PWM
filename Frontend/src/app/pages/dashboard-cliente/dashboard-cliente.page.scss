@@ -217,3 +217,30 @@ ion-chip {
   background: rgba(255, 255, 255, 0.04);
   transform: translateY(-1px);
 }
+
+/* --- Stile per le liste con altezza fissa e scrollbar --- */
+.scrollable-list {
+  max-height: 340px; /* L'altezza massima prima di far comparire la rotellina */
+  overflow-y: auto;
+  padding-right: 6px; /* Spazio per non far accavallare il testo alla barra */
+
+  /* Scrollbar stile Metal Lab */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(245, 166, 35, 0.2); /* Ambra leggero */
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(245, 166, 35, 0.6); /* Ambra più acceso al passaggio del mouse */
+  }
+}

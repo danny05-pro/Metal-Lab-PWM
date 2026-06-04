@@ -73,59 +73,6 @@ ion-card-title {
   font-weight: 800;
 }
 
-/* Stili specifici per il Calendario (Timeline) */
-.calendar-card {
-  margin-bottom: 24px;
-}
-
-.timeline {
-  position: relative;
-  padding-left: 20px;
-  margin-top: 10px;
-  border-left: 2px solid rgba(245, 166, 35, 0.3);
-}
-
-.timeline-item {
-  position: relative;
-  margin-bottom: 24px;
-  padding-left: 20px;
-}
-
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  left: -27px; /* Centra il pallino sulla linea */
-  top: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #f5a623;
-  border: 2px solid #151b23;
-}
-
-.timeline-item:last-child {
-  margin-bottom: 0;
-}
-
-.timeline-date {
-  color: #f5a623;
-  font-size: 0.95rem;
-  margin-bottom: 6px;
-}
-
-.timeline-content h3 {
-  color: white;
-  margin: 0 0 4px;
-  font-size: 1.05rem;
-  font-weight: 700;
-}
-
-.timeline-content p {
-  color: #b7c0cc;
-  margin: 0 0 8px;
-  font-size: 0.9rem;
-}
-
 /* Stili per le liste Interventi e Storico */
 .dashboard-item {
   /* Aggiunto padding orizzontale per far respirare l'alone dell'hover */
@@ -163,8 +110,6 @@ ion-card-title {
 
 ion-chip {
   margin: 0;
-  background: rgba(245, 166, 35, 0.12);
-  color: #f5a623;
   font-weight: 700;
   font-size: 0.8rem;
   
@@ -172,11 +117,6 @@ ion-chip {
   --border-radius: 30px;
   border-radius: 30px;
   padding: 0 12px;
-  
-  &.status-completed {
-    background: rgba(45, 211, 111, 0.12);
-    color: #2dd36f;
-  }
 }
 
 .empty-section {
@@ -256,4 +196,31 @@ ion-chip {
   color: #f5a623 !important;
   font-weight: 700;
   font-size: 0.85rem !important;
+}
+
+/* --- Stile per le liste con altezza fissa e scrollbar --- */
+.scrollable-list {
+  max-height: 340px; /* L'altezza massima prima di far comparire la rotellina */
+  overflow-y: auto;
+  padding-right: 6px; /* Spazio per non far accavallare il testo alla barra */
+
+  /* Scrollbar stile Metal Lab */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(245, 166, 35, 0.2); /* Ambra leggero */
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(245, 166, 35, 0.6); /* Ambra più acceso al passaggio del mouse */
+  }
 }

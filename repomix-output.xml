@@ -67,7 +67,10 @@ Backend/uploads/93a618d59002ff389e9cb3bd26e05b49
 Backend/uploads/9dd4192e34ed5141460e3d72ddd96d35
 Backend/uploads/a77c3c03c9fe528819134750a173b4eb
 Backend/uploads/af129c3373e9c59d81c8e799fa83c2b3
+Backend/uploads/allegato-1780511795833-951911185.jpg
+Backend/uploads/allegato-1780511852374-935848621.dwg
 Backend/uploads/c2f0a224f361e82b7ed2d71336bfbf8a
+Backend/uploads/e7804db1c31084335de32061a0732b6b
 Backend/uploads/f2a3f6201bdb134300c46992912455b7
 Frontend/.gitignore
 Frontend/angular.json
@@ -1076,59 +1079,6 @@ ion-card-title {
   font-weight: 800;
 }
 
-/* Stili specifici per il Calendario (Timeline) */
-.calendar-card {
-  margin-bottom: 24px;
-}
-
-.timeline {
-  position: relative;
-  padding-left: 20px;
-  margin-top: 10px;
-  border-left: 2px solid rgba(245, 166, 35, 0.3);
-}
-
-.timeline-item {
-  position: relative;
-  margin-bottom: 24px;
-  padding-left: 20px;
-}
-
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  left: -27px; /* Centra il pallino sulla linea */
-  top: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #f5a623;
-  border: 2px solid #151b23;
-}
-
-.timeline-item:last-child {
-  margin-bottom: 0;
-}
-
-.timeline-date {
-  color: #f5a623;
-  font-size: 0.95rem;
-  margin-bottom: 6px;
-}
-
-.timeline-content h3 {
-  color: white;
-  margin: 0 0 4px;
-  font-size: 1.05rem;
-  font-weight: 700;
-}
-
-.timeline-content p {
-  color: #b7c0cc;
-  margin: 0 0 8px;
-  font-size: 0.9rem;
-}
-
 /* Stili per le liste Interventi e Storico */
 .dashboard-item {
   /* Aggiunto padding orizzontale per far respirare l'alone dell'hover */
@@ -1259,6 +1209,33 @@ ion-chip {
   color: #f5a623 !important;
   font-weight: 700;
   font-size: 0.85rem !important;
+}
+
+/* --- Stile per le liste con altezza fissa e scrollbar --- */
+.scrollable-list {
+  max-height: 340px; /* L'altezza massima prima di far comparire la rotellina */
+  overflow-y: auto;
+  padding-right: 6px; /* Spazio per non far accavallare il testo alla barra */
+
+  /* Scrollbar stile Metal Lab */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(245, 166, 35, 0.2); /* Ambra leggero */
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(245, 166, 35, 0.6); /* Ambra più acceso al passaggio del mouse */
+  }
 }
 </file>
 
@@ -3075,148 +3052,6 @@ describe('LoginPage', () => {
     expect(component).toBeTruthy();
   });
 });
-</file>
-
-<file path="Frontend/src/app/pages/preventivi/preventivi.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark"> 
-    
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-cliente">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-
-    <ion-title>
-      Area Personale
-    </ion-title>
-
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
-  <section class="quote-header">
-    <h1>Configura il tuo preventivo</h1>
-    <p>
-      Descrivi la lavorazione desiderata, seleziona un servizio e inserisci i
-      parametri tecnici necessari.
-    </p>
-  </section>
-
-  <ion-card class="quote-card">
-    <ion-card-content>
-
-      <ion-item>
-        <ion-label position="stacked">Descrizione richiesta</ion-label>
-        <ion-textarea
-          placeholder="Descrivi la lavorazione o l’intervento richiesto"
-          [(ngModel)]="descrizione">
-        </ion-textarea>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Servizio richiesto</ion-label>
-        
-        <ion-select
-          placeholder="Seleziona un servizio"
-          [(ngModel)]="servizio"
-          [interfaceOptions]="{ cssClass: 'custom-dark-alert' }">
-
-          <ion-select-option value="carpenteria">
-            Carpenteria metallica
-          </ion-select-option>
-
-          <ion-select-option value="manutenzione">
-            Manutenzione industriale
-          </ion-select-option>
-
-          <ion-select-option value="lavorazioni">
-            Lavorazioni meccaniche
-          </ion-select-option>
-
-        </ion-select>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Materiale</ion-label>
-        <ion-input
-          placeholder="Es. ferro, inox, acciaio zincato"
-          [(ngModel)]="materiale">
-        </ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Dimensioni</ion-label>
-        <ion-input
-          placeholder="Es. 120x80x4 cm"
-          [(ngModel)]="dimensioni">
-        </ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Finitura</ion-label>
-        <ion-input
-          placeholder="Es. verniciatura, zincatura, satinatura"
-          [(ngModel)]="finitura">
-        </ion-input>
-      </ion-item>
-
-      <div class="file-box">
-        <ion-icon name="document-attach-outline"></ion-icon>
-
-        <div>
-          <h3>Allegato tecnico</h3>
-          <p>
-            Carica disegni tecnici, schemi o modelli CAD.
-          </p>
-          
-          <p class="os-hint">
-            (Tieni premuto <strong>{{ isMac ? 'CMD ⌘' : 'CTRL' }}</strong> per selezionare più file)
-          </p>
-
-          <input
-            type="file"
-            multiple
-            title=" "
-            (change)="selezionaFile($event)">
-        </div>
-      </div>
-
-@if (allegatiFiles.length > 0) {
-        <div class="file-names-container">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <p style="margin: 0;">File selezionati ({{ allegatiFiles.length }}):</p>
-            <ion-button fill="clear" color="danger" size="small" (click)="svuotaAllegati()" style="margin: 0; --padding-start: 8px; --padding-end: 8px;">
-              <ion-icon slot="start" name="trash-outline"></ion-icon> Svuota
-            </ion-button>
-          </div>
-          <ul>
-            @for (file of allegatiFiles; track $index) {
-              <li class="file-name">{{ file.name }}</li>
-            }
-          </ul>
-        </div>
-      }
-
-      <ion-button
-        expand="block"
-        class="btn-glass-submit"
-        [disabled]="!formValido"
-        (click)="inviaPreventivo()">
-        Invia richiesta preventivo
-      </ion-button>
-
-      @if (preventivoInviato) {
-        <div class="success-message">
-          Richiesta preventivo inviata correttamente.
-        </div>
-      }
-
-    </ion-card-content>
-  </ion-card>
-
-</ion-content>
 </file>
 
 <file path="Frontend/src/app/pages/preventivi/preventivi.page.scss">
@@ -5043,289 +4878,6 @@ ion-card-content p {
 }
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-admin">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-
-    <ion-title>
-     Dashboard Admin
-    </ion-title>
-
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  
-  @if (preventivo) {
-    <section class="detail-header">
-      <h1>
-        Preventivo #{{ preventivoId }}
-      </h1>
-      <p>
-        Riepilogo della richiesta inviata dal cliente.
-      </p>
-    </section>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Informazioni Cliente
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <div class="info-row">
-          <span>Cliente</span>
-          <strong>{{ preventivo.cliente_nome }} {{ preventivo.cliente_cognome }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Email</span>
-          <strong>{{ preventivo.cliente_email }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Stato Admin</span>
-          <ion-chip>
-            {{ preventivo.stato_admin }}
-          </ion-chip>
-        </div>
-        
-        <div class="info-row">
-          <span>Risposta Cliente</span>
-          <ion-chip>
-            {{ preventivo.stato_risposta_cliente }}
-          </ion-chip>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Dati Tecnici Richiesta
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <div class="description-box">
-          <h3>Descrizione</h3>
-          <p>{{ preventivo.descrizione }}</p>
-        </div>
-
-        <div class="info-row">
-          <span>Servizio richiesto</span>
-          <strong>{{ preventivo.servizio }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Materiale</span>
-          <strong>{{ preventivo.materiale }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Dimensioni</span>
-          <strong>{{ preventivo.dimensioni }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Finitura</span>
-          <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
-        </div>
-
-       <div class="info-row">
-          <span>Allegati tecnici</span>
-          @if (preventivo.allegatiArray && preventivo.allegatiArray.length > 0) {
-            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
-              @for (file of preventivo.allegatiArray; track $index) {
-                <ion-button fill="outline" color="warning" size="small" [href]="'http://localhost:3000' + file" target="_blank" style="margin: 0; --border-radius: 12px; height: 32px;">
-                  <ion-icon slot="start" name="document-attach-outline"></ion-icon>
-                  Allegato {{ $index + 1 }}
-                </ion-button>
-              }
-            </div>
-          } @else {
-            <strong>Nessun allegato</strong>
-          }
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Gestione Admin
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        @if (preventivo.prezzo_proposto) {
-          <div class="price-box">
-            Prezzo proposto:
-            <strong>€ {{ preventivo.prezzo_proposto }}</strong>
-          </div>
-        } @else {
-          <div class="price-box empty">
-            Nessun prezzo ancora proposto.
-          </div>
-        }
-
-        @if (preventivo.stato_risposta_cliente === 'In attesa') {
-          <div class="actions">
-            <ion-button 
-              expand="block" 
-              class="btn-glass-propose" 
-              (click)="proponiPrezzo()">
-              Proponi prezzo
-            </ion-button>
-
-            <ion-button 
-              expand="block" 
-              class="btn-glass-reject" 
-              (click)="rifiutaPreventivo()">
-              Rifiuta preventivo
-            </ion-button>
-          </div>
-        } @else {
-          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center; margin-top: 15px;">
-            Questo preventivo è chiuso. Non sono possibili altre interazioni.
-          </div>
-        }
-      </ion-card-content>
-    </ion-card>
-  } @else {
-    <div class="ion-padding ion-text-center">
-      <p>Caricamento preventivo in corso...</p>
-    </div>
-  }
-
-</ion-content>
-</file>
-
-<file path="Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.ts">
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
-  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
-} from '@ionic/angular/standalone';
-import { AlertController } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { arrowBackOutline, documentAttachOutline } from 'ionicons/icons';
-
-import { PreventiviService } from 'src/app/services/preventivi.service';
-
-@Component({
-  selector: 'app-dettaglio-preventivo-admin',
-  templateUrl: './dettaglio-preventivo-admin.page.html',
-  styleUrls: ['./dettaglio-preventivo-admin.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule, RouterLink, IonContent, IonHeader, IonTitle,
-    IonToolbar, IonButtons, IonButton, IonIcon, IonCard,
-    IonCardHeader, IonCardTitle, IonCardContent, IonChip
-  ]
-})
-export class DettaglioPreventivoAdminPage implements OnInit {
-
-  preventivoId = '';
-  preventivo: any = null;
-  caricamento = true;
-
-  constructor(
-    private route: ActivatedRoute, 
-    private router: Router, 
-    private alertController: AlertController,
-    private preventiviService: PreventiviService 
-  ) {
-    addIcons({ arrowBackOutline, documentAttachOutline });
-    this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
-  }
-
-  ngOnInit() {
-    if (this.preventivoId) {
-      this.caricaPreventivo();
-    }
-  }
-
-  caricaPreventivo() {
-    this.caricamento = true;
-    this.preventiviService.getPreventivoAdminById(this.preventivoId).subscribe({
-      next: (dati) => {
-        this.preventivo = dati;
-        this.preventivo.allegatiArray = dati.allegato ? dati.allegato.split(',') : [];
-        this.caricamento = false;
-      },
-      error: (err) => {
-        console.error('Errore recupero preventivo admin:', err);
-        this.caricamento = false;
-      }
-    });
-  }
-
-  // --- LOGICA REALE: RIFIUTA ---
-  async rifiutaPreventivo() {
-    const alert = await this.alertController.create({
-      cssClass: 'custom-dark-alert',
-      header: 'Rifiuta Preventivo',
-      message: 'Sei sicuro di voler rifiutare la richiesta del cliente?',
-      buttons: [
-        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
-        {
-          text: 'Rifiuta', role: 'destructive', cssClass: 'dark-alert-btn-danger',
-          handler: () => {
-            // Chiamata vera al backend
-            this.preventiviService.adminRifiutaPreventivo(this.preventivoId).subscribe({
-              next: () => this.router.navigate(['/dashboard-admin']),
-              error: (err) => console.error('Errore rifiuto preventivo:', err)
-            });
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
-  // --- LOGICA REALE: PROPONI PREZZO ---
-  async proponiPrezzo() {
-    const alert = await this.alertController.create({
-      header: 'Proponi prezzo',
-      message: 'Inserisci il prezzo in Euro.',
-      cssClass: 'custom-dark-alert',
-      inputs: [
-        { name: 'prezzo', type: 'number', placeholder: 'Es. 250', cssClass: 'dark-alert-input', attributes: { min: '1' } }
-      ],
-      buttons: [
-        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
-        {
-          text: 'Conferma', cssClass: 'dark-alert-btn-confirm',
-          handler: (data: any) => {
-            const prezzo = Number(data.prezzo);
-            if (isNaN(prezzo) || prezzo <= 0) return false;
-
-            // Chiamata vera al backend
-            this.preventiviService.adminProponePrezzo(this.preventivoId, prezzo).subscribe({
-              next: () => this.router.navigate(['/dashboard-admin']),
-              error: (err) => console.error('Errore proposta prezzo:', err)
-            });
-            
-            return true;
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-}
-</file>
-
 <file path="Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.html">
 <ion-header class="ion-no-border">
   <ion-toolbar color="dark">
@@ -5700,162 +5252,146 @@ ion-input.has-focus ion-input-password-toggle,
 }
 </file>
 
-<file path="Frontend/src/app/pages/preventivi/preventivi.page.ts">
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
+<file path="Frontend/src/app/pages/preventivi/preventivi.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark"> 
+    
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-cliente">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
 
-// 1. Aggiungiamo l'AlertController per la gestione visiva degli errori
-import { AlertController } from '@ionic/angular';
+    <ion-title>
+      Area Personale
+    </ion-title>
 
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonButton,
-  IonButtons,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonInput,
-  IonTextarea,
-  IonSelect,
-  IonSelectOption,
-  IonCard,
-  IonCardContent
-} from '@ionic/angular/standalone';
+  </ion-toolbar>
+</ion-header>
 
-import { addIcons } from 'ionicons';
-import { arrowBackOutline, documentAttachOutline, trashOutline } from 'ionicons/icons';
+<ion-content>
 
-// 2. Importiamo il nostro nuovo Service
-import { PreventiviService, PreventivoRichiesta } from '../../services/preventivi.service';
+  <section class="quote-header">
+    <h1>Configura il tuo preventivo</h1>
+    <p>
+      Descrivi la lavorazione desiderata, seleziona un servizio e inserisci i
+      parametri tecnici necessari.
+    </p>
+  </section>
 
-@Component({
-  selector: 'app-preventivi',
-  templateUrl: './preventivi.page.html',
-  styleUrls: ['./preventivi.page.scss'],
-  standalone: true,
-  imports: [
-    FormsModule,
-    RouterLink,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonButton,
-    IonButtons,
-    IonIcon,
-    IonItem,
-    IonLabel,
-    IonInput,
-    IonTextarea,
-    IonSelect,
-    IonSelectOption,
-    IonCard,
-    IonCardContent
-  ]
-})
-export class PreventiviPage {
+  <ion-card class="quote-card">
+    <ion-card-content>
 
-  // RIGOROSAMENTE NESSUN DATO FITTIZIO: solo contenitori vuoti per il form
-  descrizione: string = '';
-  servizio: string = '';
-  materiale: string = '';
-  dimensioni: string = '';
-  finitura: string = '';
-  allegatiFiles: File[] = [];
+      <ion-item>
+        <ion-label position="stacked">Descrizione richiesta</ion-label>
+        <ion-textarea
+          placeholder="Descrivi la lavorazione o l’intervento richiesto"
+          [(ngModel)]="descrizione">
+        </ion-textarea>
+      </ion-item>
 
-  preventivoInviato: boolean = false;
-  isMac: boolean = false;
+      <ion-item>
+        <ion-label position="stacked">Servizio richiesto</ion-label>
+        
+        <ion-select
+          placeholder="Seleziona un servizio"
+          [(ngModel)]="servizio"
+          [interfaceOptions]="{ cssClass: 'custom-dark-alert' }">
 
-  get formValido(): boolean {
-    return (
-      this.descrizione.trim() !== '' &&
-      this.servizio.trim() !== '' &&
-      this.materiale.trim() !== '' &&
-      this.dimensioni.trim() !== ''
-    );
-  }
+          <ion-select-option value="carpenteria">
+            Carpenteria metallica
+          </ion-select-option>
 
-  // 3. Iniettiamo il service e l'alert controller
-  constructor(
-    private router: Router,
-    private preventiviService: PreventiviService,
-    private alertController: AlertController
-  ) {
-    addIcons({
-      arrowBackOutline,
-      documentAttachOutline,
-      trashOutline
-    });
+          <ion-select-option value="manutenzione">
+            Manutenzione industriale
+          </ion-select-option>
 
-    this.isMac = navigator.userAgent.toLowerCase().includes('mac');
-  }
+          <ion-select-option value="lavorazioni">
+            Lavorazioni meccaniche
+          </ion-select-option>
 
-selezionaFile(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.allegatiFiles = []; 
-    if (input.files && input.files.length > 0) {
-      for (let i = 0; i < input.files.length; i++) {
-        this.allegatiFiles.push(input.files[i]); // Salviamo il file VERO
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Materiale</ion-label>
+        <ion-input
+          placeholder="Es. ferro, inox, acciaio zincato"
+          [(ngModel)]="materiale">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Dimensioni</ion-label>
+        <ion-input
+          placeholder="Es. 120x80x4 cm"
+          [(ngModel)]="dimensioni">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Finitura</ion-label>
+        <ion-input
+          placeholder="Es. verniciatura, zincatura, satinatura"
+          [(ngModel)]="finitura">
+        </ion-input>
+      </ion-item>
+
+      <div class="file-box">
+        <ion-icon name="document-attach-outline"></ion-icon>
+
+        <div>
+          <h3>Allegato tecnico</h3>
+          <p>
+            Carica disegni tecnici, schemi o modelli CAD.
+          </p>
+          
+          <p class="os-hint">
+            (Tieni premuto <strong>{{ isMac ? 'CMD ⌘' : 'CTRL' }}</strong> per selezionare più file)
+          </p>
+
+          <input
+            type="file"
+            multiple
+            title=" "
+            (change)="selezionaFile($event)">
+        </div>
+      </div>
+
+@if (allegatiFiles.length > 0) {
+        <div class="file-names-container">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <p style="margin: 0;">File selezionati ({{ allegatiFiles.length }}):</p>
+            <ion-button fill="clear" color="danger" size="small" (click)="svuotaAllegati()" style="margin: 0; --padding-start: 8px; --padding-end: 8px;">
+              <ion-icon slot="start" name="trash-outline"></ion-icon> Svuota
+            </ion-button>
+          </div>
+          <ul>
+            @for (file of allegatiFiles; track $index) {
+              <li class="file-name">{{ file.name }}</li>
+            }
+          </ul>
+        </div>
       }
-    }
-  }
 
-  svuotaAllegati() {
-    this.allegatiFiles = [];
-  }
+      <ion-button
+        expand="block"
+        class="btn-glass-submit"
+        [disabled]="!formValido"
+        (click)="inviaPreventivo()">
+        Invia richiesta preventivo
+      </ion-button>
 
-  inviaPreventivo() {
-    if (!this.formValido) return;
-
-    // Convertiamo l'array di file in una stringa separata da virgole per rispettare la colonna SQLite
-const formData = new FormData();
-    formData.append('descrizione', this.descrizione);
-    formData.append('servizio', this.servizio);
-    formData.append('materiale', this.materiale);
-    formData.append('dimensioni', this.dimensioni);
-    if (this.finitura) formData.append('finitura', this.finitura);
-
-    this.allegatiFiles.forEach(file => {
-      formData.append('allegati', file);
-    });
-
-    const payload: PreventivoRichiesta = {
-      descrizione: this.descrizione,
-      servizio: this.servizio,
-      materiale: this.materiale,
-      dimensioni: this.dimensioni,
-      finitura: this.finitura || undefined, // Evitiamo stringhe vuote, passiamo undefined per generare NULL
-      allegato: stringaAllegati
-    };
-
-    // Chiamata HTTP
-    this.preventiviService.creaPreventivo(payload).subscribe({
-      next: () => {
-        this.preventivoInviato = true;
-
-        setTimeout(() => {
-          this.router.navigate(['/dashboard-cliente']);
-        }, 1500);
-      },
-      error: async (err: any) => {
-        console.error('Errore invio preventivo:', err);
-        const messaggio = err.error?.message || 'Errore di connessione al server.';
-
-        const alert = await this.alertController.create({
-          cssClass: 'custom-dark-alert',
-          header: 'Errore',
-          message: messaggio,
-          buttons: ['OK']
-        });
-        await alert.present();
+      @if (preventivoInviato) {
+        <div class="success-message">
+          Richiesta preventivo inviata correttamente.
+        </div>
       }
-    });
-  }
-}
+
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
 </file>
 
 <file path="Frontend/src/app/pages/register/register.page.ts">
@@ -6005,78 +5541,6 @@ export class RegisterPage {
 }
 </file>
 
-<file path="Frontend/src/app/services/catalogo.service.ts">
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-export interface VoceCatalogo {
-  id?: number;
-  nome: string;
-  categoria: string;
-  prezzo_base?: string;
-  prezzoBase?: string;
-  immagine?: string;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
-export class CatalogoService {
-  private apiUrl = 'http://localhost:3000/api';
-
-  constructor(private http: HttpClient) {}
-
-  private getAuthHeaders(): HttpHeaders {
-    let token = sessionStorage.getItem('token') || '';
-    token = token.replace(/^"(.*)"$/, '$1');
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  }
-
-  // --- LE CHIAMATE ---
-
-  getCatalogo(): Observable<any[]> {
-    // Per la GET usiamo il formato standard
-    return this.http.get<any[]>(`${this.apiUrl}/catalogo`, { headers: this.getAuthHeaders() });
-  }
-
-  creaVoce(formData: FormData): Observable<any> {
-    // Per i file, NON passare Content-Type. HttpClient lo farà per te.
-    return this.http.post<any>(`${this.apiUrl}/admin/catalogo`, formData, { 
-      headers: this.getAuthHeaders() 
-    });
-  }
-
-  modificaVoce(id: number, formData: FormData): Observable<any> {
-    // Anche qui, inviamo FormData.
-    return this.http.put<any>(`${this.apiUrl}/admin/catalogo/${id}`, formData, { 
-      headers: this.getAuthHeaders() 
-    });
-  }
-
-  eliminaVoce(id: number): Observable<any> {
-    // Qui serve il Content-Type perché non mandiamo file
-    const headers = this.getAuthHeaders().set('Content-Type', 'application/json');
-    return this.http.delete<any>(`${this.apiUrl}/admin/catalogo/${id}`, { headers });
-  }
-
-  // --- PREFERITI ---
-  getPreferiti(): Observable<number[]> {
-    return this.http.get<number[]>(`${this.apiUrl}/preferiti`, { headers: this.getAuthHeaders() });
-  }
-
-  aggiungiPreferito(id: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/preferiti/${id}`, {}, { headers: this.getAuthHeaders() });
-  }
-
-  rimuoviPreferito(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/preferiti/${id}`, { headers: this.getAuthHeaders() });
-  }
-}
-</file>
-
 <file path="Frontend/src/app/services/dipendenti.service.ts">
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -6169,196 +5633,6 @@ export class DipendentiService {
     "strictTemplates": true
   }
 }
-</file>
-
-<file path="Backend/controllers/preventiviController.js">
-const Preventivo = require('../models/preventiviModel');
-
-exports.creaPreventivo = async (req, res) => {
-  try {
-    const cliente_id = req.user.id; 
-    const { descrizione, servizio, materiale, dimensioni, finitura } = req.body;
-
-    if (!descrizione || !servizio || !materiale || !dimensioni) {
-      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
-    }
-
-    // Trasformiamo l'array di file nei percorsi fisici
-    const percorsiAllegati = req.files && req.files.length > 0 
-      ? req.files.map(f => `/uploads/${f.filename}`).join(',') 
-      : null;
-
-    const nuovoPreventivo = await Preventivo.create({
-      cliente_id, descrizione, servizio, materiale, dimensioni,
-      finitura: finitura || null,
-      allegato: percorsiAllegati // <--- Salviamo la stringa con i percorsi reali!
-    });
-
-    res.status(201).json({ message: 'Preventivo inviato con successo!', preventivo: nuovoPreventivo });
-  } catch (error) {
-    console.error('Errore durante la creazione del preventivo:', error);
-    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
-  }
-};
-
-exports.getPreventiviCliente = async (req, res) => {
-  try {
-    const preventivi = await Preventivo.findByClienteId(req.user.id);
-    res.json(preventivi);
-  } catch (error) {
-    res.status(500).json({ message: 'Errore nel recupero preventivi.' });
-  }
-};
-
-exports.getPreventiviAdmin = async (req, res) => {
-  try {
-    const preventivi = await Preventivo.findAllForAdmin();
-    return res.json(preventivi);
-  } catch (error) {
-    console.error('Errore nel recupero preventivi per admin:', error);
-    return res.status(500).json({ message: 'Errore nel caricamento dei dati.' });
-  }
-};
-
-exports.getPreventivoClienteById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const preventivo = await Preventivo.findById(id);
-
-    if (!preventivo) {
-      return res.status(404).json({ message: 'Preventivo non trovato.' });
-    }
-
-    if (Number(preventivo.cliente_id) !== Number(req.user.id)) {
-      return res.status(403).json({ message: 'Non autorizzato a visualizzare questo preventivo.' });
-    }
-
-    return res.json(preventivo);
-  } catch (error) {
-    console.error('Errore recupero preventivo cliente:', error);
-    return res.status(500).json({ message: 'Errore nel recupero del preventivo.' });
-  }
-};
-
-exports.clienteRispondePreventivo = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { azione } = req.body; 
-
-    const preventivo = await Preventivo.findById(id);
-    if (!preventivo) return res.status(404).json({ message: 'Preventivo non trovato.' });
-    if (Number(preventivo.cliente_id) !== Number(req.user.id)) return res.status(403).json({ message: 'Non autorizzato.' });
-
-    // LUCCHETTO 1: Se il cliente ha già risposto, blocca tutto
-    if (preventivo.stato_risposta_cliente !== 'In attesa') {
-      return res.status(400).json({ message: 'Hai già risposto a questo preventivo. Il ciclo è chiuso.' });
-    }
-
-    if (preventivo.stato_admin !== 'Prezzo proposto') {
-      return res.status(400).json({ message: 'Nessun prezzo da valutare.' });
-    }
-
-    // Calcoliamo i due nuovi stati
-    const nuovoStatoCliente = azione === 'accetta' ? 'Accettato' : 'Rifiutato';
-    
-    // Se il cliente accetta, l'admin vedrà "Preventivo concordato". Se rifiuta, lo diamo per "Rifiutato" anche all'admin.
-    const nuovoStatoAdmin = azione === 'accetta' ? 'Preventivo concordato' : 'Rifiutato';
-
-    // Passiamo entrambi gli stati al database
-    await Preventivo.clienteRisponde(id, nuovoStatoCliente, nuovoStatoAdmin);
-
-    const preventivoAggiornato = await Preventivo.findById(id);
-    return res.json({ message: `Preventivo ${nuovoStatoCliente.toLowerCase()} con successo.`, preventivo: preventivoAggiornato });
-  } catch (error) {
-    console.error('Errore risposta preventivo cliente:', error);
-    return res.status(500).json({ message: 'Errore durante la risposta.' });
-  }
-};
-
-// Recupera il dettaglio di un singolo preventivo per l'admin (con dati cliente)
-exports.getPreventivoAdminById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    // Usiamo la funzione del modello che fa la JOIN con gli utenti
-    const preventivo = await Preventivo.findByIdForAdmin(id);
-
-    if (!preventivo) {
-      return res.status(404).json({ message: 'Preventivo non trovato.' });
-    }
-
-    return res.json(preventivo);
-  } catch (error) {
-    console.error('Errore recupero dettaglio preventivo admin:', error);
-    return res.status(500).json({ message: 'Errore nel recupero del preventivo per admin.' });
-  }
-};
-
-
-// Gestisce l'inserimento del prezzo da parte dell'admin
-exports.adminProponePrezzo = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { prezzo } = req.body;
-
-    // Controllo di sicurezza: il prezzo deve esserci e deve essere un numero valido
-    if (!prezzo || isNaN(prezzo) || prezzo <= 0) {
-      return res.status(400).json({ message: 'Prezzo non valido.' });
-    }
-
-    // Controlliamo che il preventivo esista
-    const preventivo = await Preventivo.findById(id);
-    if (!preventivo) {
-      return res.status(404).json({ message: 'Preventivo non trovato.' });
-    }
-
-    // LUCCHETTO 2: L'admin non può cambiare il prezzo se il cliente ha già chiuso la pratica
-    if (preventivo.stato_risposta_cliente !== 'In attesa') {
-      return res.status(400).json({ message: 'Impossibile modificare: il cliente ha già chiuso questo preventivo.' });
-    }
-
-    // Aggiorniamo il database tramite la funzione che abbiamo appena creato nel modello
-    await Preventivo.adminProponePrezzo(id, prezzo);
-
-    // Recuperiamo il preventivo aggiornato per restituirlo
-    const preventivoAggiornato = await Preventivo.findByIdForAdmin(id);
-    return res.json({ 
-      message: 'Prezzo proposto con successo.', 
-      preventivo: preventivoAggiornato 
-    });
-    
-  } catch (error) {
-    console.error('Errore proposta prezzo admin:', error);
-    return res.status(500).json({ message: 'Errore durante la proposta del prezzo.' });
-  }
-};
-
-// Gestisce il rifiuto del preventivo lato admin
-exports.adminRifiutaPreventivo = async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    // Controlliamo che il preventivo esista
-    const preventivo = await Preventivo.findById(id);
-    if (!preventivo) {
-      return res.status(404).json({ message: 'Preventivo non trovato.' });
-    }
-
-    // LUCCHETTO 3: Se il preventivo è già stato chiuso in precedenza, non permettere altre modifiche
-    if (preventivo.stato_risposta_cliente !== 'In attesa') {
-      return res.status(400).json({ message: 'Impossibile rifiutare: il preventivo è già stato chiuso.' });
-    }
-
-    // Cambiamo lo stato in rifiutato nel database
-    await Preventivo.adminRifiutaPreventivo(id);
-    
-    return res.json({ message: 'Preventivo rifiutato con successo.' });
-    
-  } catch (error) {
-    console.error('Errore rifiuto preventivo admin:', error);
-    return res.status(500).json({ message: 'Errore durante il rifiuto.' });
-  }
-};
 </file>
 
 <file path="Backend/models/preventiviModel.js">
@@ -6987,59 +6261,6 @@ ion-card-title {
   font-weight: 800;
 }
 
-/* Stili specifici per il Calendario/Storico (Timeline) */
-.calendar-card {
-  margin-bottom: 24px;
-}
-
-.timeline {
-  position: relative;
-  padding-left: 20px;
-  margin-top: 10px;
-  border-left: 2px solid rgba(245, 166, 35, 0.3);
-}
-
-.timeline-item {
-  position: relative;
-  margin-bottom: 24px;
-  padding-left: 20px;
-}
-
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  left: -27px; /* Centra il pallino sulla linea */
-  top: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #f5a623;
-  border: 2px solid #151b23;
-}
-
-.timeline-item:last-child {
-  margin-bottom: 0;
-}
-
-.timeline-date {
-  color: #f5a623;
-  font-size: 0.95rem;
-  margin-bottom: 6px;
-}
-
-.timeline-content h3 {
-  color: white;
-  margin: 0 0 4px;
-  font-size: 1.05rem;
-  font-weight: 700;
-}
-
-.timeline-content p {
-  color: #b7c0cc;
-  margin: 0 0 8px;
-  font-size: 0.9rem;
-}
-
 /* Stili per le liste Interventi e Storico */
 .dashboard-item {
   /* Aggiunto padding orizzontale per far respirare l'alone dell'hover */
@@ -7314,6 +6535,33 @@ ion-modal.dark-modal {
     font-weight: 600;
   }
 }
+
+/* --- Stile per le liste con altezza fissa e scrollbar --- */
+.scrollable-list {
+  max-height: 340px; /* L'altezza massima prima di far comparire la rotellina */
+  overflow-y: auto;
+  padding-right: 6px; /* Spazio per non far accavallare il testo alla barra */
+
+  /* Scrollbar stile Metal Lab */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(245, 166, 35, 0.2); /* Ambra leggero */
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(245, 166, 35, 0.6); /* Ambra più acceso al passaggio del mouse */
+  }
+}
 </file>
 
 <file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.scss">
@@ -7536,6 +6784,33 @@ ion-chip {
   background: rgba(255, 255, 255, 0.04);
   transform: translateY(-1px);
 }
+
+/* --- Stile per le liste con altezza fissa e scrollbar --- */
+.scrollable-list {
+  max-height: 340px; /* L'altezza massima prima di far comparire la rotellina */
+  overflow-y: auto;
+  padding-right: 6px; /* Spazio per non far accavallare il testo alla barra */
+
+  /* Scrollbar stile Metal Lab */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(245, 166, 35, 0.2); /* Ambra leggero */
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(245, 166, 35, 0.6); /* Ambra più acceso al passaggio del mouse */
+  }
+}
 </file>
 
 <file path="Frontend/src/app/pages/dashboard-dipendente/dashboard-dipendente.page.html">
@@ -7578,15 +6853,18 @@ ion-chip {
           <ion-card-header>
             <ion-card-title>Interventi Attivi</ion-card-title>
           </ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
             @for (intervento of interventiAttivi; track intervento.id) {
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-dipendente', intervento.id]">
                 <div class="item-header">
-                  <h3>{{ intervento.descrizione }}</h3>
+                  <h3>{{ intervento.cliente_nome }} {{ intervento.cliente_cognome }}</h3>
                   <ion-chip>{{ intervento.stato_lavorazione }}</ion-chip>
                 </div>
+                <p style="margin-bottom: 4px;">
+                  Luogo: {{ intervento.luogo }} | Data: {{ intervento.data_accettata}}
+                </p>
                 <p>
-                Cliente: {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }} | Priorità: {{ intervento.priorita }}
+                  Descrizione: {{ intervento.descrizione }}
                 </p>
               </div>
             } @empty {
@@ -7601,13 +6879,14 @@ ion-chip {
           <ion-card-header>
             <ion-card-title>Storico Interventi</ion-card-title>
           </ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
             @for (storico of storicoInterventi; track storico.id) {
               <div class="dashboard-item">
                 <div class="item-header">
-                  <h3>{{ storico.descrizione }}</h3>
+                  <h3>{{ storico.cliente_nome }} {{ storico.cliente_cognome }}</h3>
                   <ion-chip class="status-completed">{{ storico.stato }}</ion-chip>
                 </div>
+                <p style="margin-bottom: 4px;">Lavoro: {{ storico.descrizione }}</p>
                 <p>Completato in data: {{ storico.dataCompletamento }}</p>
               </div>
             } @empty {
@@ -7617,33 +6896,6 @@ ion-chip {
         </ion-card>
       </ion-col>
 
-      <ion-col size="12">
-        <ion-card class="detail-section-card calendar-card">
-          <ion-card-header>
-            <ion-card-title>Calendario Personalizzato</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <div class="timeline">
-              @for (appuntamento of appuntamentiCalendario; track appuntamento.id) {
-                <div class="timeline-item">
-                  <div class="timeline-date">
-                    <strong>{{ appuntamento.dataFormattata }}</strong>
-                  </div>
-                  <div class="timeline-content">
-                    <h3>{{ appuntamento.descrizione }}</h3>
-                    <p>Tipo: {{ appuntamento.tipo }} | Luogo: {{ appuntamento.luogo }}</p>
-                    <ion-chip [color]="appuntamento.tipo === 'Intervento' ? 'warning' : 'tertiary'">
-                      {{ appuntamento.tipo }}
-                    </ion-chip>
-                  </div>
-                </div>
-              } @empty {
-                <div class="empty-section">Nessun appuntamento in programma.</div>
-              }
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
@@ -8374,78 +7626,102 @@ export class DettaglioInterventoDipendentePage {
 }
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.html">
+<file path="Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.html">
 <ion-header class="ion-no-border">
   <ion-toolbar color="dark">
+
     <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-cliente">
+      <ion-button routerLink="/dashboard-admin">
         <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Dettaglio Preventivo</ion-title>
+
+    <ion-title>
+     Dashboard Admin
+    </ion-title>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  
   @if (preventivo) {
     <section class="detail-header">
-      <h1>Preventivo #{{ preventivoId }}</h1>
-      <p>Riepilogo della tua richiesta e stato di avanzamento.</p>
+      <h1>
+        Preventivo #{{ preventivoId }}
+      </h1>
+      <p>
+        Riepilogo della richiesta inviata dal cliente.
+      </p>
     </section>
 
     <ion-card class="detail-card">
       <ion-card-header>
-        <ion-card-title>Stato Preventivo</ion-card-title>
+        <ion-card-title>
+          Informazioni Cliente
+        </ion-card-title>
       </ion-card-header>
+
       <ion-card-content>
         <div class="info-row">
-          <span>Stato Amministrazione</span>
-          <ion-chip>{{ preventivo.stato_admin }}</ion-chip>
+          <span>Cliente</span>
+          <strong>{{ preventivo.cliente_nome }} {{ preventivo.cliente_cognome }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Email</span>
+          <strong>{{ preventivo.cliente_email }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Stato Admin</span>
+          <ion-chip>
+            {{ preventivo.stato_admin }}
+          </ion-chip>
         </div>
         
         <div class="info-row">
-          <span>La tua risposta</span>
-          <ion-chip>{{ preventivo.stato_risposta_cliente }}</ion-chip>
+          <span>Risposta Cliente</span>
+          <ion-chip>
+            {{ preventivo.stato_risposta_cliente }}
+          </ion-chip>
         </div>
-
-        @if (preventivo.prezzo_proposto) {
-          <div class="price-box">
-            Prezzo proposto da Metal Lab:
-            <strong>€ {{ preventivo.prezzo_proposto }}</strong>
-          </div>
-        } @else {
-          <div class="price-box empty">
-            Nessun prezzo ancora proposto.
-          </div>
-        }
       </ion-card-content>
     </ion-card>
 
     <ion-card class="detail-card">
       <ion-card-header>
-        <ion-card-title>Dati Tecnici Richiesta</ion-card-title>
+        <ion-card-title>
+          Dati Tecnici Richiesta
+        </ion-card-title>
       </ion-card-header>
+
       <ion-card-content>
         <div class="description-box">
           <h3>Descrizione</h3>
           <p>{{ preventivo.descrizione }}</p>
         </div>
+
         <div class="info-row">
           <span>Servizio richiesto</span>
           <strong>{{ preventivo.servizio }}</strong>
         </div>
+
         <div class="info-row">
           <span>Materiale</span>
           <strong>{{ preventivo.materiale }}</strong>
         </div>
+
         <div class="info-row">
           <span>Dimensioni</span>
           <strong>{{ preventivo.dimensioni }}</strong>
         </div>
+
         <div class="info-row">
           <span>Finitura</span>
           <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
         </div>
+
        <div class="info-row">
           <span>Allegati tecnici</span>
           @if (preventivo.allegatiArray && preventivo.allegatiArray.length > 0) {
@@ -8466,83 +7742,89 @@ export class DettaglioInterventoDipendentePage {
 
     <ion-card class="detail-card">
       <ion-card-header>
-        <ion-card-title>Risposta alla proposta</ion-card-title>
+        <ion-card-title>
+          Gestione Admin
+        </ion-card-title>
       </ion-card-header>
+
       <ion-card-content>
-        @if (preventivo.stato_admin === 'Prezzo proposto' && preventivo.stato_risposta_cliente === 'In attesa') {
-          <p class="response-text">
-            Puoi accettare o rifiutare il prezzo proposto da Metal Lab.
-          </p>
+        @if (preventivo.prezzo_proposto) {
+          <div class="price-box">
+            Prezzo proposto:
+            <strong>€ {{ preventivo.prezzo_proposto }}</strong>
+          </div>
+        } @else {
+          <div class="price-box empty">
+            Nessun prezzo ancora proposto.
+          </div>
+        }
+
+        @if (preventivo.stato_risposta_cliente === 'In attesa') {
           <div class="actions">
-            <ion-button expand="block" class="btn-glass-accept" (click)="accettaPreventivo()">
-              Accetta preventivo
+            <ion-button 
+              expand="block" 
+              class="btn-glass-propose" 
+              (click)="proponiPrezzo()">
+              Proponi prezzo
             </ion-button>
-            <ion-button expand="block" class="btn-glass-reject" (click)="rifiutaPreventivo()">
+
+            <ion-button 
+              expand="block" 
+              class="btn-glass-reject" 
+              (click)="rifiutaPreventivo()">
               Rifiuta preventivo
             </ion-button>
           </div>
-        } @else if (preventivo.stato_risposta_cliente !== 'In attesa') {
-          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
-            Hai già risposto a questo preventivo. Il ciclo è concluso.
-          </div>
-        } @else if (preventivo.stato_admin === 'Rifiutato') {
-          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
-            Metal Lab ha rifiutato la richiesta di lavorazione.
-          </div>
         } @else {
-          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
-            In attesa che l'officina formuli un prezzo per la tua richiesta...
+          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center; margin-top: 15px;">
+            Questo preventivo è chiuso. Non sono possibili altre interazioni.
           </div>
         }
       </ion-card-content>
     </ion-card>
-
   } @else {
     <div class="ion-padding ion-text-center">
       <p>Caricamento preventivo in corso...</p>
     </div>
   }
+
 </ion-content>
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.ts">
+<file path="Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.ts">
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; 
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; 
-
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
   IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
 } from '@ionic/angular/standalone';
-
-import {AlertController } from '@ionic/angular';
-
+import { AlertController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, documentAttachOutline } from 'ionicons/icons';
 
-// Importiamo il service
-import { PreventiviService } from '../../services/preventivi.service';
+import { PreventiviService } from 'src/app/services/preventivi.service';
 
 @Component({
-  selector: 'app-dettaglio-preventivo-cliente',
-  templateUrl: './dettaglio-preventivo-cliente.page.html',
-  styleUrls: ['./dettaglio-preventivo-cliente.page.scss'],
+  selector: 'app-dettaglio-preventivo-admin',
+  templateUrl: './dettaglio-preventivo-admin.page.html',
+  styleUrls: ['./dettaglio-preventivo-admin.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
-    IonButtons, IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle,
-    IonCardContent, IonChip
+    CommonModule, RouterLink, IonContent, IonHeader, IonTitle,
+    IonToolbar, IonButtons, IonButton, IonIcon, IonCard,
+    IonCardHeader, IonCardTitle, IonCardContent, IonChip
   ]
 })
-export class DettaglioPreventivoClientePage implements OnInit {
+export class DettaglioPreventivoAdminPage implements OnInit {
 
   preventivoId = '';
-  preventivo: any = null; // <-- CORREZIONE 1: "any" sblocca l'errore di Angular!
+  preventivo: any = null;
   caricamento = true;
 
   constructor(
     private route: ActivatedRoute, 
-    private router: Router,
+    private router: Router, 
     private alertController: AlertController,
     private preventiviService: PreventiviService 
   ) {
@@ -8558,52 +7840,35 @@ export class DettaglioPreventivoClientePage implements OnInit {
 
   caricaPreventivo() {
     this.caricamento = true;
-    this.preventiviService.getPreventivoClienteById(this.preventivoId).subscribe({
-      next: (dati: any) => {
+    this.preventiviService.getPreventivoAdminById(this.preventivoId).subscribe({
+      next: (dati) => {
         this.preventivo = dati;
         this.preventivo.allegatiArray = dati.allegato ? dati.allegato.split(',') : [];
         this.caricamento = false;
       },
-      error: (err: any) => {
-        console.error('Errore recupero preventivo', err);
+      error: (err) => {
+        console.error('Errore recupero preventivo admin:', err);
         this.caricamento = false;
       }
     });
   }
 
-  // <-- CORREZIONE 2: Ora i bottoni chiamano il VERO database
-  async accettaPreventivo() {
-    const alert = await this.alertController.create({
-      cssClass: 'custom-dark-alert',
-      header: 'Conferma Accettazione',
-      message: `Vuoi accettare ufficialmente il preventivo di € ${this.preventivo.prezzo_proposto}?`,
-      buttons: [
-        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
-        {
-          text: 'Accetta', 
-          cssClass: 'dark-alert-btn-confirm',
-          handler: () => {
-            this.eseguiRisposta('accetta');
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
+  // --- LOGICA REALE: RIFIUTA ---
   async rifiutaPreventivo() {
     const alert = await this.alertController.create({
       cssClass: 'custom-dark-alert',
       header: 'Rifiuta Preventivo',
-      message: 'Sei sicuro di voler rifiutare questa proposta? L\'azione è irreversibile.',
+      message: 'Sei sicuro di voler rifiutare la richiesta del cliente?',
       buttons: [
         { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
         {
-          text: 'Rifiuta', 
-          role: 'destructive', 
-          cssClass: 'dark-alert-btn-danger',
+          text: 'Rifiuta', role: 'destructive', cssClass: 'dark-alert-btn-danger',
           handler: () => {
-            this.eseguiRisposta('rifiuta');
+            // Chiamata vera al backend
+            this.preventiviService.adminRifiutaPreventivo(this.preventivoId).subscribe({
+              next: () => this.router.navigate(['/dashboard-admin']),
+              error: (err) => console.error('Errore rifiuto preventivo:', err)
+            });
           }
         }
       ]
@@ -8611,26 +7876,36 @@ export class DettaglioPreventivoClientePage implements OnInit {
     await alert.present();
   }
 
-   private eseguiRisposta(azione: 'accetta' | 'rifiuta') {
-    this.preventiviService.rispondiPreventivo(this.preventivoId, azione).subscribe({
-      next: () => {
-        // Appena il server risponde "OK", torniamo alla dashboard!
-        this.router.navigate(['/dashboard-cliente']);
-      },
-      error: async (err) => {
-        console.error('Errore risposta preventivo:', err);
-        const alertError = await this.alertController.create({
-          cssClass: 'custom-dark-alert',
-          header: 'Errore',
-          message: 'Impossibile inviare la risposta. Riprova.',
-          buttons: ['OK']
-        });
-        await alertError.present();
-      }
+  // --- LOGICA REALE: PROPONI PREZZO ---
+  async proponiPrezzo() {
+    const alert = await this.alertController.create({
+      header: 'Proponi prezzo',
+      message: 'Inserisci il prezzo in Euro.',
+      cssClass: 'custom-dark-alert',
+      inputs: [
+        { name: 'prezzo', type: 'number', placeholder: 'Es. 250', cssClass: 'dark-alert-input', attributes: { min: '1' } }
+      ],
+      buttons: [
+        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
+        {
+          text: 'Conferma', cssClass: 'dark-alert-btn-confirm',
+          handler: (data: any) => {
+            const prezzo = Number(data.prezzo);
+            if (isNaN(prezzo) || prezzo <= 0) return false;
+
+            // Chiamata vera al backend
+            this.preventiviService.adminProponePrezzo(this.preventivoId, prezzo).subscribe({
+              next: () => this.router.navigate(['/dashboard-admin']),
+              error: (err) => console.error('Errore proposta prezzo:', err)
+            });
+            
+            return true;
+          }
+        }
+      ]
     });
+    await alert.present();
   }
-
-
 }
 </file>
 
@@ -8970,77 +8245,419 @@ export class LoginPage {
 }
 </file>
 
-<file path="Frontend/src/app/services/preventivi.service.ts">
+<file path="Frontend/src/app/pages/preventivi/preventivi.page.ts">
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterLink, Router } from '@angular/router';
+
+// 1. Aggiungiamo l'AlertController per la gestione visiva degli errori
+import { AlertController } from '@ionic/angular';
+
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButton,
+  IonButtons,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonTextarea,
+  IonSelect,
+  IonSelectOption,
+  IonCard,
+  IonCardContent
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+import { arrowBackOutline, documentAttachOutline, trashOutline } from 'ionicons/icons';
+
+// 2. Importiamo il nostro nuovo Service
+import { PreventiviService, PreventivoRichiesta } from '../../services/preventivi.service';
+
+@Component({
+  selector: 'app-preventivi',
+  templateUrl: './preventivi.page.html',
+  styleUrls: ['./preventivi.page.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    RouterLink,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonButton,
+    IonButtons,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonTextarea,
+    IonSelect,
+    IonSelectOption,
+    IonCard,
+    IonCardContent
+  ]
+})
+export class PreventiviPage {
+
+  // RIGOROSAMENTE NESSUN DATO FITTIZIO: solo contenitori vuoti per il form
+  descrizione: string = '';
+  servizio: string = '';
+  materiale: string = '';
+  dimensioni: string = '';
+  finitura: string = '';
+  allegatiFiles: File[] = [];
+
+  preventivoInviato: boolean = false;
+  isMac: boolean = false;
+
+  get formValido(): boolean {
+    return (
+      this.descrizione.trim() !== '' &&
+      this.servizio.trim() !== '' &&
+      this.materiale.trim() !== '' &&
+      this.dimensioni.trim() !== ''
+    );
+  }
+
+  // 3. Iniettiamo il service e l'alert controller
+  constructor(
+    private router: Router,
+    private preventiviService: PreventiviService,
+    private alertController: AlertController
+  ) {
+    addIcons({
+      arrowBackOutline,
+      documentAttachOutline,
+      trashOutline
+    });
+
+    this.isMac = navigator.userAgent.toLowerCase().includes('mac');
+  }
+
+selezionaFile(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.allegatiFiles = []; 
+    if (input.files && input.files.length > 0) {
+      for (let i = 0; i < input.files.length; i++) {
+        this.allegatiFiles.push(input.files[i]); // Salviamo il file VERO
+      }
+    }
+  }
+
+  svuotaAllegati() {
+    this.allegatiFiles = [];
+  }
+
+inviaPreventivo() {
+    if (!this.formValido) return;
+
+    // 1. Creiamo il pacchetto dati FormData (abbandoniamo il vecchio oggetto "payload")
+    const formData = new FormData();
+    formData.append('descrizione', this.descrizione);
+    formData.append('servizio', this.servizio);
+    formData.append('materiale', this.materiale);
+    formData.append('dimensioni', this.dimensioni);
+    
+    if (this.finitura) {
+      formData.append('finitura', this.finitura);
+    }
+
+    // 2. Aggiungiamo tutti i file fisici uno ad uno
+    this.allegatiFiles.forEach(file => {
+      formData.append('allegati', file);
+    });
+
+    // 3. Passiamo direttamente formData al service
+    this.preventiviService.creaPreventivo(formData).subscribe({
+      next: () => {
+        this.preventivoInviato = true;
+
+        setTimeout(() => {
+          this.router.navigate(['/dashboard-cliente']);
+        }, 1500);
+      },
+      error: async (err: any) => {
+        console.error('Errore invio preventivo:', err);
+        const messaggio = err.error?.message || 'Errore di connessione al server.';
+
+        const alert = await this.alertController.create({
+          cssClass: 'custom-dark-alert',
+          header: 'Errore',
+          message: messaggio,
+          buttons: ['OK']
+        });
+        await alert.present();
+      }
+    });
+  }
+}
+</file>
+
+<file path="Frontend/src/app/services/catalogo.service.ts">
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Preventivo } from '../models/preventivo.model';
 
-export interface PreventivoRichiesta {
-  descrizione: string;
-  servizio: string;
-  materiale: string;
-  dimensioni: string;
-  finitura?: string;
-  allegato?: string;
+export interface VoceCatalogo {
+  id?: number;
+  nome: string;
+  categoria: string;
+  prezzo_base?: string;
+  prezzoBase?: string;
+  immagine?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class PreventiviService {
-
-  private apiUrl = 'http://localhost:3000/api/preventivi';
-  // 1. Aggiungiamo la base URL per l'admin per comodità
-  private adminApiUrl = 'http://localhost:3000/api/admin/preventivi'; 
+export class CatalogoService {
+  private apiUrl = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) {}
 
-// 1. Sostituisci getHeaders togliendo il Content-Type
-  private getHeaders(): HttpHeaders {
-    const token = sessionStorage.getItem('token');
+  private getAuthHeaders(): HttpHeaders {
+    let token = sessionStorage.getItem('token') || '';
+    token = token.replace(/^"(.*)"$/, '$1');
     return new HttpHeaders({
-      Authorization: `Bearer ${token}`
+      'Authorization': `Bearer ${token}`
     });
   }
 
-  // 2. Modifica creaPreventivo per accettare FormData
-  creaPreventivo(dati: FormData): Observable<any> {
-    return this.http.post(this.apiUrl, dati, { headers: this.getHeaders() });
+  // --- LE CHIAMATE ---
+
+  getCatalogo(): Observable<any[]> {
+    // Per la GET usiamo il formato standard
+    return this.http.get<any[]>(`${this.apiUrl}/catalogo`, { headers: this.getAuthHeaders() });
   }
 
-  getPreventivi(): Observable<Preventivo[]> {
-    return this.http.get<Preventivo[]>(this.apiUrl, { headers: this.getHeaders() });
-  }
-  
-  getPreventiviAdmin(): Observable<Preventivo[]> {
-    return this.http.get<Preventivo[]>(this.adminApiUrl, { headers: this.getHeaders() });
-  }
-
-  // 2. NUOVA FUNZIONE: Recupera il dettaglio di un singolo preventivo per l'ADMIN
-  getPreventivoAdminById(id: number | string): Observable<any> {
-    return this.http.get<any>(`${this.adminApiUrl}/${id}`, { headers: this.getHeaders() });
+  creaVoce(formData: FormData): Observable<any> {
+    // Per i file, NON passare Content-Type. HttpClient lo farà per te.
+    return this.http.post<any>(`${this.apiUrl}/admin/catalogo`, formData, { 
+      headers: this.getAuthHeaders() 
+    });
   }
 
-  adminProponePrezzo(id: number | string, prezzo: number): Observable<any> {
-    return this.http.put(`${this.adminApiUrl}/${id}/proponi-prezzo`, { prezzo }, { headers: this.getHeaders() });
+  modificaVoce(id: number, formData: FormData): Observable<any> {
+    // Anche qui, inviamo FormData.
+    return this.http.put<any>(`${this.apiUrl}/admin/catalogo/${id}`, formData, { 
+      headers: this.getAuthHeaders() 
+    });
   }
 
-  // Admin rifiuta il preventivo
-  adminRifiutaPreventivo(id: number | string): Observable<any> {
-    return this.http.put(`${this.adminApiUrl}/${id}/rifiuta`, {}, { headers: this.getHeaders() });
+  eliminaVoce(id: number): Observable<any> {
+    // Qui serve il Content-Type perché non mandiamo file
+    const headers = this.getAuthHeaders().set('Content-Type', 'application/json');
+    return this.http.delete<any>(`${this.apiUrl}/admin/catalogo/${id}`, { headers });
   }
 
-  // Recupera il dettaglio di un singolo preventivo per il CLIENTE
-  getPreventivoClienteById(id: number | string): Observable<Preventivo> {
-    return this.http.get<Preventivo>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+  // --- PREFERITI ---
+  getPreferiti(): Observable<number[]> {
+    return this.http.get<number[]>(`${this.apiUrl}/preferiti`, { headers: this.getAuthHeaders() });
   }
 
-  // Invia al backend la scelta del cliente (accetta o rifiuta)
-  rispondiPreventivo(id: number | string, azione: 'accetta' | 'rifiuta'): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}/risposta`, { azione }, { headers: this.getHeaders() });
+  aggiungiPreferito(id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/preferiti/${id}`, {}, { headers: this.getAuthHeaders() });
+  }
+
+  rimuoviPreferito(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/preferiti/${id}`, { headers: this.getAuthHeaders() });
   }
 }
+</file>
+
+<file path="Backend/controllers/preventiviController.js">
+const Preventivo = require('../models/preventiviModel');
+
+exports.creaPreventivo = async (req, res) => {
+  try {
+    const cliente_id = req.user.id; 
+    const { descrizione, servizio, materiale, dimensioni, finitura } = req.body;
+
+    if (!descrizione || !servizio || !materiale || !dimensioni) {
+      return res.status(400).json({ message: 'Compila tutti i campi obbligatori.' });
+    }
+
+    // Trasformiamo l'array di file nei percorsi fisici
+    const percorsiAllegati = req.files && req.files.length > 0 
+      ? req.files.map(f => `/uploads/${f.filename}`).join(',') 
+      : null;
+
+    const nuovoPreventivo = await Preventivo.create({
+      cliente_id, descrizione, servizio, materiale, dimensioni,
+      finitura: finitura || null,
+      allegato: percorsiAllegati // <--- Salviamo la stringa con i percorsi reali!
+    });
+
+    res.status(201).json({ message: 'Preventivo inviato con successo!', preventivo: nuovoPreventivo });
+  } catch (error) {
+    console.error('Errore durante la creazione del preventivo:', error);
+    res.status(500).json({ message: 'Errore durante l\'invio della richiesta.' });
+  }
+};
+
+exports.getPreventiviCliente = async (req, res) => {
+  try {
+    const preventivi = await Preventivo.findByClienteId(req.user.id);
+    res.json(preventivi);
+  } catch (error) {
+    res.status(500).json({ message: 'Errore nel recupero preventivi.' });
+  }
+};
+
+exports.getPreventiviAdmin = async (req, res) => {
+  try {
+    const preventivi = await Preventivo.findAllForAdmin();
+    return res.json(preventivi);
+  } catch (error) {
+    console.error('Errore nel recupero preventivi per admin:', error);
+    return res.status(500).json({ message: 'Errore nel caricamento dei dati.' });
+  }
+};
+
+exports.getPreventivoClienteById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const preventivo = await Preventivo.findById(id);
+
+    if (!preventivo) {
+      return res.status(404).json({ message: 'Preventivo non trovato.' });
+    }
+
+    if (Number(preventivo.cliente_id) !== Number(req.user.id)) {
+      return res.status(403).json({ message: 'Non autorizzato a visualizzare questo preventivo.' });
+    }
+
+    return res.json(preventivo);
+  } catch (error) {
+    console.error('Errore recupero preventivo cliente:', error);
+    return res.status(500).json({ message: 'Errore nel recupero del preventivo.' });
+  }
+};
+
+exports.clienteRispondePreventivo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { azione } = req.body; 
+
+    const preventivo = await Preventivo.findById(id);
+    if (!preventivo) return res.status(404).json({ message: 'Preventivo non trovato.' });
+    if (Number(preventivo.cliente_id) !== Number(req.user.id)) return res.status(403).json({ message: 'Non autorizzato.' });
+
+    // LUCCHETTO 1: Se il cliente ha già risposto, blocca tutto
+    if (preventivo.stato_risposta_cliente !== 'In attesa') {
+      return res.status(400).json({ message: 'Hai già risposto a questo preventivo. Il ciclo è chiuso.' });
+    }
+
+    if (preventivo.stato_admin !== 'Prezzo proposto') {
+      return res.status(400).json({ message: 'Nessun prezzo da valutare.' });
+    }
+
+    // Calcoliamo i due nuovi stati
+    const nuovoStatoCliente = azione === 'accetta' ? 'Accettato' : 'Rifiutato';
+    
+    // Se il cliente accetta, l'admin vedrà "Preventivo concordato". Se rifiuta, lo diamo per "Rifiutato" anche all'admin.
+    const nuovoStatoAdmin = azione === 'accetta' ? 'Preventivo concordato' : 'Rifiutato';
+
+    // Passiamo entrambi gli stati al database
+    await Preventivo.clienteRisponde(id, nuovoStatoCliente, nuovoStatoAdmin);
+
+    const preventivoAggiornato = await Preventivo.findById(id);
+    return res.json({ message: `Preventivo ${nuovoStatoCliente.toLowerCase()} con successo.`, preventivo: preventivoAggiornato });
+  } catch (error) {
+    console.error('Errore risposta preventivo cliente:', error);
+    return res.status(500).json({ message: 'Errore durante la risposta.' });
+  }
+};
+
+// Recupera il dettaglio di un singolo preventivo per l'admin (con dati cliente)
+exports.getPreventivoAdminById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Usiamo la funzione del modello che fa la JOIN con gli utenti
+    const preventivo = await Preventivo.findByIdForAdmin(id);
+
+    if (!preventivo) {
+      return res.status(404).json({ message: 'Preventivo non trovato.' });
+    }
+
+    return res.json(preventivo);
+  } catch (error) {
+    console.error('Errore recupero dettaglio preventivo admin:', error);
+    return res.status(500).json({ message: 'Errore nel recupero del preventivo per admin.' });
+  }
+};
+
+
+// Gestisce l'inserimento del prezzo da parte dell'admin
+exports.adminProponePrezzo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { prezzo } = req.body;
+
+    // Controllo di sicurezza: il prezzo deve esserci e deve essere un numero valido
+    if (!prezzo || isNaN(prezzo) || prezzo <= 0) {
+      return res.status(400).json({ message: 'Prezzo non valido.' });
+    }
+
+    // Controlliamo che il preventivo esista
+    const preventivo = await Preventivo.findById(id);
+    if (!preventivo) {
+      return res.status(404).json({ message: 'Preventivo non trovato.' });
+    }
+
+    // LUCCHETTO 2: L'admin non può cambiare il prezzo se il cliente ha già chiuso la pratica
+    if (preventivo.stato_risposta_cliente !== 'In attesa') {
+      return res.status(400).json({ message: 'Impossibile modificare: il cliente ha già chiuso questo preventivo.' });
+    }
+
+    // Aggiorniamo il database tramite la funzione che abbiamo appena creato nel modello
+    await Preventivo.adminProponePrezzo(id, prezzo);
+
+    // Recuperiamo il preventivo aggiornato per restituirlo
+    const preventivoAggiornato = await Preventivo.findByIdForAdmin(id);
+    return res.json({ 
+      message: 'Prezzo proposto con successo.', 
+      preventivo: preventivoAggiornato 
+    });
+    
+  } catch (error) {
+    console.error('Errore proposta prezzo admin:', error);
+    return res.status(500).json({ message: 'Errore durante la proposta del prezzo.' });
+  }
+};
+
+// Gestisce il rifiuto del preventivo lato admin
+exports.adminRifiutaPreventivo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Controlliamo che il preventivo esista
+    const preventivo = await Preventivo.findById(id);
+    if (!preventivo) {
+      return res.status(404).json({ message: 'Preventivo non trovato.' });
+    }
+
+    // LUCCHETTO 3: Se il preventivo è già stato chiuso in precedenza, non permettere altre modifiche
+    if (preventivo.stato_risposta_cliente !== 'In attesa') {
+      return res.status(400).json({ message: 'Impossibile rifiutare: il preventivo è già stato chiuso.' });
+    }
+
+    // Cambiamo lo stato in rifiutato nel database
+    await Preventivo.adminRifiutaPreventivo(id);
+    
+    return res.json({ message: 'Preventivo rifiutato con successo.' });
+    
+  } catch (error) {
+    console.error('Errore rifiuto preventivo admin:', error);
+    return res.status(500).json({ message: 'Errore durante il rifiuto.' });
+  }
+};
 </file>
 
 <file path="Frontend/src/app/pages/dashboard-dipendente/dashboard-dipendente.page.ts">
@@ -9049,21 +8666,9 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonChip,
-  IonButton,
-  IonButtons,
-  IonIcon
+  IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent,
+  IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonChip, IonButton,
+  IonButtons, IonIcon
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -9071,19 +8676,13 @@ import { arrowBackOutline, caretDownOutline } from 'ionicons/icons';
 import { Intervento } from 'src/app/models/intervento.model';
 import { InterventiService } from 'src/app/services/interventi.service';
 
-interface AppuntamentoCalendario {
-  id: number;
-  dataFormattata: string;
-  descrizione: string;
-  tipo: 'Intervento';
-  luogo: string;
-}
-
 interface Storico {
   id: number;
   descrizione: string;
   stato: string;
   dataCompletamento: string;
+  cliente_nome?: string;
+  cliente_cognome?: string;
 }
 
 @Component({
@@ -9092,85 +8691,320 @@ interface Storico {
   styleUrls: ['./dashboard-dipendente.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    RouterLink,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonCard,
-    IonCardContent,
-    IonCardHeader,
-    IonCardTitle,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonChip,
-    IonButton,
-    IonButtons,
-    IonIcon
+    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
+    IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow,
+    IonCol, IonChip, IonButton, IonButtons, IonIcon
   ]
 })
 export class DashboardDipendentePage {
 
-  // Array inizializzati vuoti: i dati arriveranno dal backend
-  appuntamentiCalendario: AppuntamentoCalendario[] = [];
   interventiAttivi: Intervento[] = [];
   storicoInterventi: Storico[] = [];
 
-  constructor( private interventiService: InterventiService) {
+  constructor(private interventiService: InterventiService) {
     addIcons({
       arrowBackOutline,
       caretDownOutline
     });
   }
 
- ionViewWillEnter() {
-  this.caricaInterventiAssegnati();
-}
-
-  testoPrioritaData(intervento: Intervento): string {
-    if (intervento.stato_lavorazione === 'Da programmare') {
-      return `Da fissare - Priorità: ${intervento.priorita}`;
-    }
-    return `${intervento.data_accettata || intervento.data_proposta_admin || 'Da programmare'} - Priorità: ${intervento.priorita}`;
+  ionViewWillEnter() {
+    this.caricaInterventiAssegnati();
   }
 
+  caricaInterventiAssegnati() {
+    this.interventiService.getInterventiDipendente().subscribe({
+      next: (interventi) => {
+        
+        // 1. Filtriamo gli attivi e li ordiniamo dal più vicino/imminente al più lontano
+        this.interventiAttivi = interventi
+          .filter(intervento => intervento.stato_lavorazione !== 'Terminato')
+          .sort((a, b) => {
+            const dataA = a.data_accettata || a.data_proposta_admin || a.data_proposta_cliente || a.data_richiesta || '';
+            const dataB = b.data_accettata || b.data_proposta_admin || b.data_proposta_cliente || b.data_richiesta || '';
+            
+            // Se un intervento non ha date assegnate, scivola in fondo alla lista
+            const tempoA = dataA ? new Date(dataA).getTime() : new Date('9999-12-31').getTime();
+            const tempoB = dataB ? new Date(dataB).getTime() : new Date('9999-12-31').getTime();
+            
+            return tempoA - tempoB;
+          });
 
-caricaInterventiAssegnati() {
-  this.interventiService.getInterventiDipendente().subscribe({
-    next: (interventi) => {
-      this.interventiAttivi = interventi.filter(
-        intervento => intervento.stato_lavorazione !== 'Terminato'
-      );
-
-      this.storicoInterventi = interventi
-        .filter(intervento => intervento.stato_lavorazione === 'Terminato')
-        .map(intervento => ({
-          id: intervento.id,
-          descrizione: intervento.descrizione,
-          stato: intervento.stato_lavorazione,
-          dataCompletamento: intervento.data_accettata || 'Non disponibile'
-        }));
-
-      this.appuntamentiCalendario = interventi
-        .filter(intervento => intervento.stato_lavorazione !== 'Terminato')
-        .map(intervento => ({
-          id: intervento.id,
-          dataFormattata:
-            intervento.data_accettata ||
-            intervento.data_proposta_admin ||
-            'Da programmare',
-          descrizione: intervento.descrizione,
-          tipo: 'Intervento' as const,
-          luogo: intervento.luogo
-        }));
-    },
-    error: (err) => {
-      console.error('Errore caricamento interventi dipendente:', err);
-    }
-  });
+        // 2. Storico interventi completati (CORRETTO SENZA REFUSI)
+        this.storicoInterventi = interventi
+          .filter(intervento => intervento.stato_lavorazione === 'Terminato')
+          .map(intervento => ({
+            id: intervento.id,
+            descrizione: intervento.descrizione,
+            stato: intervento.stato_lavorazione,
+            dataCompletamento: intervento.data_accettata || 'Non disponibile',
+            cliente_nome: intervento.cliente_nome,
+            cliente_cognome: intervento.cliente_cognome
+          }));
+      },
+      error: (err) => {
+        console.error('Errore caricamento interventi dipendente:', err);
+      }
+    });
+  }
 }
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-cliente">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Dettaglio Preventivo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (preventivo) {
+    <section class="detail-header">
+      <h1>Preventivo #{{ preventivoId }}</h1>
+      <p>Riepilogo della tua richiesta e stato di avanzamento.</p>
+    </section>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Stato Preventivo</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-row">
+          <span>Stato Amministrazione</span>
+          <ion-chip>{{ preventivo.stato_admin }}</ion-chip>
+        </div>
+        
+        <div class="info-row">
+          <span>La tua risposta</span>
+          <ion-chip>{{ preventivo.stato_risposta_cliente }}</ion-chip>
+        </div>
+
+        @if (preventivo.prezzo_proposto) {
+          <div class="price-box">
+            Prezzo proposto da Metal Lab:
+            <strong>€ {{ preventivo.prezzo_proposto }}</strong>
+          </div>
+        } @else {
+          <div class="price-box empty">
+            Nessun prezzo ancora proposto.
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Dati Tecnici Richiesta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="description-box">
+          <h3>Descrizione</h3>
+          <p>{{ preventivo.descrizione }}</p>
+        </div>
+        <div class="info-row">
+          <span>Servizio richiesto</span>
+          <strong>{{ preventivo.servizio }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Materiale</span>
+          <strong>{{ preventivo.materiale }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Dimensioni</span>
+          <strong>{{ preventivo.dimensioni }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Finitura</span>
+          <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
+        </div>
+       <div class="info-row">
+          <span>Allegati tecnici</span>
+          @if (preventivo.allegatiArray && preventivo.allegatiArray.length > 0) {
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
+              @for (file of preventivo.allegatiArray; track $index) {
+                <ion-button fill="outline" color="warning" size="small" [href]="'http://localhost:3000' + file" target="_blank" style="margin: 0; --border-radius: 12px; height: 32px;">
+                  <ion-icon slot="start" name="document-attach-outline"></ion-icon>
+                  Allegato {{ $index + 1 }}
+                </ion-button>
+              }
+            </div>
+          } @else {
+            <strong>Nessun allegato</strong>
+          }
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Risposta alla proposta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        @if (preventivo.stato_admin === 'Prezzo proposto' && preventivo.stato_risposta_cliente === 'In attesa') {
+          <p class="response-text">
+            Puoi accettare o rifiutare il prezzo proposto da Metal Lab.
+          </p>
+          <div class="actions">
+            <ion-button expand="block" class="btn-glass-accept" (click)="accettaPreventivo()">
+              Accetta preventivo
+            </ion-button>
+            <ion-button expand="block" class="btn-glass-reject" (click)="rifiutaPreventivo()">
+              Rifiuta preventivo
+            </ion-button>
+          </div>
+        } @else if (preventivo.stato_risposta_cliente !== 'In attesa') {
+          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
+            Hai già risposto a questo preventivo. Il ciclo è concluso.
+          </div>
+        } @else if (preventivo.stato_admin === 'Rifiutato') {
+          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
+            Metal Lab ha rifiutato la richiesta di lavorazione.
+          </div>
+        } @else {
+          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
+            In attesa che l'officina formuli un prezzo per la tua richiesta...
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
+  } @else {
+    <div class="ion-padding ion-text-center">
+      <p>Caricamento preventivo in corso...</p>
+    </div>
+  }
+</ion-content>
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.ts">
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common'; 
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'; 
+
+import {
+  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
+  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
+} from '@ionic/angular/standalone';
+
+import {AlertController } from '@ionic/angular';
+
+import { addIcons } from 'ionicons';
+import { arrowBackOutline, documentAttachOutline } from 'ionicons/icons';
+
+// Importiamo il service
+import { PreventiviService } from '../../services/preventivi.service';
+
+@Component({
+  selector: 'app-dettaglio-preventivo-cliente',
+  templateUrl: './dettaglio-preventivo-cliente.page.html',
+  styleUrls: ['./dettaglio-preventivo-cliente.page.scss'],
+  standalone: true,
+  imports: [
+    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
+    IonButtons, IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle,
+    IonCardContent, IonChip
+  ]
+})
+export class DettaglioPreventivoClientePage implements OnInit {
+
+  preventivoId = '';
+  preventivo: any = null; // <-- CORREZIONE 1: "any" sblocca l'errore di Angular!
+  caricamento = true;
+
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router,
+    private alertController: AlertController,
+    private preventiviService: PreventiviService 
+  ) {
+    addIcons({ arrowBackOutline, documentAttachOutline });
+    this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
+  }
+
+  ngOnInit() {
+    if (this.preventivoId) {
+      this.caricaPreventivo();
+    }
+  }
+
+  caricaPreventivo() {
+    this.caricamento = true;
+    this.preventiviService.getPreventivoClienteById(this.preventivoId).subscribe({
+      next: (dati: any) => {
+        this.preventivo = dati;
+        this.preventivo.allegatiArray = dati.allegato ? dati.allegato.split(',') : [];
+        this.caricamento = false;
+      },
+      error: (err: any) => {
+        console.error('Errore recupero preventivo', err);
+        this.caricamento = false;
+      }
+    });
+  }
+
+  // <-- CORREZIONE 2: Ora i bottoni chiamano il VERO database
+  async accettaPreventivo() {
+    const alert = await this.alertController.create({
+      cssClass: 'custom-dark-alert',
+      header: 'Conferma Accettazione',
+      message: `Vuoi accettare ufficialmente il preventivo di € ${this.preventivo.prezzo_proposto}?`,
+      buttons: [
+        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
+        {
+          text: 'Accetta', 
+          cssClass: 'dark-alert-btn-confirm',
+          handler: () => {
+            this.eseguiRisposta('accetta');
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async rifiutaPreventivo() {
+    const alert = await this.alertController.create({
+      cssClass: 'custom-dark-alert',
+      header: 'Rifiuta Preventivo',
+      message: 'Sei sicuro di voler rifiutare questa proposta? L\'azione è irreversibile.',
+      buttons: [
+        { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
+        {
+          text: 'Rifiuta', 
+          role: 'destructive', 
+          cssClass: 'dark-alert-btn-danger',
+          handler: () => {
+            this.eseguiRisposta('rifiuta');
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+   private eseguiRisposta(azione: 'accetta' | 'rifiuta') {
+    this.preventiviService.rispondiPreventivo(this.preventivoId, azione).subscribe({
+      next: () => {
+        // Appena il server risponde "OK", torniamo alla dashboard!
+        this.router.navigate(['/dashboard-cliente']);
+      },
+      error: async (err) => {
+        console.error('Errore risposta preventivo:', err);
+        const alertError = await this.alertController.create({
+          cssClass: 'custom-dark-alert',
+          header: 'Errore',
+          message: 'Impossibile inviare la risposta. Riprova.',
+          buttons: ['OK']
+        });
+        await alertError.present();
+      }
+    });
+  }
 
 
 }
@@ -9346,6 +9180,79 @@ export class InterventiPage {
         await alert.present();
       }
     });
+  }
+}
+</file>
+
+<file path="Frontend/src/app/services/preventivi.service.ts">
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Preventivo } from '../models/preventivo.model';
+
+export interface PreventivoRichiesta {
+  descrizione: string;
+  servizio: string;
+  materiale: string;
+  dimensioni: string;
+  finitura?: string;
+  allegato?: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PreventiviService {
+
+  private apiUrl = 'http://localhost:3000/api/preventivi';
+  // 1. Aggiungiamo la base URL per l'admin per comodità
+  private adminApiUrl = 'http://localhost:3000/api/admin/preventivi'; 
+
+  constructor(private http: HttpClient) {}
+
+// 1. Sostituisci getHeaders togliendo il Content-Type
+  private getHeaders(): HttpHeaders {
+    const token = sessionStorage.getItem('token');
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  }
+
+  // 2. Modifica creaPreventivo per accettare FormData
+  creaPreventivo(dati: FormData): Observable<any> {
+    return this.http.post(this.apiUrl, dati, { headers: this.getHeaders() });
+  }
+
+  getPreventivi(): Observable<Preventivo[]> {
+    return this.http.get<Preventivo[]>(this.apiUrl, { headers: this.getHeaders() });
+  }
+  
+  getPreventiviAdmin(): Observable<Preventivo[]> {
+    return this.http.get<Preventivo[]>(this.adminApiUrl, { headers: this.getHeaders() });
+  }
+
+  // 2. NUOVA FUNZIONE: Recupera il dettaglio di un singolo preventivo per l'ADMIN
+  getPreventivoAdminById(id: number | string): Observable<any> {
+    return this.http.get<any>(`${this.adminApiUrl}/${id}`, { headers: this.getHeaders() });
+  }
+
+  adminProponePrezzo(id: number | string, prezzo: number): Observable<any> {
+    return this.http.put(`${this.adminApiUrl}/${id}/proponi-prezzo`, { prezzo }, { headers: this.getHeaders() });
+  }
+
+  // Admin rifiuta il preventivo
+  adminRifiutaPreventivo(id: number | string): Observable<any> {
+    return this.http.put(`${this.adminApiUrl}/${id}/rifiuta`, {}, { headers: this.getHeaders() });
+  }
+
+  // Recupera il dettaglio di un singolo preventivo per il CLIENTE
+  getPreventivoClienteById(id: number | string): Observable<Preventivo> {
+    return this.http.get<Preventivo>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+  }
+
+  // Invia al backend la scelta del cliente (accetta o rifiuta)
+  rispondiPreventivo(id: number | string, azione: 'accetta' | 'rifiuta'): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}/risposta`, { azione }, { headers: this.getHeaders() });
   }
 }
 </file>
@@ -10261,7 +10168,7 @@ export interface Intervento {
 
           <div class="actions">
 
-            @if (intervento.stato_admin === 'Intervento concordato') {
+            @if (intervento.stato_admin === 'Intervento concordato' && intervento.stato_lavorazione !== 'Terminato') {
 
               <ion-button
                 expand="block"
@@ -10515,9 +10422,9 @@ caricaDipendentiAssegnati() {
     return;
   }
 
-  if (this.intervento.stato_admin !== 'Intervento concordato') {
-    return;
-  }
+  if (this.intervento.stato_admin !== 'Intervento concordato' || this.intervento.stato_lavorazione === 'Terminato') {
+      return;
+    }
   const alert = await this.alertController.create({
     header: 'Assegna dipendente',
     message: 'Seleziona il dipendente da assegnare a questo intervento.',
@@ -11130,7 +11037,7 @@ aggiornaStatoLavorazioneDipendente(
           <ion-card-header class="card-header-flex">
             <ion-card-title>Gestione Preventivi</ion-card-title>
           </ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
            @for (preventivo of preventivi; track preventivo.id) {
             <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-admin', preventivo.id]" routerDirection="forward">
               <div class="item-header">
@@ -11138,11 +11045,10 @@ aggiornaStatoLavorazioneDipendente(
                 
                 
                 <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
-                  
                   <ion-chip 
-                    [color]="preventivo.stato_risposta_cliente === 'Accettato' ? 'success' : (preventivo.stato_risposta_cliente === 'Rifiutato' ? 'danger' : 'warning')" 
-                    style="margin: 0; font-size: 0.75rem;">
-                    {{ preventivo.stato_risposta_cliente }}
+                    [color]="getStatoPreventivoAdmin(preventivo).colore" 
+                    style="margin: 0; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.3px;">
+                    {{ getStatoPreventivoAdmin(preventivo).testo }}
                   </ion-chip>
                 </div>
 
@@ -11161,27 +11067,16 @@ aggiornaStatoLavorazioneDipendente(
           <ion-card-header class="card-header-flex">
             <ion-card-title>Gestione Interventi</ion-card-title>
           </ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
             @for (intervento of interventi; track intervento.id) {
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-admin', intervento.id]">
                 <div class="item-header">
                   <h3>{{ intervento.descrizione }}</h3>
-              <ion-chip
-  [color]="
-    intervento.stato_lavorazione === 'Terminato'
-      ? 'success'
-      : intervento.stato_risposta_cliente === 'Intervento annullato' || intervento.stato_admin === 'Rifiutato'
-        ? 'danger'
-        : 'warning'
-  ">
-  {{
-    intervento.stato_lavorazione === 'Terminato'
-      ? intervento.stato_lavorazione
-      : intervento.stato_risposta_cliente === 'Intervento annullato'
-        ? intervento.stato_risposta_cliente
-        : intervento.stato_admin
-  }}
-</ion-chip>
+              <ion-chip [color]="getStatoInterventoUX(intervento).color" style="margin: 0; font-size: 0.75rem;">
+                <ion-icon [name]="getStatoInterventoUX(intervento).icon"></ion-icon>
+                <ion-label>{{ getStatoInterventoUX(intervento).label }}</ion-label>
+              </ion-chip>
+
                 </div>
                 <p>Cliente: {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }} | Priorità: {{ intervento.priorita }}</p>
                 <p>Luogo: {{ intervento.luogo }}</p>
@@ -11202,8 +11097,8 @@ aggiornaStatoLavorazioneDipendente(
               Nuovo
             </ion-button>
           </ion-card-header>
-          <ion-card-content>
-@for (voce of catalogo; track voce.id) {
+          <ion-card-content class="scrollable-list">
+            @for (voce of catalogo; track voce.id) {
               <div class="dashboard-item catalog-list-item">
                 
                 <div class="catalog-thumbnail">
@@ -11232,32 +11127,6 @@ aggiornaStatoLavorazioneDipendente(
             } @empty {
               <div class="empty-section">Il catalogo è vuoto.</div>
             }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
-      <ion-col size="12">
-        <ion-card class="detail-section-card calendar-card">
-          <ion-card-header>
-            <ion-card-title>Storico Globale Attività</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <div class="timeline">
-              @for (evento of storicoGlobale; track evento.id) {
-                <div class="timeline-item">
-                  <div class="timeline-date"><strong>{{ evento.dataFormattata }}</strong></div>
-                  <div class="timeline-content">
-                    <h3>{{ evento.descrizione }}</h3>
-                    <p>Cliente: {{ evento.cliente }} | Tipo: {{ evento.tipo }}</p>
-                    <ion-chip [color]="evento.stato === 'Terminato' ? 'success' : 'primary'">
-                      {{ evento.stato }}
-                    </ion-chip>
-                  </div>
-                </div>
-              } @empty {
-                <div class="empty-section">Nessun evento registrato nello storico.</div>
-              }
-            </div>
           </ion-card-content>
         </ion-card>
       </ion-col>
@@ -11396,18 +11265,30 @@ aggiornaStatoLavorazioneDipendente(
       <ion-col size="12" size-md="6">
         <ion-card class="detail-section-card">
           <ion-card-header><ion-card-title>I tuoi Preventivi</ion-card-title></ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
             @for (preventivo of preventivi; track preventivo.id) {
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-cliente', preventivo.id]" routerDirection="forward">
                 <div class="item-header">
                   <h3>{{ preventivo.descrizione }}</h3>
                   
-                  <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
-                    <ion-chip color="dark" style="margin: 0; font-size: 0.75rem;">
-                      {{ preventivo.stato_admin }}
-                    </ion-chip>
-                    
-                  </div>
+<div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
+                  <ion-chip
+                    [color]="
+                      preventivo.stato_risposta_cliente === 'Accettato'
+                        ? 'success'
+                        : preventivo.stato_risposta_cliente === 'Rifiutato' || preventivo.stato_admin === 'Rifiutato'
+                          ? 'danger'
+                          : 'warning'
+                    "
+                    style="margin: 0; font-size: 0.75rem;"
+                  >
+                    {{
+                      preventivo.stato_risposta_cliente === 'In attesa'
+                        ? preventivo.stato_admin
+                        : preventivo.stato_risposta_cliente
+                    }}
+                  </ion-chip>
+                </div>
 
                 </div>
                 <p>Servizio: {{ preventivo.servizio }} | Materiale: {{ preventivo.materiale }}</p>
@@ -11420,8 +11301,8 @@ aggiornaStatoLavorazioneDipendente(
       <ion-col size="12" size-md="6">
         <ion-card class="detail-section-card">
           <ion-card-header><ion-card-title>Interventi Tecnici</ion-card-title></ion-card-header>
-          <ion-card-content>
-            @for (intervento of tuttiGliInterventi; track intervento.id) {
+          <ion-card-content class="scrollable-list">
+            @for (intervento of tuttiGliInterventi; track intervento.id ) {
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-cliente', intervento.id]">
                 <div class="item-header">
                   <h3>{{ intervento.descrizione }}</h3>
@@ -11456,7 +11337,7 @@ aggiornaStatoLavorazioneDipendente(
       <ion-col size="12">
         <ion-card class="calendar-card">
           <ion-card-header><ion-card-title>Calendario Attività</ion-card-title></ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
             @for (evento of interventiFuturi; track evento.id) {
               <div class="calendar-item clickable" [routerLink]="['/dettaglio-intervento-cliente', evento.id]">
                 <div class="calendar-date">{{ evento.data_proposta_admin || 'In attesa' }}</div>
@@ -12129,6 +12010,129 @@ exports.aggiornaStatoLavorazioneDipendente = async (req, res) => {
 };
 </file>
 
+<file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.ts">
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonChip,
+  IonButton,
+  IonButtons,
+  IonIcon
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+import { arrowBackOutline, documentTextOutline, constructOutline } from 'ionicons/icons';
+
+import { Preventivo } from 'src/app/models/preventivo.model';
+import { InterventiService } from '../../services/interventi.service';
+// IMPORTA IL SERVICE DEI PREVENTIVI
+import { PreventiviService } from '../../services/preventivi.service';
+
+@Component({
+  selector: 'app-dashboard-cliente',
+  templateUrl: './dashboard-cliente.page.html',
+  styleUrls: ['./dashboard-cliente.page.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonChip,
+    IonButton,
+    IonButtons,
+    IonIcon
+  ]
+})
+export class DashboardClientePage { 
+
+  tuttiGliInterventi: any[] = [];
+  interventiFuturi: any[] = [];
+  
+  // ARRAY VUOTO (popolato dal DB)
+  preventivi: Preventivo[] = [];
+
+  constructor(
+    private interventiService: InterventiService,
+    private preventiviService: PreventiviService,
+    
+  ) {
+    addIcons({ arrowBackOutline, documentTextOutline, constructOutline });
+  }
+
+  ionViewWillEnter() {
+    this.caricaInterventi();
+    this.caricaPreventivi(); // CHIAMA IL CARICAMENTO DATI REALI
+  }
+
+  caricaInterventi() {
+    this.interventiService.getInterventiCliente().subscribe({
+      next: (dati) => {
+        this.tuttiGliInterventi = dati;
+        const oggi = new Date();
+        oggi.setHours(0, 0, 0, 0);
+        
+        // 1. Filtriamo gli interventi (solo da oggi in poi)
+        let futuri = dati.filter(intervento => {
+          const dataDaUsare = intervento.data_accettata || intervento.data_proposta_admin || intervento.data_proposta_cliente || intervento.data_richiesta;
+          if (!dataDaUsare) return false;
+          return new Date(dataDaUsare) >= oggi;
+        });
+
+        // 2. ORDINIAMO dalla data più vicina alla più lontana (Ordine Crescente)
+        this.interventiFuturi = futuri.sort((a, b) => {
+          // Aggiungiamo "|| ''" alla fine per garantire a TypeScript che sarà SEMPRE una stringa
+          const dataStringA = a.data_accettata || a.data_proposta_admin || a.data_proposta_cliente || a.data_richiesta || '';
+          const dataStringB = b.data_accettata || b.data_proposta_admin || b.data_proposta_cliente || b.data_richiesta || '';
+          
+          const tempoA = new Date(dataStringA).getTime();
+          const tempoB = new Date(dataStringB).getTime();
+          
+          return tempoA - tempoB;
+        });
+      },
+      error: (err) => console.error('Errore caricamento interventi', err)
+    });
+  }
+
+  // NUOVA FUNZIONE PER CARICARE I PREVENTIVI DAL DB
+  caricaPreventivi() {
+    this.preventiviService.getPreventivi().subscribe({
+      next: (dati) => {
+        this.preventivi = dati;
+      },
+      error: (err) => {
+        console.error('Errore caricamento preventivi:', err);
+      }
+    });
+  }
+
+  
+}
+</file>
+
 <file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.ts">
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -12143,7 +12147,12 @@ import {
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { arrowBackOutline, createOutline, addOutline, peopleOutline, saveOutline, trashOutline, closeOutline, cameraOutline } from 'ionicons/icons';
+import { 
+  arrowBackOutline, createOutline, addOutline, peopleOutline, saveOutline, 
+  trashOutline, closeOutline, cameraOutline, checkmarkDoneOutline, 
+  closeCircleOutline, alertCircleOutline, calendarNumberOutline, 
+  timeOutline, personAddOutline, calendarOutline, buildOutline, helpCircleOutline 
+} from 'ionicons/icons';
 
 import { Intervento } from 'src/app/models/intervento.model';
 import { Preventivo } from 'src/app/models/preventivo.model';
@@ -12178,27 +12187,24 @@ export class DashboardAdminPage {
   interventi: Intervento[] = [];
   preventivi: Preventivo[] = [];
   catalogo: VoceCatalogo[] = [];
-  storicoGlobale: any[] = [];
 
   isModalOpen = false;
   modalMode: 'crea' | 'modifica' = 'crea';
   formCatalogo: Partial<VoceCatalogo> = {};
 
   constructor(
-  private alertController: AlertController,
-  private interventiService: InterventiService,
-  private preventiviService: PreventiviService,
-  private catalogoService: CatalogoService
-) {
-  addIcons({
-    arrowBackOutline,
-    createOutline,
-    addOutline,
-    peopleOutline,
-    saveOutline,
-    trashOutline
-  });
-}
+    private alertController: AlertController,
+    private interventiService: InterventiService,
+    private preventiviService: PreventiviService,
+    private catalogoService: CatalogoService
+  ) {
+    addIcons({
+      arrowBackOutline, createOutline, addOutline, peopleOutline, saveOutline, 
+      trashOutline, closeOutline, cameraOutline, checkmarkDoneOutline, 
+      closeCircleOutline, alertCircleOutline, calendarNumberOutline, 
+      timeOutline, personAddOutline, calendarOutline, buildOutline, helpCircleOutline
+    });
+  }
 
 ionViewWillEnter() {
   this.caricaInterventiAdmin();
@@ -12206,26 +12212,74 @@ ionViewWillEnter() {
   this.caricaCatalogo(); 
 }
 caricaInterventiAdmin() {
-  this.interventiService.getInterventiAdmin().subscribe({
-    next: (interventi) => {
-      this.interventi = interventi;
-      this.interventiAperti = interventi.filter(
-        intervento =>
-          intervento.stato_admin !== 'Rifiutato' &&
-          intervento.stato_risposta_cliente !== 'Intervento annullato' &&
-          intervento.stato_lavorazione !== 'Terminato'
-      ).length;
-    },
-    error: (err) => {
-      console.error('Errore caricamento interventi admin:', err);
+    this.interventiService.getInterventiAdmin().subscribe({
+      next: (interventi) => {
+        
+        // 1. Applichiamo l'ordinamento personalizzato
+        this.interventi = interventi.sort((a, b) => {
+          const pesoA = this.calcolaPesoIntervento(a);
+          const pesoB = this.calcolaPesoIntervento(b);
+          
+          // Se i pesi sono diversi, vince quello con priorità più alta (1 prima di 2, ecc.)
+          if (pesoA !== pesoB) {
+            return pesoA - pesoB;
+          }
+          
+          // A parità di stato, mostriamo in alto la richiesta più recente
+          return (b.id || 0) - (a.id || 0);
+        });
+
+        // 2. Calcoliamo gli interventi aperti per il contatore in alto
+        this.interventiAperti = interventi.filter(
+          intervento =>
+            intervento.stato_admin !== 'Rifiutato' &&
+            intervento.stato_risposta_cliente !== 'Intervento annullato' &&
+            intervento.stato_lavorazione !== 'Terminato'
+        ).length;
+      },
+      error: (err) => {
+        console.error('Errore caricamento interventi admin:', err);
+      }
+    });
+  }
+
+  // --- NUOVA FUNZIONE HELPER PER L'ORDINAMENTO INTERVENTI ---
+  calcolaPesoIntervento(intervento: any): number {
+    // Livello 3 (In fondo): Pratiche chiuse, rifiutate, annullate o terminate
+    if (
+      intervento.stato_admin === 'Rifiutato' || 
+      intervento.stato_risposta_cliente === 'Intervento annullato' ||
+      intervento.stato_lavorazione === 'Terminato'
+    ) {
+      return 3;
     }
-  });
-}
+    
+    // Livello 1 (In cima): L'admin deve intervenire (Rispondere al cliente o proporre data)
+    if (
+      intervento.stato_admin === 'Richiesto' || 
+      intervento.stato_admin === 'In attesa nuova valutazione'
+    ) {
+      return 1;
+    }
+
+    // Livello 2 (In mezzo): In attesa del cliente ('Data proposta') o in lavorazione ('Intervento concordato')
+    return 2;
+  }
 
 caricaPreventiviAdmin() {
     this.preventiviService.getPreventiviAdmin().subscribe({
       next: (datiReali) => {
-        this.preventivi = datiReali;
+        
+        // 1. Applichiamo l'ordinamento personalizzato
+        this.preventivi = datiReali.sort((a, b) => {
+          const pesoA = this.calcolaPesoPreventivo(a);
+          const pesoB = this.calcolaPesoPreventivo(b);
+          
+          if (pesoA !== pesoB) {
+            return pesoA - pesoB;
+          }
+          return (b.id || 0) - (a.id || 0);
+        });
         this.totalePreventivi = datiReali.filter(p => p.stato_admin === 'Da valutare').length;
       },
       error: (err) => {
@@ -12234,11 +12288,46 @@ caricaPreventiviAdmin() {
     });
   }
 
- 
+  calcolaPesoPreventivo(p: any): number {
+    const statoAdmin = p.stato_admin;
+    const statoCliente = p.stato_risposta_cliente;
 
-  // ==========================================
-  // NUOVA LOGICA CATALOGO CON CHIAMATE HTTP
-  // ==========================================
+    if (statoAdmin === 'Rifiutato' || statoCliente === 'Rifiutato') {
+      return 3;
+    }
+    if (statoCliente === 'Accettato' || statoAdmin === 'Preventivo concordato') {
+      return 2;
+    }
+    return 1;
+  }
+
+ getStatoPreventivoAdmin(preventivo: any): { testo: string, colore: string } {
+    const statoAdmin = preventivo.stato_admin;
+    const statoCliente = preventivo.stato_risposta_cliente;
+
+    // 1. Chiuso Negativamente
+    if (statoAdmin === 'Rifiutato' || statoCliente === 'Rifiutato') {
+      return { testo: 'Rifiutato', colore: 'danger' };
+    }
+    
+    // 2. Chiuso Positivamente
+    if (statoCliente === 'Accettato' || statoAdmin === 'Preventivo concordato') {
+      return { testo: 'Accettato', colore: 'success' };
+    }
+    
+    // 3. Palla all'Admin (Nuova richiesta da prezzare)
+    if (statoAdmin === 'Da valutare') {
+      return { testo: 'Da valutare', colore: 'warning' };
+    }
+    
+    // 4. Palla al Cliente (L'admin ha inviato il prezzo e aspetta)
+    if (statoAdmin === 'Prezzo proposto' && statoCliente === 'In attesa') {
+      return { testo: 'In attesa del cliente', colore: 'medium' };
+    }
+
+    // Fallback di sicurezza
+    return { testo: statoAdmin, colore: 'medium' };
+  }
 
   caricaCatalogo() {
     this.catalogoService.getCatalogo().subscribe({
@@ -12377,115 +12466,47 @@ onFileSelected(event: any) {
     return 'http://localhost:3000' + immagine;
   }
 
-}
-</file>
+  // --- HELPER UX: TRADUZIONE STATI INTERVENTO ---
+  getStatoInterventoUX(intervento: any): { label: string, color: string, icon: string } {
+    // 1. Pratiche Chiuse (Verde o Rosso)
+    if (intervento.stato_lavorazione === 'Terminato') {
+      return { label: 'Completato', color: 'success', icon: 'checkmark-done-outline' };
+    }
+    if (intervento.stato_admin === 'Rifiutato') {
+      return { label: 'Rifiutato', color: 'danger', icon: 'close-circle-outline' };
+    }
+    if (intervento.stato_risposta_cliente === 'Intervento annullato') {
+      return { label: 'Annullato dal Cliente', color: 'danger', icon: 'trash-outline' };
+    }
 
-<file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.ts">
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+    // 2. Tocca all'Admin agire! (Ambra - Warning)
+    if (intervento.stato_admin === 'Richiesto') {
+      return { label: 'Da Valutare', color: 'warning', icon: 'alert-circle-outline' };
+    }
+    if (intervento.stato_admin === 'In attesa nuova valutazione') {
+      return { label: 'Valuta Nuova Data', color: 'warning', icon: 'calendar-number-outline' };
+    }
+    if (intervento.stato_admin === 'Intervento concordato' && intervento.stato_lavorazione === 'Da programmare') {
+      return { label: 'Da Assegnare a Tecnico', color: 'warning', icon: 'person-add-outline' }; 
+    }
 
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonChip,
-  IonButton,
-  IonButtons,
-  IonIcon
-} from '@ionic/angular/standalone';
+    // 3. Palla al Cliente (Grigio - Medium)
+    if (intervento.stato_admin === 'Data proposta') {
+      return { label: 'In attesa del Cliente', color: 'medium', icon: 'time-outline' };
+    }
 
-import { addIcons } from 'ionicons';
-import { arrowBackOutline, documentTextOutline, constructOutline } from 'ionicons/icons';
+    // 4. Pratica in mano ai tecnici (Blu - Primary)
+    if (intervento.stato_lavorazione === 'Programmato') {
+      return { label: 'Assegnato al Tecnico', color: 'primary', icon: 'calendar-outline' };
+    }
+    if (intervento.stato_lavorazione === 'In lavorazione') {
+      return { label: 'Tecnico a lavoro', color: 'tertiary', icon: 'build-outline' };
+    }
 
-import { Preventivo } from 'src/app/models/preventivo.model';
-import { InterventiService } from '../../services/interventi.service';
-// IMPORTA IL SERVICE DEI PREVENTIVI
-import { PreventiviService } from '../../services/preventivi.service';
-
-@Component({
-  selector: 'app-dashboard-cliente',
-  templateUrl: './dashboard-cliente.page.html',
-  styleUrls: ['./dashboard-cliente.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonCard,
-    IonCardContent,
-    IonCardHeader,
-    IonCardTitle,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonChip,
-    IonButton,
-    IonButtons,
-    IonIcon
-  ]
-})
-export class DashboardClientePage { 
-
-  tuttiGliInterventi: any[] = [];
-  interventiFuturi: any[] = [];
-  
-  // ARRAY VUOTO (popolato dal DB)
-  preventivi: Preventivo[] = [];
-
-  constructor(
-    private interventiService: InterventiService,
-    private preventiviService: PreventiviService,
-    
-  ) {
-    addIcons({ arrowBackOutline, documentTextOutline, constructOutline });
+    // Fallback di sicurezza
+    return { label: 'Stato Sconosciuto', color: 'light', icon: 'help-circle-outline' };
   }
 
-  ionViewWillEnter() {
-    this.caricaInterventi();
-    this.caricaPreventivi(); // CHIAMA IL CARICAMENTO DATI REALI
-  }
-
-  caricaInterventi() {
-    this.interventiService.getInterventiCliente().subscribe({
-      next: (dati) => {
-        this.tuttiGliInterventi = dati;
-        const oggi = new Date();
-        oggi.setHours(0, 0, 0, 0);
-        this.interventiFuturi = dati.filter(intervento => {
-          const dataDaUsare = intervento.data_accettata || intervento.data_proposta_admin || intervento.data_proposta_cliente || intervento.data_richiesta;
-          if (!dataDaUsare) return false;
-          return new Date(dataDaUsare) >= oggi;
-        });
-      },
-      error: (err) => console.error('Errore caricamento interventi', err)
-    });
-  }
-
-  // NUOVA FUNZIONE PER CARICARE I PREVENTIVI DAL DB
-  caricaPreventivi() {
-    this.preventiviService.getPreventivi().subscribe({
-      next: (dati) => {
-        this.preventivi = dati;
-      },
-      error: (err) => {
-        console.error('Errore caricamento preventivi:', err);
-      }
-    });
-  }
-
-  
 }
 </file>
 
@@ -12503,7 +12524,26 @@ Frontend/.angular/
 <file path="Backend/routes/routes.js">
 const express = require('express');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const path = require('path'); // Aggiungiamo path per gestire le estensioni
+
+// Configuriamo Multer per mantenere i nomi e le estensioni corrette
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // La cartella in cui salvare
+  },
+  filename: function (req, file, cb) {
+    // Estraiamo l'estensione originale (es. .jpg, .pdf, .png)
+    const ext = path.extname(file.originalname);
+    
+    // Creiamo un nome unico (per evitare che file con lo stesso nome si sovrascrivano)
+    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    
+    // Assembliamo il nome finale: es. "allegato-17000000000-12345.jpg"
+    cb(null, 'allegato-' + uniqueName + ext);
+  }
+});
+
+const upload = multer({ storage: storage });
 
 const authController = require('../controllers/authController');
 const dipendentiController = require('../controllers/dipendentiController');

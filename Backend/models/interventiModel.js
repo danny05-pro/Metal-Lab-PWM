@@ -34,7 +34,8 @@ exports.findByClienteId = (cliente_id) => {
   return new Promise((resolve, reject) => {
     db.all(
       `
-        SELECT *
+        SELECT interventi.*, 
+        (SELECT COUNT(*) FROM dipendenti_interventi WHERE intervento_id = interventi.id) AS numero_dipendenti
         FROM interventi
         WHERE cliente_id = ?
         ORDER BY data_richiesta DESC
@@ -60,7 +61,8 @@ exports.findAllForAdmin = () => {
           users.nome AS cliente_nome,
           users.cognome AS cliente_cognome,
           users.email AS cliente_email,
-          users.telefono AS cliente_telefono
+          users.telefono AS cliente_telefono,
+          (SELECT COUNT(*) FROM dipendenti_interventi WHERE intervento_id = interventi.id) AS numero_dipendenti
         FROM interventi
         JOIN users ON users.id = interventi.cliente_id
         ORDER BY interventi.data_richiesta DESC
@@ -86,7 +88,8 @@ exports.findById = (id) => {
           users.nome AS cliente_nome,
           users.cognome AS cliente_cognome,
           users.email AS cliente_email,
-          users.telefono AS cliente_telefono
+          users.telefono AS cliente_telefono,
+          (SELECT COUNT(*) FROM dipendenti_interventi WHERE intervento_id = interventi.id) AS numero_dipendenti
         FROM interventi
         JOIN users ON users.id = interventi.cliente_id
         WHERE interventi.id = ?

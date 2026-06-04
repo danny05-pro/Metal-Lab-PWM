@@ -29,7 +29,6 @@
           <span class="summary-label">Preventivi Da Gestire</span>
         </div>
       </ion-col>
-
       <ion-col size="12" size-md="4">
         <div class="summary-card">
           <span class="summary-value">{{ interventiAperti }}</span>
@@ -51,22 +50,19 @@
           <ion-card-header class="card-header-flex">
             <ion-card-title>Gestione Preventivi</ion-card-title>
           </ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
            @for (preventivo of preventivi; track preventivo.id) {
             <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-admin', preventivo.id]" routerDirection="forward">
               <div class="item-header">
                 <h3>{{ preventivo.descrizione }}</h3>
-                
-                
                 <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
-                  
                   <ion-chip 
-                    [color]="preventivo.stato_risposta_cliente === 'Accettato' ? 'success' : (preventivo.stato_risposta_cliente === 'Rifiutato' ? 'danger' : 'warning')" 
+                    [color]="getStatoPreventivoUX(preventivo).color" 
                     style="margin: 0; font-size: 0.75rem;">
-                    {{ preventivo.stato_risposta_cliente }}
+                    <ion-icon [name]="getStatoPreventivoUX(preventivo).icon"></ion-icon>
+                    <ion-label>{{ getStatoPreventivoUX(preventivo).label }}</ion-label>
                   </ion-chip>
                 </div>
-
               </div>
               <p>Cliente: {{ preventivo.cliente_nome }} {{ preventivo.cliente_cognome }} | Preventivo #{{ preventivo.id }}</p>
             </div>
@@ -82,27 +78,15 @@
           <ion-card-header class="card-header-flex">
             <ion-card-title>Gestione Interventi</ion-card-title>
           </ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
             @for (intervento of interventi; track intervento.id) {
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-admin', intervento.id]">
                 <div class="item-header">
                   <h3>{{ intervento.descrizione }}</h3>
-              <ion-chip
-  [color]="
-    intervento.stato_lavorazione === 'Terminato'
-      ? 'success'
-      : intervento.stato_risposta_cliente === 'Intervento annullato' || intervento.stato_admin === 'Rifiutato'
-        ? 'danger'
-        : 'warning'
-  ">
-  {{
-    intervento.stato_lavorazione === 'Terminato'
-      ? intervento.stato_lavorazione
-      : intervento.stato_risposta_cliente === 'Intervento annullato'
-        ? intervento.stato_risposta_cliente
-        : intervento.stato_admin
-  }}
-</ion-chip>
+                  <ion-chip [color]="getStatoInterventoUX(intervento).color" style="margin: 0; font-size: 0.75rem;">
+                    <ion-icon [name]="getStatoInterventoUX(intervento).icon"></ion-icon>
+                    <ion-label>{{ getStatoInterventoUX(intervento).label }}</ion-label>
+                  </ion-chip>
                 </div>
                 <p>Cliente: {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }} | Priorità: {{ intervento.priorita }}</p>
                 <p>Luogo: {{ intervento.luogo }}</p>
@@ -123,22 +107,18 @@
               Nuovo
             </ion-button>
           </ion-card-header>
-          <ion-card-content>
-@for (voce of catalogo; track voce.id) {
+          <ion-card-content class="scrollable-list">
+            @for (voce of catalogo; track voce.id) {
               <div class="dashboard-item catalog-list-item">
-                
                 <div class="catalog-thumbnail">
                   <img [src]="getImmagineUrl(voce.immagine)" alt="Anteprima">
                 </div>
-
                 <div class="catalog-info">
                   <div class="item-header">
                     <h3>{{ voce.nome }}</h3>
                     <ion-chip color="medium">{{ voce.categoria }}</ion-chip>
                   </div>
-                  
                   <p class="catalog-price">Prezzo Base: {{ voce.prezzoBase }}</p>
-                  
                   <div class="item-actions">
                     <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
                       <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
@@ -148,7 +128,6 @@
                     </ion-button>
                   </div>
                 </div>
-
               </div>
             } @empty {
               <div class="empty-section">Il catalogo è vuoto.</div>
@@ -157,36 +136,10 @@
         </ion-card>
       </ion-col>
 
-      <ion-col size="12">
-        <ion-card class="detail-section-card calendar-card">
-          <ion-card-header>
-            <ion-card-title>Storico Globale Attività</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <div class="timeline">
-              @for (evento of storicoGlobale; track evento.id) {
-                <div class="timeline-item">
-                  <div class="timeline-date"><strong>{{ evento.dataFormattata }}</strong></div>
-                  <div class="timeline-content">
-                    <h3>{{ evento.descrizione }}</h3>
-                    <p>Cliente: {{ evento.cliente }} | Tipo: {{ evento.tipo }}</p>
-                    <ion-chip [color]="evento.stato === 'Terminato' ? 'success' : 'primary'">
-                      {{ evento.stato }}
-                    </ion-chip>
-                  </div>
-                </div>
-              } @empty {
-                <div class="empty-section">Nessun evento registrato nello storico.</div>
-              }
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
     </ion-row>
   </ion-grid>
 
-<ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
     <ng-template>
       <ion-header class="ion-no-border">
         <ion-toolbar color="dark">
@@ -200,17 +153,16 @@
       </ion-header>
 
       <ion-content class="ion-padding" style="--background: #151b23;">
-        
-@if (formCatalogo.immagine) {
-  <div style="text-align: center; margin-bottom: 20px;">
-    <img 
-      [src]="(formCatalogo.immagine.startsWith('blob:') || formCatalogo.immagine.startsWith('http')) 
-             ? formCatalogo.immagine 
-             : 'http://localhost:3000' + formCatalogo.immagine" 
-      alt="Anteprima" 
-      style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-  </div>
-}
+        @if (formCatalogo.immagine) {
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img 
+              [src]="(formCatalogo.immagine.startsWith('blob:') || formCatalogo.immagine.startsWith('http')) 
+                     ? formCatalogo.immagine 
+                     : 'http://localhost:3000' + formCatalogo.immagine" 
+              alt="Anteprima" 
+              style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+          </div>
+        }
 
         <ion-item color="dark" class="custom-input-item">
           <ion-input label="Nome Voce" labelPlacement="stacked" type="text" [(ngModel)]="formCatalogo.nome" placeholder="Es: Taglio Laser"></ion-input>
@@ -223,10 +175,8 @@
             [(ngModel)]="formCatalogo.categoria" 
             interface="popover" 
             [interfaceOptions]="{ cssClass: 'status-popover-theme' }">
-            
             <ion-select-option value="Prodotto">Prodotto</ion-select-option>
             <ion-select-option value="Servizio">Servizio</ion-select-option>
-            
           </ion-select>
         </ion-item>
 
@@ -234,18 +184,16 @@
           <ion-input label="Prezzo Base" labelPlacement="stacked" type="text" [(ngModel)]="formCatalogo.prezzoBase" placeholder="Es: Da 50€/mq (Opzionale)"></ion-input>
         </ion-item>
 
-<div style="margin-top: 20px; display: flex; align-items: center; gap: 12px; padding: 0 4px;">
-  <ion-button fill="outline" class="btn-glass-upload" (click)="fileInput.click()">
-    <ion-icon slot="start" name="camera-outline"></ion-icon>
-    Carica Immagine
-  </ion-button>
-  
-  <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" accept="image/*">
-  
-  <span style="font-size: 0.85rem; color: #b7c0cc; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-    {{ nomeFileSelezionato || 'Nessun file' }}
-  </span>
-</div>
+        <div style="margin-top: 20px; display: flex; align-items: center; gap: 12px; padding: 0 4px;">
+          <ion-button fill="outline" class="btn-glass-upload" (click)="fileInput.click()">
+            <ion-icon slot="start" name="camera-outline"></ion-icon>
+            Carica Immagine
+          </ion-button>
+          <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" accept="image/*">
+          <span style="font-size: 0.85rem; color: #b7c0cc; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            {{ nomeFileSelezionato || 'Nessun file' }}
+          </span>
+        </div>
       </ion-content>
 
       <ion-footer class="ion-no-border">
@@ -262,5 +210,4 @@
       </ion-footer>
     </ng-template>
   </ion-modal>
-
 </ion-content>

@@ -37,15 +37,21 @@
           <ion-card-header>
             <ion-card-title>Interventi Attivi</ion-card-title>
           </ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
             @for (intervento of interventiAttivi; track intervento.id) {
               <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-dipendente', intervento.id]">
                 <div class="item-header">
-                  <h3>{{ intervento.descrizione }}</h3>
-                  <ion-chip>{{ intervento.stato_lavorazione }}</ion-chip>
+                  <h3>{{ intervento.cliente_nome }} {{ intervento.cliente_cognome }}</h3>
+                  <ion-chip [color]="getStatoInterventoUX(intervento).color" style="margin: 0; font-size: 0.75rem;">
+                    <ion-icon [name]="getStatoInterventoUX(intervento).icon"></ion-icon>
+                    <ion-label>{{ getStatoInterventoUX(intervento).label }}</ion-label>
+                  </ion-chip>
                 </div>
+                <p style="margin-bottom: 4px;">
+                  Luogo: {{ intervento.luogo }} | Data: {{ intervento.data_accettata}}
+                </p>
                 <p>
-                Cliente: {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }} | Priorità: {{ intervento.priorita }}
+                  Descrizione: {{ intervento.descrizione }}
                 </p>
               </div>
             } @empty {
@@ -60,13 +66,17 @@
           <ion-card-header>
             <ion-card-title>Storico Interventi</ion-card-title>
           </ion-card-header>
-          <ion-card-content>
+          <ion-card-content class="scrollable-list">
             @for (storico of storicoInterventi; track storico.id) {
               <div class="dashboard-item">
                 <div class="item-header">
-                  <h3>{{ storico.descrizione }}</h3>
-                  <ion-chip class="status-completed">{{ storico.stato }}</ion-chip>
+                  <h3>{{ storico.cliente_nome }} {{ storico.cliente_cognome }}</h3>
+                  <ion-chip [color]="getStatoInterventoUX(storico).color" style="margin: 0; font-size: 0.75rem;">
+                    <ion-icon [name]="getStatoInterventoUX(storico).icon"></ion-icon>
+                    <ion-label>{{ getStatoInterventoUX(storico).label }}</ion-label>
+                  </ion-chip>
                 </div>
+                <p style="margin-bottom: 4px;">Lavoro: {{ storico.descrizione }}</p>
                 <p>Completato in data: {{ storico.dataCompletamento }}</p>
               </div>
             } @empty {
@@ -76,33 +86,6 @@
         </ion-card>
       </ion-col>
 
-      <ion-col size="12">
-        <ion-card class="detail-section-card calendar-card">
-          <ion-card-header>
-            <ion-card-title>Calendario Personalizzato</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <div class="timeline">
-              @for (appuntamento of appuntamentiCalendario; track appuntamento.id) {
-                <div class="timeline-item">
-                  <div class="timeline-date">
-                    <strong>{{ appuntamento.dataFormattata }}</strong>
-                  </div>
-                  <div class="timeline-content">
-                    <h3>{{ appuntamento.descrizione }}</h3>
-                    <p>Tipo: {{ appuntamento.tipo }} | Luogo: {{ appuntamento.luogo }}</p>
-                    <ion-chip [color]="appuntamento.tipo === 'Intervento' ? 'warning' : 'tertiary'">
-                      {{ appuntamento.tipo }}
-                    </ion-chip>
-                  </div>
-                </div>
-              } @empty {
-                <div class="empty-section">Nessun appuntamento in programma.</div>
-              }
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>

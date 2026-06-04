@@ -60,6 +60,7 @@ export interface Intervento {
 
   updated_at?: string;
 
-  // Tabella ponte dipendenti_interventi
   dipendentiAssegnati?: string[];
+
+  numero_dipendenti?: number;
 }
