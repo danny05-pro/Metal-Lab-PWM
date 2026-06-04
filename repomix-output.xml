@@ -73,6 +73,7 @@ Backend/
     af129c3373e9c59d81c8e799fa83c2b3
     allegato-1780511795833-951911185.jpg
     allegato-1780511852374-935848621.dwg
+    allegato-1780563762895-561925806.pdf
     c2f0a224f361e82b7ed2d71336bfbf8a
     e7804db1c31084335de32061a0732b6b
     f2a3f6201bdb134300c46992912455b7
@@ -102,6 +103,13 @@ Frontend/
         explore-container.component.scss
         explore-container.component.spec.ts
         explore-container.component.ts
+      guards/
+        admin-guard.spec.ts
+        admin-guard.ts
+        cliente-guard.spec.ts
+        cliente-guard.ts
+        dipendente-guard.spec.ts
+        dipendente-guard.ts
       models/
         intervento.model.ts
         preventivo.model.ts
@@ -224,6 +232,143 @@ Frontend/
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="Frontend/src/app/guards/admin-guard.spec.ts">
+import { TestBed } from '@angular/core/testing';
+import { CanActivateFn } from '@angular/router';
+
+import { adminGuard } from './admin-guard';
+
+describe('adminGuard', () => {
+  const executeGuard: CanActivateFn = (...guardParameters) => 
+      TestBed.runInInjectionContext(() => adminGuard(...guardParameters));
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+  });
+
+  it('should be created', () => {
+    expect(executeGuard).toBeTruthy();
+  });
+});
+</file>
+
+<file path="Frontend/src/app/guards/admin-guard.ts">
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+
+export const adminGuard: CanActivateFn = (route, state) => {
+  const router = inject(Router);
+  
+  // 1. Controlliamo il sessionStorage invece del localStorage!
+  const userString = sessionStorage.getItem('ruoloUtente');
+  const token = sessionStorage.getItem('token'); 
+  
+  if (userString && token) {
+    const user = JSON.parse(userString);
+    
+    // 2. Se l'utente è un admin, la porta si apre
+    if (user.ruolo === 'admin') {
+      return true;
+    }
+  }
+
+  // 3. Se non c'è l'utente, non c'è il token, o non è admin: vai al login!
+  router.navigate(['/login']); // Modifica con '/login' se la tua rotta è diversa
+  return false;
+};
+</file>
+
+<file path="Frontend/src/app/guards/cliente-guard.spec.ts">
+import { TestBed } from '@angular/core/testing';
+import { CanActivateFn } from '@angular/router';
+
+import { clienteGuard } from './cliente-guard';
+
+describe('clienteGuard', () => {
+  const executeGuard: CanActivateFn = (...guardParameters) => 
+      TestBed.runInInjectionContext(() => clienteGuard(...guardParameters));
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+  });
+
+  it('should be created', () => {
+    expect(executeGuard).toBeTruthy();
+  });
+});
+</file>
+
+<file path="Frontend/src/app/guards/cliente-guard.ts">
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+
+export const clienteGuard: CanActivateFn = (route, state) => {
+  const router = inject(Router);
+  
+  // 1. Controlliamo il sessionStorage invece del localStorage!
+  const userString = sessionStorage.getItem('ruoloUtente');
+  const token = sessionStorage.getItem('token'); 
+  
+  if (userString && token) {
+    const user = JSON.parse(userString);
+    
+    // 2. Se l'utente è un cliente, la porta si apre
+    if (userString === 'cliente' && token) {
+      return true;
+    }
+  }
+
+  // 3. Se non c'è l'utente, non c'è il token, o non è cliente: vai al login!
+  router.navigate(['/login']); // Modifica con '/login' se la tua rotta è diversa
+  return false;
+};
+</file>
+
+<file path="Frontend/src/app/guards/dipendente-guard.spec.ts">
+import { TestBed } from '@angular/core/testing';
+import { CanActivateFn } from '@angular/router';
+
+import { dipendenteGuard } from './dipendente-guard';
+
+describe('dipendenteGuard', () => {
+  const executeGuard: CanActivateFn = (...guardParameters) => 
+      TestBed.runInInjectionContext(() => dipendenteGuard(...guardParameters));
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+  });
+
+  it('should be created', () => {
+    expect(executeGuard).toBeTruthy();
+  });
+});
+</file>
+
+<file path="Frontend/src/app/guards/dipendente-guard.ts">
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+
+export const dipendenteGuard: CanActivateFn = (route, state) => {
+  const router = inject(Router);
+  
+  const userString = sessionStorage.getItem('ruoloUtente');
+  const token = sessionStorage.getItem('token'); 
+  
+  if (userString && token) {
+    const user = JSON.parse(userString);
+    
+    // 2. Se l'utente è un dipendente, la porta si apre
+    if (user.ruolo === 'dipendente') {
+      return true;
+    }
+  }
+
+  // 3. Se non c'è l'utente, non c'è il token, o non è dipendente: vai al login!
+  router.navigate(['/login']); // Modifica con '/login' se la tua rotta è diversa
+  return false;
+};
+</file>
 
 <file path="Backend/controllers/dipendentiController.js">
 const bcrypt = require('bcrypt');
@@ -812,170 +957,6 @@ describe('DettaglioInterventoClientePage', () => {
 });
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page.scss">
-ion-content {
-  --background: #0b0f14;
-}
-
-.detail-header {
-  padding: 42px 22px 20px;
-  text-align: center;
-  color: white;
-}
-
-.detail-header h1 {
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 900;
-  margin: 0;
-}
-
-.detail-header p {
-  max-width: 760px;
-  margin: 14px auto 0;
-  color: #b7c0cc;
-  line-height: 1.6;
-}
-
-.detail-card {
-  max-width: 900px;
-  margin: 22px auto;
-  --background: #151b23;
-
-  border-radius: 22px;
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  overflow: hidden;
-}
-
-ion-card-header {
-  padding: 24px 24px 8px;
-}
-
-ion-card-content {
-  padding: 8px 24px 24px;
-}
-
-ion-card-title {
-  color: #f5a623;
-  font-weight: 800;
-  font-size: 1.2rem;
-}
-
-.info-row {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 24px;
-
-  align-items: center;
-
-  padding: 18px 0;
-
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.info-row:last-child {
-  border-bottom: none;
-}
-
-.info-row span {
-  color: #b7c0cc;
-  font-weight: 700;
-}
-
-.info-row strong {
-  color: white;
-  text-align: right;
-  font-weight: 800;
-  line-height: 1.5;
-}
-
-.info-row ion-chip {
-  width: fit-content;
-  justify-self: end;
-  margin: 0;
-
-  background: rgba(245, 166, 35, 0.12);
-  color: #f5a623;
-  font-weight: 800;
-}
-
-.state-item {
-  --background: transparent;
-  --color: white;
-  --border-color: rgba(255, 255, 255, 0.12);
-
-  margin-bottom: 18px;
-}
-
-.state-item ion-label {
-  color: #f5a623 !important;
-  font-weight: 800;
-}
-
-.state-item ion-select {
-  --color: white;
-  --placeholder-color: #8f9aaa;
-}
-
-/* ==========================================================================
-   Bottoni Gestione Dipendente - Stile Vetro
-   ========================================================================== */
-.btn-glass-update {
-  margin: 0;
-  height: 52px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
-
-  --border-radius: 16px;
-  --border-width: 1px;
-  --border-style: solid;
-  --box-shadow: none;
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 16px;
-  overflow: hidden;
-  transform: translateZ(0);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Colori Ambra Translucidi */
-  --background: rgba(245, 166, 35, 0.12);
-  --color: #f5a623;
-  --border-color: rgba(245, 166, 35, 0.2);
-
-  &:hover {
-    --background: #f5a623;
-    --border-color: #f5a623;
-    --color: #0b0f14;
-    transform: translateY(-2px);
-  }
-}
-
-@media (max-width: 700px) {
-
-  .detail-card {
-    margin-left: 16px;
-    margin-right: 16px;
-  }
-
-  .info-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    align-items: start;
-  }
-
-  .info-row strong {
-    text-align: left;
-  }
-
-  .info-row ion-chip {
-    justify-self: start;
-  }
-
-}
-</file>
-
 <file path="Frontend/src/app/pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page.spec.ts">
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DettaglioInterventoDipendentePage } from './dettaglio-intervento-dipendente.page';
@@ -996,174 +977,6 @@ describe('DettaglioInterventoDipendentePage', () => {
 });
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.scss">
-ion-content {
-  --background: #0b0f14;
-}
-
-.detail-header {
-  padding: 42px 22px 20px;
-  text-align: center;
-  color: white;
-}
-
-.detail-header h1 {
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 900;
-  margin: 0;
-}
-
-.detail-header p {
-  color: #b7c0cc;
-  margin-top: 12px;
-}
-
-.detail-card {
-  max-width: 850px;
-  margin: 20px auto;
-  --background: #151b23;
-  border-radius: 22px;
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-ion-card-title {
-  color: #f5a623;
-  font-weight: 800;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.info-row:last-child {
-  border-bottom: none;
-}
-
-.info-row span {
-  color: #b7c0cc;
-}
-
-.info-row strong {
-  color: white;
-  text-align: right;
-}
-
-.description-box {
-  margin-bottom: 18px;
-}
-
-.description-box h3 {
-  color: white;
-  margin-bottom: 8px;
-}
-
-.description-box p {
-  color: #b7c0cc;
-  line-height: 1.6;
-}
-
-ion-chip {
-  background: rgba(245,166,35,0.12);
-  color: #f5a623;
-  font-weight: 700;
-}
-
-.price-box {
-  padding: 18px;
-  border-radius: 16px;
-  background: rgba(245,166,35,0.12);
-  color: #f5a623;
-  font-weight: 700;
-  text-align: center;
-}
-
-.price-box.empty {
-  color: #b7c0cc;
-}
-
-/* ==========================================================================
-   Bottoni Gestione Admin - Premium Glass Style
-   ========================================================================== */
-.actions {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* Base comune per i bottoni Apple-style */
-.btn-glass-propose, 
-.btn-glass-reject {
-  margin: 0;
-  height: 52px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
-
-  --border-radius: 16px;
-  --border-width: 1px;
-  --border-style: solid;
-  --box-shadow: none;
-
-  /* Effetto vetro sfocato */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 16px;
-  overflow: hidden;
-  transform: translateZ(0);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Bottone PROPOSTA (Amber/Consulting style) */
-.btn-glass-propose {
-  --background: rgba(245, 166, 35, 0.12);
-  --color: #f5a623;
-  --border-color: rgba(245, 166, 35, 0.2);
-
-  &:hover {
-    --background: #f5a623;
-    --border-color: #f5a623;
-    --color: #0b0f14;
-    transform: translateY(-2px);
-  }
-}
-
-/* Bottone RIFIUTO (Red/Warning style) */
-.btn-glass-reject {
-  --background: rgba(235, 68, 90, 0.08);
-  --color: #eb445a;
-  --border-color: rgba(235, 68, 90, 0.15);
-
-  &:hover {
-    --background: #eb445a;
-    --border-color: #eb445a;
-    --color: #ffffff;
-    transform: translateY(-2px);
-  }
-}
-
-/* Layout responsivo per Desktop/Tablet */
-@media (min-width: 700px) {
-  .actions {
-    flex-direction: row;
-  }
-  .btn-glass-propose, 
-  .btn-glass-reject {
-    flex: 1;
-  }
-}
-
-/* Fix per ion-chip nello storico admin */
-.status-completed {
-  background: rgba(45, 211, 111, 0.15) !important;
-  color: #2dd36f !important;
-  border: 1px solid rgba(45, 211, 111, 0.2);
-}
-</file>
-
 <file path="Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.spec.ts">
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DettaglioPreventivoPage } from './dettaglio-preventivo-admin.page';
@@ -1182,165 +995,6 @@ describe('DettaglioPreventivoPage', () => {
     expect(component).toBeTruthy();
   });
 });
-</file>
-
-<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.scss">
-ion-content {
-  --background: #0b0f14;
-}
-
-.detail-header {
-  padding: 42px 22px 20px;
-  text-align: center;
-  color: white;
-}
-
-.detail-header h1 {
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 900;
-  margin: 0;
-}
-
-.detail-header p {
-  color: #b7c0cc;
-  margin-top: 12px;
-}
-
-.detail-card {
-  max-width: 850px;
-  margin: 20px auto;
-  --background: #151b23;
-  border-radius: 22px;
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-ion-card-title {
-  color: #f5a623;
-  font-weight: 800;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.info-row:last-child {
-  border-bottom: none;
-}
-
-.info-row span {
-  color: #b7c0cc;
-}
-
-.info-row strong {
-  color: white;
-  text-align: right;
-}
-
-.description-box {
-  margin-bottom: 18px;
-}
-
-.description-box h3 {
-  color: white;
-  margin-bottom: 8px;
-}
-
-.description-box p,
-.response-text {
-  color: #b7c0cc;
-  line-height: 1.6;
-}
-
-ion-chip {
-  background: rgba(245,166,35,0.12);
-  color: #f5a623;
-  font-weight: 700;
-}
-
-.price-box {
-  margin-top: 18px;
-  padding: 18px;
-  border-radius: 16px;
-  background: rgba(245,166,35,0.12);
-  color: #f5a623;
-  font-weight: 700;
-  text-align: center;
-}
-
-.price-box.empty {
-  color: #b7c0cc;
-}
-
-.actions {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* Stile base (struttura a pillola ed effetto blur) */
-.btn-glass-accept, 
-.btn-glass-reject {
-  margin: 0;
-  height: 52px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
-
-  --border-radius: 16px;
-  --border-width: 1px;
-  --border-style: solid;
-  --box-shadow: none;
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 16px;
-  overflow: hidden;
-  transform: translateZ(0);
-  transition: all 0.2s ease;
-}
-
-/* Bottone ACCETTA (Giallo Ambra) */
-.btn-glass-accept {
-  --background: rgba(245, 166, 35, 0.12);
-  --color: #f5a623;
-  --border-color: rgba(245, 166, 35, 0.2);
-
-  &:hover {
-    --background: #f5a623;
-    --border-color: #f5a623;
-    --color: #0b0f14;
-    transform: translateY(-2px) translateZ(0);
-  }
-}
-
-/* Bottone RIFIUTA (Rosso Trasparente) */
-.btn-glass-reject {
-  --background: rgba(235, 68, 90, 0.08); 
-  --color: #eb445a; 
-  --border-color: rgba(235, 68, 90, 0.15);
-
-  &:hover {
-    --background: #eb445a;
-    --border-color: #eb445a;
-    --color: #ffffff;
-    transform: translateY(-2px) translateZ(0);
-  }
-}
-
-/* Affianca i bottoni sugli schermi più grandi */
-@media (min-width: 700px) {
-  .actions {
-    flex-direction: row; 
-  }
-  .btn-glass-accept, 
-  .btn-glass-reject {
-    flex: 1; 
-  }
-}
 </file>
 
 <file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.spec.ts">
@@ -2909,272 +2563,6 @@ export const environment = {
 // https://ionicframework.com/docs/theming/
 </file>
 
-<file path="Frontend/src/global.scss">
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
-
-/* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
-
-/* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
-
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
-
-/*
-   Personalizzazione Scrollbar
-*/
-/* Nasconde la scrollbar della finestra (che va sopra l'header) */
-::-webkit-scrollbar {
-  display: none; 
-}
-
-/* Mantengo la scrollbar interna al contenuto */
-ion-content::part(scroll)::-webkit-scrollbar {
-  width: 10px;
-  display: block; /* La riattivo qui */
-}
-
-ion-content::part(scroll)::-webkit-scrollbar-track {
-  background: #0b0f14;
-}
-
-ion-content::part(scroll)::-webkit-scrollbar-thumb {
-  background: #2a3441;
-  border-radius: 8px;
-}
-
-ion-content::part(scroll)::-webkit-scrollbar-thumb:hover {
-  background: #ffc107;
-}
-
-/*
-   Risoluzione linea bianca tra Header e Content
-*/
-
-ion-header, ion-toolbar {
-  --border-width: 0px !important;
-  --border-style: none !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.status-popover-theme {
-  --background: #151b23; 
-  
-  &::part(content) {
-    background: #151b23;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-  }
-
-  ion-select-popover,
-  ion-list,
-  ion-item {
-    --background: #151b23 !important;
-    --color: #ffffff !important;
-    background: #151b23 !important;
-    color: white !important;
-  }
-
-  ion-item {
-    --border-style: none;
-    font-size: 0.9rem;
-    font-weight: 600;
-    --background-hover: rgba(245, 166, 35, 0.08) !important;
-    --background-focused: rgba(245, 166, 35, 0.12) !important;
-    --background-activated: rgba(245, 166, 35, 0.15) !important;
-  }
-
-  ion-radio {
-    --color: #6c7a89;
-    --color-checked: #f5a623;
-  }
-}
-
-.custom-dark-alert {
-  --backdrop-opacity: 0.7;
-
-  /* Riquadro principale dell'Alert: FORZIAMO LO SFONDO SCURO QUI */
-  .alert-wrapper {
-    background: #151b23 !important; /* <--- QUESTA È LA RIGA CHE CAMBIA TUTTO */
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 24px !important;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important;
-  }
-
-  /* Titolo */
-  .alert-title {
-    color: #ffffff !important;
-    font-weight: 800 !important;
-    font-size: 1.25rem !important;
-    margin-top: 8px !important;
-    text-align: center !important;
-    width: 100% !important;
-  }
-
-  /* Testo descrittivo */
-  .alert-message {
-    color: #b7c0cc !important;
-    font-size: 0.95rem !important;
-  }
-/* Stile personalizzato per la casella di input */
-  .alert-input {
-    background: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
-    border-radius: 12px !important;
-    margin-top: 14px !important;
-    padding: 14px !important;
-    transition: border-color 0.2s ease !important;
-
-    /* KILLER DELLE FRECCETTE per Chrome, Safari, Edge, Opera */
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none !important;
-      margin: 0 !important;
-    }
-
-    /* KILLER DELLE FRECCETTE per Firefox */
-    &[type=number] {
-  appearance: textfield !important;
-  -moz-appearance: textfield !important;
-}//-moz-appearance vale per Firefox,appearance è la proprietà standard riconosciuta dagli altri browser
-    /* Quando ci clicchi sopra, il bordo diventa ambra */
-    &:focus {
-      border-color: #f5a623 !important;
-      box-shadow: none !important; 
-    }
-  }
-
-  .alert-radio-group {
-    border: none !important; /* <--- Rimozione delle linee bianche! */
-  }
-
-  .alert-radio-button {
-    /* Testo delle opzioni (Bassa, Media, Alta) */
-    .alert-radio-label {
-      color: #b7c0cc !important;
-      font-weight: 500 !important;
-    }
-
-    /* Cerchietto di selezione */
-    .alert-radio-icon {
-      border-color: #6c7a89 !important; /* Cerchio grigio inattivo */
-    }
-    
-    .alert-radio-inner {
-      background-color: #f5a623 !important; /* Pallino interno ambra */
-    }
-
-    /* Stato selezionato (Checked) */
-    &[aria-checked="true"] {
-      .alert-radio-label {
-        color: #ffffff !important;
-        font-weight: 700 !important;
-      }
-      .alert-radio-icon {
-        border-color: #f5a623 !important; /* Bordo cerchio ambra */
-      }
-    }
-  }
-
-/* Bottoni - Colori Infallibili */
-  .alert-button-group {
-    
-    /* Tasto ANNULLA (usiamo sia la nostra classe che il ruolo di Ionic per sicurezza) */
-    .alert-button.dark-alert-btn-cancel,
-    .alert-button.alert-button-role-cancel {
-      color: #b7c0cc !important;
-      
-      /* Forza il colore anche sullo span di testo interno */
-      .alert-button-inner {
-        color: #b7c0cc !important;
-        font-weight: 600 !important;
-      }
-    }
-
-    /* Tasto CONFERMA */
-    /* Tasto CONFERMA (Ambra) - Copre sia i nostri alert che quelli di ion-select */
-    .alert-button.dark-alert-btn-confirm,
-    .alert-button:not(.alert-button-role-cancel):not(.dark-alert-btn-danger) {
-      color: #f5a623 !important;
-      
-      .alert-button-inner {
-        color: #f5a623 !important;
-        font-weight: 800 !important;
-      }
-    }
-  }
-
-}
-
-/* Bottoni - Colori Infallibili */
-  .alert-button-group {
-    
-    /* Tasto ANNULLA (Grigio) */
-    .alert-button.dark-alert-btn-cancel,
-    .alert-button.alert-button-role-cancel {
-      color: #b7c0cc !important;
-      
-      .alert-button-inner {
-        color: #b7c0cc !important;
-        font-weight: 600 !important;
-      }
-    }
-
-    /* Tasto CONFERMA (Ambra) */
-    .alert-button.dark-alert-btn-confirm {
-      color: #f5a623 !important;
-      
-      .alert-button-inner {
-        color: #f5a623 !important;
-        font-weight: 800 !important;
-      }
-    }
-    .alert-button.dark-alert-btn-danger {
-      color: #eb445a !important;
-      
-      .alert-button-inner {
-        color: #eb445a !important;
-        font-weight: 800 !important;
-      }
-    }
-  }
-  input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear {
-  display: none;
-}
-</file>
-
 <file path="Frontend/src/index.html">
 <!DOCTYPE html>
 <html lang="en">
@@ -4444,162 +3832,493 @@ ion-chip {
 }
 </file>
 
-<file path="Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-admin">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-      <ion-title>
-        Dashboard Admin
-      </ion-title>
-  </ion-toolbar>
-</ion-header>
+<file path="Frontend/src/app/pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page.scss">
+ion-content {
+  --background: #0b0f14;
+}
 
-<ion-content>
-  <section class="dashboard-header">
-    <h1>Gestione Dipendenti</h1>
-    <p>Aggiungi, modifica o rimuovi gli account del personale operativo.</p>
-    
-    <div class="admin-actions">
-      <ion-button (click)="apriModaleCrea()">
-        <ion-icon slot="start" name="add-outline"></ion-icon>
-        Nuovo Dipendente
-      </ion-button>
-    </div>
-  </section>
+.detail-header {
+  padding: 42px 22px 20px;
+  text-align: center;
+  color: white;
+}
 
-  <ion-grid class="details-row">
-    <ion-row>
-      @for (dipendente of dipendenti; track dipendente.id) {
-        <ion-col size="12" size-md="6" size-lg="4">
-          <ion-card class="detail-section-card">
-            <ion-card-header>
-              <div class="item-header">
-                <ion-card-title>
-                  <ion-icon name="person-outline" style="margin-right: 8px; color: #f5a623;"></ion-icon>
-                  {{ dipendente.nome }} {{ dipendente.cognome }}
-                </ion-card-title>
-                <ion-chip [color]="dipendente.stato === 'Attivo' ? 'success' : 'medium'">
-                  {{ dipendente.stato }}
-                </ion-chip>
-              </div>
-            </ion-card-header>
-            
-            <ion-card-content>
-              <div class="info-riga">
-                <p class="dipendente-email">{{ dipendente.email }}</p>
-                <p class="dipendente-telefono">
-                  <ion-icon name="call-outline"></ion-icon>
-                  {{ dipendente.telefono }}
-                </p>
-              </div>
-              
-              <div class="item-actions">
-                <ion-button fill="clear" color="light" size="small" (click)="apriModaleModifica(dipendente)">
-                  <ion-icon slot="start" name="create-outline"></ion-icon>
-                  Modifica
-                </ion-button>
-                <ion-button fill="clear" color="danger" size="small" (click)="confermaEliminazioneDipendente(dipendente)">
-                  <ion-icon slot="start" name="trash-outline"></ion-icon>
-                  Elimina
-                </ion-button>
-              </div>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      } @empty {
-        <ion-col size="12">
-          <div class="empty-section" style="text-align: center;">Nessun dipendente registrato nel sistema.</div>
-        </ion-col>
-      }
-    </ion-row>
-  </ion-grid>
+.detail-header h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  margin: 0;
+}
 
-  <ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
-    <ng-template>
-      <ion-header class="ion-no-border">
-        <ion-toolbar color="dark">
-          <ion-title>{{ modalMode === 'crea' ? 'Nuovo Account' : 'Modifica Account' }}</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="chiudiModale()">
-              <ion-icon name="close-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+.detail-header p {
+  max-width: 760px;
+  margin: 14px auto 0;
+  color: #b7c0cc;
+  line-height: 1.6;
+}
 
-      <ion-content class="modal-content-dark">
-        <div class="modal-form-container">
-          
-          <div class="form-field">
-            <label>Nome</label>
-            <div class="input-shell">
-              <ion-input
-                [(ngModel)]="formDipendente.nome"
-                placeholder="Inserisci il nome">
-              </ion-input>
-            </div>
-          </div>
+.detail-card {
+  max-width: 900px;
+  margin: 22px auto;
+  --background: #151b23;
 
-          <div class="form-field">
-            <label>Cognome</label>
-            <div class="input-shell">
-              <ion-input
-                [(ngModel)]="formDipendente.cognome"
-                placeholder="Inserisci il cognome">
-              </ion-input>
-            </div>
-          </div>
+  border-radius: 22px;
 
-          <div class="form-field">
-            <label>Email</label>
-            <div class="input-shell">
-              <ion-input
-                type="email"
-                [(ngModel)]="formDipendente.email"
-                placeholder="email@metallab.it">
-              </ion-input>
-            </div>
-          </div>
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
-          <div class="form-field">
-            <label>Telefono</label>
-            <div class="input-shell">
-              <ion-input
-                type="tel"
-                [(ngModel)]="formDipendente.telefono"
-                placeholder="Es. 3331234567">
-              </ion-input>
-            </div>
-          </div>
+  overflow: hidden;
+}
 
-          <div class="form-field">
-            <label>
-              {{ modalMode === 'crea' ? 'Password' : 'Nuova Password (opzionale)' }}
-            </label>
-            <div class="input-shell">
-              <ion-input
-                type="password"
-                [(ngModel)]="formDipendente.password"
-                [placeholder]="modalMode === 'crea' ? 'Imposta una password' : 'Lascia vuoto per non cambiarla'">
-                <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-              </ion-input>
-            </div>
-          </div>
-        
-          <ion-button expand="block" class="modal-save-btn" [disabled]="!formDipendenteValido" (click)="salvaDipendente()">
-            <ion-icon slot="start" name="save-outline"></ion-icon>
-            {{ modalMode === 'crea' ? 'Crea Account' : 'Salva Modifiche' }}
-          </ion-button>
-        </div>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
+ion-card-header {
+  padding: 24px 24px 8px;
+}
 
-</ion-content>
+ion-card-content {
+  padding: 8px 24px 24px;
+}
+
+ion-card-title {
+  color: #f5a623;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+
+  align-items: center;
+
+  padding: 18px 0;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row span {
+  color: #b7c0cc;
+  font-weight: 700;
+}
+
+.info-row strong {
+  color: white;
+  text-align: right;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+/* RIMOSSI I COLORI FISSI */
+.info-row ion-chip {
+  width: fit-content;
+  justify-self: end;
+  margin: 0;
+  font-weight: 800;
+  --border-radius: 30px;
+  border-radius: 30px;
+}
+
+.state-item {
+  --background: transparent;
+  --color: white;
+  --border-color: rgba(255, 255, 255, 0.12);
+
+  margin-bottom: 18px;
+}
+
+.state-item ion-label {
+  color: #f5a623 !important;
+  font-weight: 800;
+}
+
+.state-item ion-select {
+  --color: white;
+  --placeholder-color: #8f9aaa;
+}
+
+/* ==========================================================================
+   Bottoni Gestione Dipendente - Stile Vetro
+   ========================================================================== */
+.btn-glass-update {
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Colori Ambra Translucidi */
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 700px) {
+
+  .detail-card {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: start;
+  }
+
+  .info-row strong {
+    text-align: left;
+  }
+
+  .info-row ion-chip {
+    justify-self: start;
+  }
+
+}
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.scss">
+ion-content {
+  --background: #0b0f14;
+}
+
+.detail-header {
+  padding: 42px 22px 20px;
+  text-align: center;
+  color: white;
+}
+
+.detail-header h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.detail-header p {
+  color: #b7c0cc;
+  margin-top: 12px;
+}
+
+.detail-card {
+  max-width: 850px;
+  margin: 20px auto;
+  --background: #151b23;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+ion-card-title {
+  color: #f5a623;
+  font-weight: 800;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row span {
+  color: #b7c0cc;
+}
+
+.info-row strong {
+  color: white;
+  text-align: right;
+}
+
+.description-box {
+  margin-bottom: 18px;
+}
+
+.description-box h3 {
+  color: white;
+  margin-bottom: 8px;
+}
+
+.description-box p {
+  color: #b7c0cc;
+  line-height: 1.6;
+}
+
+/* RIMOSSI I COLORI FISSI PER FAR FUNZIONARE IL BINDING [color] */
+ion-chip {
+  font-weight: 700;
+}
+
+.price-box {
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(245,166,35,0.12);
+  color: #f5a623;
+  font-weight: 700;
+  text-align: center;
+}
+
+.price-box.empty {
+  color: #b7c0cc;
+}
+
+/* ==========================================================================
+   Bottoni Gestione Admin - Premium Glass Style
+   ========================================================================== */
+.actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Base comune per i bottoni Apple-style */
+.btn-glass-propose, 
+.btn-glass-reject {
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  /* Effetto vetro sfocato */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Bottone PROPOSTA (Amber/Consulting style) */
+.btn-glass-propose {
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px);
+  }
+}
+
+/* Bottone RIFIUTO (Red/Warning style) */
+.btn-glass-reject {
+  --background: rgba(235, 68, 90, 0.08);
+  --color: #eb445a;
+  --border-color: rgba(235, 68, 90, 0.15);
+
+  &:hover {
+    --background: #eb445a;
+    --border-color: #eb445a;
+    --color: #ffffff;
+    transform: translateY(-2px);
+  }
+}
+
+/* Layout responsivo per Desktop/Tablet */
+@media (min-width: 700px) {
+  .actions {
+    flex-direction: row;
+  }
+  .btn-glass-propose, 
+  .btn-glass-reject {
+    flex: 1;
+  }
+}
+
+/* Fix per ion-chip nello storico admin */
+.status-completed {
+  background: rgba(45, 211, 111, 0.15) !important;
+  color: #2dd36f !important;
+  border: 1px solid rgba(45, 211, 111, 0.2);
+}
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.scss">
+ion-content {
+  --background: #0b0f14;
+}
+
+.detail-header {
+  padding: 42px 22px 20px;
+  text-align: center;
+  color: white;
+}
+
+.detail-header h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.detail-header p {
+  color: #b7c0cc;
+  margin-top: 12px;
+}
+
+.detail-card {
+  max-width: 850px;
+  margin: 20px auto;
+  --background: #151b23;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+ion-card-title {
+  color: #f5a623;
+  font-weight: 800;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row span {
+  color: #b7c0cc;
+}
+
+.info-row strong {
+  color: white;
+  text-align: right;
+}
+
+.description-box {
+  margin-bottom: 18px;
+}
+
+.description-box h3 {
+  color: white;
+  margin-bottom: 8px;
+}
+
+.description-box p,
+.response-text {
+  color: #b7c0cc;
+  line-height: 1.6;
+}
+
+/* RIMOSSI I COLORI FISSI PER FAR FUNZIONARE IL BINDING [color] */
+ion-chip {
+  font-weight: 700;
+}
+
+.price-box {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(245,166,35,0.12);
+  color: #f5a623;
+  font-weight: 700;
+  text-align: center;
+}
+
+.price-box.empty {
+  color: #b7c0cc;
+}
+
+.actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Stile base (struttura a pillola ed effetto blur) */
+.btn-glass-accept, 
+.btn-glass-reject {
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.2s ease;
+}
+
+/* Bottone ACCETTA (Giallo Ambra) */
+.btn-glass-accept {
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px) translateZ(0);
+  }
+}
+
+/* Bottone RIFIUTA (Rosso Trasparente) */
+.btn-glass-reject {
+  --background: rgba(235, 68, 90, 0.08); 
+  --color: #eb445a; 
+  --border-color: rgba(235, 68, 90, 0.15);
+
+  &:hover {
+    --background: #eb445a;
+    --border-color: #eb445a;
+    --color: #ffffff;
+    transform: translateY(-2px) translateZ(0);
+  }
+}
+
+/* Affianca i bottoni sugli schermi più grandi */
+@media (min-width: 700px) {
+  .actions {
+    flex-direction: row; 
+  }
+  .btn-glass-accept, 
+  .btn-glass-reject {
+    flex: 1; 
+  }
+}
 </file>
 
 <file path="Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.scss">
@@ -5569,7 +5288,15 @@ export class DipendentiService {
 <file path="Frontend/src/app/app.routes.ts">
 import { Routes } from '@angular/router';
 
+// 1. IMPORTIAMO I LUCCHETTI (GUARDS)
+import { adminGuard } from './guards/admin-guard';
+import { clienteGuard } from './guards/cliente-guard';
+import { dipendenteGuard } from './guards/dipendente-guard';
+
 export const routes: Routes = [
+  // ==========================================
+  // ROTTE PUBBLICHE (Nessun lucchetto)
+  // ==========================================
   {
     path: '',
     redirectTo: 'home',
@@ -5577,92 +5304,378 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    loadComponent: () =>
-      import('./pages/home/home.page').then(m => m.HomePage)
+    loadComponent: () => import('./pages/home/home.page').then(m => m.HomePage)
   },
   {
     path: 'login',
-    loadComponent: () =>
-      import('./pages/login/login.page').then(m => m.LoginPage)
+    loadComponent: () => import('./pages/login/login.page').then(m => m.LoginPage)
   },
   {
     path: 'register',
-    loadComponent: () =>
-      import('./pages/register/register.page').then(m => m.RegisterPage)
+    loadComponent: () => import('./pages/register/register.page').then(m => m.RegisterPage)
   },
   {
     path: 'catalogo',
-    loadComponent: () =>
-      import('./pages/catalogo/catalogo.page').then(m => m.CatalogoPage)
+    loadComponent: () => import('./pages/catalogo/catalogo.page').then(m => m.CatalogoPage)
+  },
+
+  // ==========================================
+  // AREA CLIENTE (Lucchetto: clienteGuard)
+  // ==========================================
+  {
+    path: 'dashboard-cliente',
+    loadComponent: () => import('./pages/dashboard-cliente/dashboard-cliente.page').then(m => m.DashboardClientePage),
+    canActivate: [clienteGuard]
   },
   {
     path: 'preventivi',
-    loadComponent: () =>
-      import('./pages/preventivi/preventivi.page').then(m => m.PreventiviPage)
-  },
-  {
-    path: 'dashboard-cliente',
-    loadComponent: () =>
-      import('./pages/dashboard-cliente/dashboard-cliente.page')
-    .then(m => m.DashboardClientePage)
-  },
-  {
-    path: 'dashboard-dipendente',
-    loadComponent: () =>
-      import('./pages/dashboard-dipendente/dashboard-dipendente.page')
-    .then(m => m.DashboardDipendentePage)
-  },
-  {
-    path: 'dashboard-admin',
-    loadComponent: () =>
-      import('./pages/dashboard-admin/dashboard-admin.page')
-    .then(m => m.DashboardAdminPage)
+    loadComponent: () => import('./pages/preventivi/preventivi.page').then(m => m.PreventiviPage),
+    canActivate: [clienteGuard]
   },
   {
     path: 'interventi',
-    loadComponent: () => import('./pages/interventi/interventi.page')
-    .then( m => m.InterventiPage)
-  },
-  {
-    path: 'dettaglio-preventivo-admin/:id',
-    loadComponent: () =>
-      import('./pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page')
-        .then(m => m.DettaglioPreventivoAdminPage)
-  },
-  {
-    path: 'gestione-dipendenti',
-    loadComponent: () => import('./pages/gestione-dipendenti/gestione-dipendenti.page')
-    .then( m => m.GestioneDipendentiPage)
+    loadComponent: () => import('./pages/interventi/interventi.page').then( m => m.InterventiPage),
+    canActivate: [clienteGuard]
   },
   {
     path: 'dettaglio-preventivo-cliente/:id',
-    loadComponent: () =>
-      import('./pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page')
-        .then(m => m.DettaglioPreventivoClientePage)
+    loadComponent: () => import('./pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page').then(m => m.DettaglioPreventivoClientePage),
+    canActivate: [clienteGuard]
   },
   {
     path: 'dettaglio-intervento-cliente/:id',
-    loadComponent: () =>
-      import('./pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page')
-        .then(m => m.DettaglioInterventoClientePage)
+    loadComponent: () => import('./pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page').then(m => m.DettaglioInterventoClientePage),
+    canActivate: [clienteGuard]
+  },
+
+  // ==========================================
+  // AREA ADMIN (Lucchetto: adminGuard)
+  // ==========================================
+  {
+    path: 'dashboard-admin',
+    loadComponent: () => import('./pages/dashboard-admin/dashboard-admin.page').then(m => m.DashboardAdminPage),
+    canActivate: [adminGuard]
+  },
+  {
+    path: 'gestione-dipendenti',
+    loadComponent: () => import('./pages/gestione-dipendenti/gestione-dipendenti.page').then( m => m.GestioneDipendentiPage),
+    canActivate: [adminGuard]
+  },
+  {
+    path: 'dettaglio-preventivo-admin/:id',
+    loadComponent: () => import('./pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page').then(m => m.DettaglioPreventivoAdminPage),
+    canActivate: [adminGuard]
   },
   {
     path: 'dettaglio-intervento-admin/:id',
-    loadComponent: () =>
-      import('./pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page')
-        .then(m => m.DettaglioInterventoAdminPage)
+    loadComponent: () => import('./pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page').then(m => m.DettaglioInterventoAdminPage),
+    canActivate: [adminGuard]
+  },
+
+  // ==========================================
+  // AREA DIPENDENTE (Lucchetto: dipendenteGuard)
+  // ==========================================
+  {
+    path: 'dashboard-dipendente',
+    loadComponent: () => import('./pages/dashboard-dipendente/dashboard-dipendente.page').then(m => m.DashboardDipendentePage),
+    canActivate: [dipendenteGuard]
   },
   {
     path: 'dettaglio-intervento-dipendente/:id',
-    loadComponent: () =>
-      import('./pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page')
-        .then(m => m.DettaglioInterventoDipendentePage)
+    loadComponent: () => import('./pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page').then(m => m.DettaglioInterventoDipendentePage),
+    canActivate: [dipendenteGuard]
   },
+
+  // ==========================================
+  // FALLBACK (Pagina non trovata)
+  // ==========================================
   {
     path: '**',
     redirectTo: 'home'
   }
 ];
+</file>
+
+<file path="Frontend/src/global.scss">
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/* Ionic Dark Mode */
+@import "@ionic/angular/css/palettes/dark.system.css";
+
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+ion-content::part(scroll)::-webkit-scrollbar {
+  width: 10px;
+  display: block;
+}
+
+ion-content::part(scroll)::-webkit-scrollbar-track {
+  background: #0b0f14;
+}
+
+ion-content::part(scroll)::-webkit-scrollbar-thumb {
+  background: #2a3441;
+  border-radius: 8px;
+}
+
+ion-content::part(scroll)::-webkit-scrollbar-thumb:hover {
+  background: #ffc107;
+}
+
+
+/* ============================================================
+   HEADER SENZA LINEA BIANCA
+   ============================================================ */
+
+ion-header,
+ion-toolbar {
+  --border-width: 0px !important;
+  --border-style: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+
+/* ============================================================
+   POPOVER SELECT STATO
+   ============================================================ */
+
+.status-popover-theme {
+  --background: #151b23;
+
+  &::part(content) {
+    background: #151b23;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  }
+
+  ion-select-popover,
+  ion-list,
+  ion-item {
+    --background: #151b23 !important;
+    --color: #ffffff !important;
+    background: #151b23 !important;
+    color: #ffffff !important;
+  }
+
+  ion-item {
+    --border-style: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    --background-hover: rgba(245, 166, 35, 0.08) !important;
+    --background-focused: rgba(245, 166, 35, 0.12) !important;
+    --background-activated: rgba(245, 166, 35, 0.15) !important;
+  }
+
+  ion-radio {
+    --color: #6c7a89;
+    --color-checked: #f5a623;
+  }
+}
+
+
+/* ============================================================
+   ALERT DARK CUSTOM
+   Usato da:
+   cssClass: 'custom-dark-alert'
+   ============================================================ */
+
+.custom-dark-alert {
+  --backdrop-opacity: 0.7;
+
+  .alert-wrapper {
+    background: #151b23 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important;
+  }
+
+  .alert-title {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 1.25rem !important;
+    margin-top: 8px !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .alert-message {
+    color: #b7c0cc !important;
+    font-size: 0.95rem !important;
+  }
+
+
+  /* INPUT ALERT */
+
+  .alert-input {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border-radius: 12px !important;
+    margin-top: 14px !important;
+    padding: 14px !important;
+    transition: border-color 0.2s ease !important;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0 !important;
+    }
+
+    &[type="number"] {
+      appearance: textfield !important;
+      -moz-appearance: textfield !important;
+    }
+
+    &:focus {
+      border-color: #f5a623 !important;
+      box-shadow: none !important;
+    }
+  }
+
+
+  /* RADIO */
+
+  .alert-radio-group {
+    border: none !important;
+  }
+
+  .alert-radio-button {
+    .alert-radio-label {
+      color: #ffffff !important;
+      font-weight: 700 !important;
+    }
+
+    .alert-radio-icon {
+      border-color: #f5a623 !important;
+    }
+
+    .alert-radio-inner {
+      background-color: #f5a623 !important;
+    }
+
+    &[aria-checked="true"] {
+      .alert-radio-label {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+      }
+
+      .alert-radio-icon {
+        border-color: #f5a623 !important;
+      }
+    }
+  }
+
+
+  /* CHECKBOX - ASSEGNAZIONE DIPENDENTI */
+
+  .alert-checkbox-group {
+    border: none !important;
+  }
+
+  .alert-checkbox-button {
+    .alert-checkbox-label {
+      color: #ffffff !important;
+      font-weight: 700 !important;
+    }
+
+    .alert-checkbox-icon {
+      border-color: #f5a623 !important;
+      background: transparent !important;
+    }
+
+    .alert-checkbox-inner {
+      border-color: #f5a623 !important;
+    }
+
+    &[aria-checked="true"] {
+      .alert-checkbox-label {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+      }
+
+      .alert-checkbox-icon {
+        background-color: #f5a623 !important;
+        border-color: #f5a623 !important;
+      }
+
+      .alert-checkbox-inner {
+        border-color: #0b0f14 !important;
+      }
+    }
+  }
+
+
+  /* BOTTONI ALERT */
+
+  .alert-button-group {
+    .alert-button.dark-alert-btn-cancel,
+    .alert-button.alert-button-role-cancel {
+      color: #b7c0cc !important;
+
+      .alert-button-inner {
+        color: #b7c0cc !important;
+        font-weight: 600 !important;
+      }
+    }
+
+    .alert-button.dark-alert-btn-confirm,
+    .alert-button:not(.alert-button-role-cancel):not(.dark-alert-btn-danger) {
+      color: #f5a623 !important;
+
+      .alert-button-inner {
+        color: #f5a623 !important;
+        font-weight: 800 !important;
+      }
+    }
+
+    .alert-button.dark-alert-btn-danger {
+      color: #eb445a !important;
+
+      .alert-button-inner {
+        color: #eb445a !important;
+        font-weight: 800 !important;
+      }
+    }
+  }
+}
+
+
+/* ============================================================
+   NASCONDE OCCHIO PASSWORD EDGE/IE
+   ============================================================ */
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
 </file>
 
 <file path="Frontend/.gitignore">
@@ -6543,349 +6556,6 @@ ion-modal.dark-calendar-modal {
 }
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.scss">
-ion-content {
-  --background: #0b0f14;
-}
-
-.detail-header {
-  padding: 42px 22px 20px;
-  text-align: center;
-  color: white;
-}
-
-.detail-header h1 {
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 900;
-  margin: 0;
-}
-
-.detail-header p {
-  max-width: 760px;
-  margin: 14px auto 0;
-  color: #b7c0cc;
-  line-height: 1.6;
-}
-
-.detail-card {
-  max-width: 900px;
-  margin: 22px auto;
-  --background: #151b23;
-
-  border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  overflow: hidden;
-}
-
-ion-card-header {
-  padding: 24px 24px 8px;
-}
-
-ion-card-content {
-  padding: 8px 24px 24px;
-}
-
-ion-card-title {
-  color: #f5a623;
-  font-weight: 800;
-  font-size: 1.2rem;
-}
-
-.info-row {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 24px;
-
-  align-items: center;
-
-  padding: 18px 0;
-
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.info-row:last-child {
-  border-bottom: none;
-}
-
-.info-row span {
-  color: #b7c0cc;
-  font-weight: 700;
-}
-
-.info-row strong {
-  color: white;
-  text-align: right;
-  font-weight: 800;
-  line-height: 1.5;
-}
-
-.info-row ion-chip {
-  width: fit-content;
-  justify-self: end;
-  margin: 0;
-
-  background: rgba(245, 166, 35, 0.12);
-  color: #f5a623;
-  font-weight: 800;
-
-  --border-radius: 30px;
-  border-radius: 30px;
-}
-
-.proposal-box {
-  padding: 18px;
-  border-radius: 16px;
-
-  background: rgba(245, 166, 35, 0.12);
-
-  color: #f5a623;
-  font-weight: 800;
-  text-align: center;
-
-  border: 1px solid rgba(245, 166, 35, 0.18);
-}
-
-.proposal-box strong {
-  color: white;
-}
-
-.proposal-box.empty {
-  color: #b7c0cc;
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.actions {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.btn-glass-accept,
-.btn-glass-propose,
-.btn-glass-reject {
-  margin: 0;
-  height: 52px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
-
-  --border-radius: 16px;
-  --border-width: 1px;
-  --border-style: solid;
-  --box-shadow: none;
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 16px;
-  overflow: hidden;
-  transform: translateZ(0);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-glass-accept,
-.btn-glass-propose {
-  --background: rgba(245, 166, 35, 0.12);
-  --color: #f5a623;
-  --border-color: rgba(245, 166, 35, 0.2);
-}
-
-.btn-glass-accept:hover,
-.btn-glass-propose:hover {
-  --background: #f5a623;
-  --border-color: #f5a623;
-  --color: #0b0f14;
-  transform: translateY(-2px);
-}
-
-.btn-glass-reject {
-  --background: rgba(235, 68, 90, 0.12);
-  --color: #eb445a;
-  --border-color: rgba(235, 68, 90, 0.2);
-}
-
-.btn-glass-reject:hover {
-  --background: #eb445a;
-  --border-color: #eb445a;
-  --color: #ffffff;
-  transform: translateY(-2px);
-}
-
-/* CAMPO CALENDARIO UGUALE A RICHIEDI INTERVENTO */
-
-.calendar-trigger-item {
-  --background: transparent;
-  --color: white;
-  --border-color: rgba(255, 255, 255, 0.12);
-  margin-bottom: 16px;
-}
-
-.calendar-trigger-item ion-label {
-  color: #f5a623 !important;
-  font-weight: 700;
-}
-
-.calendar-trigger-item ion-input,
-.calendar-trigger-item ion-textarea {
-  --color: white;
-  --placeholder-color: #8f9aaa;
-}
-
-/* CALENDARIO UGUALE A RICHIEDI INTERVENTO */
-
-ion-modal.dark-calendar-modal {
-  --width: max-content;
-  --height: max-content;
-  --background: transparent;
-  --box-shadow: none;
-  --border-radius: 24px;
-
-  align-items: center;
-  justify-content: center;
-
-  ion-datetime.custom-amber-calendar {
-    --background: #151b23;
-    border-radius: 24px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-
-    color: #ffffff;
-    --ion-text-color: #ffffff;
-    --ion-text-color-rgb: 255, 255, 255;
-
-    --ion-color-primary: #f5a623;
-    --ion-color-primary-rgb: 245, 166, 35;
-    --ion-color-primary-contrast: #0b0f14;
-    --ion-color-primary-contrast-rgb: 11, 15, 20;
-
-    &::part(month-year-button) {
-      pointer-events: none;
-      color: transparent;
-      text-shadow: 0 0 0 #f5a623;
-    }
-
-    &::part(prev-month-button),
-    &::part(next-month-button) {
-      color: #f5a623;
-      opacity: 1 !important;
-    }
-
-    &::part(prev-month-button):hover,
-    &::part(next-month-button):hover,
-    &::part(prev-month-button):active,
-    &::part(next-month-button):active {
-      background: #151b23 !important;
-      background-color: #151b23 !important;
-      opacity: 1 !important;
-    }
-  }
-}
-
-@media (max-width: 700px) {
-  .detail-card {
-    margin-left: 16px;
-    margin-right: 16px;
-  }
-
-  .info-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    align-items: start;
-  }
-
-  .info-row strong {
-    text-align: left;
-  }
-
-  .info-row ion-chip {
-    justify-self: start;
-  }
-}
-</file>
-
-<file path="Frontend/src/app/pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-dipendente">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Dashboard Dipendente</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  <section class="detail-header">
-    <h1>Intervento #{{ interventoId }}</h1>
-    <p>Consulta i dettagli dell’intervento assegnato e aggiorna lo stato operativo.</p>
-  </section>
-
-  @if (intervento) {
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>Informazioni Cliente</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="info-row">
-          <span>Cliente</span>
-          <strong>{{ intervento.cliente_nome }} {{ intervento.cliente_cognome }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Email</span>
-          <strong>{{ intervento.cliente_email }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Telefono</span>
-          <strong>{{ intervento.cliente_telefono }}</strong>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>Dati Intervento</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="info-row">
-          <span>Descrizione</span>
-          <strong>{{ intervento.descrizione }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Luogo</span>
-          <strong>{{ intervento.luogo }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Priorità</span>
-          <strong>{{ intervento.priorita }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Data intervento</span>
-          <strong>{{ intervento.data_accettata || intervento.data_proposta_admin || 'Da programmare' }}</strong>
-        </div>
-        <div class="info-row">
-          <span>Stato lavorazione</span>
-          <ion-chip>{{ intervento.stato_lavorazione }}</ion-chip>
-        </div>
-        <div class="actions">
-  <ion-button
-    expand="block"
-    class="btn-glass-update"
-    (click)="modificaStatoIntervento()">
-    Modifica stato intervento
-  </ion-button>
-</div>
-      </ion-card-content>
-    </ion-card>
-
-  } @else {
-    <div class="ion-padding ion-text-center">
-      <p>Caricamento dati in corso...</p>
-    </div>
-  }
-</ion-content>
-</file>
-
 <file path="Frontend/src/app/pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page.ts">
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -7004,171 +6674,6 @@ export class DettaglioInterventoDipendentePage {
 }
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-admin">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-
-    <ion-title>
-     Dashboard Admin
-    </ion-title>
-
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  
-  @if (preventivo) {
-    <section class="detail-header">
-      <h1>
-        Preventivo #{{ preventivoId }}
-      </h1>
-      <p>
-        Riepilogo della richiesta inviata dal cliente.
-      </p>
-    </section>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Informazioni Cliente
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <div class="info-row">
-          <span>Cliente</span>
-          <strong>{{ preventivo.cliente_nome }} {{ preventivo.cliente_cognome }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Email</span>
-          <strong>{{ preventivo.cliente_email }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Stato Admin</span>
-          <ion-chip>
-            {{ preventivo.stato_admin }}
-          </ion-chip>
-        </div>
-        
-        <div class="info-row">
-          <span>Risposta Cliente</span>
-          <ion-chip>
-            {{ preventivo.stato_risposta_cliente }}
-          </ion-chip>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Dati Tecnici Richiesta
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <div class="description-box">
-          <h3>Descrizione</h3>
-          <p>{{ preventivo.descrizione }}</p>
-        </div>
-
-        <div class="info-row">
-          <span>Servizio richiesto</span>
-          <strong>{{ preventivo.servizio }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Materiale</span>
-          <strong>{{ preventivo.materiale }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Dimensioni</span>
-          <strong>{{ preventivo.dimensioni }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Finitura</span>
-          <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
-        </div>
-
-       <div class="info-row">
-          <span>Allegati tecnici</span>
-          @if (preventivo.allegatiArray && preventivo.allegatiArray.length > 0) {
-            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
-              @for (file of preventivo.allegatiArray; track $index) {
-                <ion-button fill="outline" color="warning" size="small" [href]="'http://localhost:3000' + file" target="_blank" style="margin: 0; --border-radius: 12px; height: 32px;">
-                  <ion-icon slot="start" name="document-attach-outline"></ion-icon>
-                  Allegato {{ $index + 1 }}
-                </ion-button>
-              }
-            </div>
-          } @else {
-            <strong>Nessun allegato</strong>
-          }
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Gestione Admin
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        @if (preventivo.prezzo_proposto) {
-          <div class="price-box">
-            Prezzo proposto:
-            <strong>€ {{ preventivo.prezzo_proposto }}</strong>
-          </div>
-        } @else {
-          <div class="price-box empty">
-            Nessun prezzo ancora proposto.
-          </div>
-        }
-
-        @if (preventivo.stato_risposta_cliente === 'In attesa') {
-          <div class="actions">
-            <ion-button 
-              expand="block" 
-              class="btn-glass-propose" 
-              (click)="proponiPrezzo()">
-              Proponi prezzo
-            </ion-button>
-
-            <ion-button 
-              expand="block" 
-              class="btn-glass-reject" 
-              (click)="rifiutaPreventivo()">
-              Rifiuta preventivo
-            </ion-button>
-          </div>
-        } @else {
-          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center; margin-top: 15px;">
-            Questo preventivo è chiuso. Non sono possibili altre interazioni.
-          </div>
-        }
-      </ion-card-content>
-    </ion-card>
-  } @else {
-    <div class="ion-padding ion-text-center">
-      <p>Caricamento preventivo in corso...</p>
-    </div>
-  }
-
-</ion-content>
-</file>
-
 <file path="Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.ts">
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -7285,6 +6790,164 @@ export class DettaglioPreventivoAdminPage implements OnInit {
     await alert.present();
   }
 }
+</file>
+
+<file path="Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-admin">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+      <ion-title>
+        Dashboard Admin
+      </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <section class="dashboard-header">
+    <h1>Gestione Dipendenti</h1>
+    <p>Aggiungi, modifica o rimuovi gli account del personale operativo.</p>
+    
+    <div class="admin-actions">
+      <ion-button (click)="apriModaleCrea()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Nuovo Dipendente
+      </ion-button>
+    </div>
+  </section>
+
+  <ion-grid class="details-row">
+    <ion-row>
+      @for (dipendente of dipendenti; track dipendente.id) {
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="detail-section-card">
+            <ion-card-header>
+              <div class="item-header">
+                <ion-card-title>
+                  <ion-icon name="person-outline" style="margin-right: 8px; color: #f5a623;"></ion-icon>
+                  {{ dipendente.nome }} {{ dipendente.cognome }}
+                </ion-card-title>
+                <ion-chip [color]="dipendente.stato === 'Attivo' ? 'success' : 'medium'">
+                  {{ dipendente.stato }}
+                </ion-chip>
+              </div>
+            </ion-card-header>
+            
+            <ion-card-content>
+              <div class="info-riga">
+                <p class="dipendente-email">{{ dipendente.email }}</p>
+                <p class="dipendente-telefono">
+                  <ion-icon name="call-outline"></ion-icon>
+                  {{ dipendente.telefono }}
+                </p>
+              </div>
+              
+              <div class="item-actions">
+                <ion-button fill="clear" color="light" size="small" (click)="apriModaleModifica(dipendente)">
+                  <ion-icon slot="start" name="create-outline"></ion-icon>
+                  Modifica
+                </ion-button>
+                <ion-button fill="clear" color="danger" size="small" (click)="confermaEliminazioneDipendente(dipendente)">
+                  <ion-icon slot="start" name="trash-outline"></ion-icon>
+                  Elimina
+                </ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      } @empty {
+        <ion-col size="12">
+          <div class="empty-section" style="text-align: center;">Nessun dipendente registrato nel sistema.</div>
+        </ion-col>
+      }
+    </ion-row>
+  </ion-grid>
+
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar color="dark">
+          <ion-title>{{ modalMode === 'crea' ? 'Nuovo Account' : 'Modifica Account' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="chiudiModale()">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="modal-content-dark">
+        <div class="modal-form-container">
+          
+          <div class="form-field">
+            <label>Nome</label>
+            <div class="input-shell">
+              <ion-input
+                [(ngModel)]="formDipendente.nome"
+                placeholder="Inserisci il nome">
+              </ion-input>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>Cognome</label>
+            <div class="input-shell">
+              <ion-input
+                [(ngModel)]="formDipendente.cognome"
+                placeholder="Inserisci il cognome">
+              </ion-input>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>Email</label>
+            <div class="input-shell">
+              <ion-input
+                type="email"
+                [(ngModel)]="formDipendente.email"
+                placeholder="email@metallab.it">
+              </ion-input>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>Telefono</label>
+            <div class="input-shell">
+              <ion-input
+                type="tel"
+                [(ngModel)]="formDipendente.telefono"
+                placeholder="Inserisci un numero di telefono valido">
+              </ion-input>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>
+              {{ modalMode === 'crea' ? 'Password' : 'Nuova Password (opzionale)' }}
+            </label>
+            <div class="input-shell">
+              <ion-input
+                type="password"
+                [(ngModel)]="formDipendente.password"
+                [placeholder]="modalMode === 'crea' ? 'Imposta una password sicura' : 'Lascia vuoto per non cambiarla'">
+                <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+              </ion-input>
+            </div>
+          </div>
+        
+          <ion-button expand="block" class="modal-save-btn" [disabled]="!formDipendenteValido" (click)="salvaDipendente()">
+            <ion-icon slot="start" name="save-outline"></ion-icon>
+            {{ modalMode === 'crea' ? 'Crea Account' : 'Salva Modifiche' }}
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>
 </file>
 
 <file path="Frontend/src/app/pages/gestione-dipendenti/gestione-dipendenti.page.ts">
@@ -7765,374 +7428,6 @@ exports.adminRifiutaPreventivo = async (req, res) => {
 };
 </file>
 
-<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.scss">
-ion-content {
-  --background: #0b0f14;
-}
-
-.dashboard-header {
-  padding: 32px 22px 16px;
-  text-align: center;
-  color: white;
-}
-
-.dashboard-header h1 {
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  font-weight: 900;
-  margin: 0;
-}
-
-.dashboard-header p {
-  color: #b7c0cc;
-  margin-top: 8px;
-}
-
-// Riga contatori orizzontali
-.summary-row {
-  max-width: 1400px;
-  margin: 0 auto 24px;
-  text-align: center;
-}
-
-.summary-card {
-  background: #151b23;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.summary-value {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: #f5a623;
-}
-
-.summary-label {
-  font-size: 0.8rem;
-  color: #b7c0cc;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 4px;
-}
-
-// Struttura layout verticale per i dettagli
-.details-row {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.detail-section-card {
-  --background: #151b23;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 10px;
-  height: auto;
-  min-height: 120px;
-}
-
-// Aggiunta per allineare il titolo e il bottone "Nuovo"
-.card-header-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-ion-card-title {
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 800;
-}
-
-/* Stili per le liste Interventi e Preventivi */
-.dashboard-item {
-  padding: 16px; 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px; 
-  margin-bottom: 4px;
-}
-
-.dashboard-item:last-child {
-  border-bottom: none;
-}
-
-.item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
-.dashboard-item h3 {
-  color: white;
-  margin: 0;
-  font-size: 1.05rem;
-  font-weight: 700;
-}
-
-.dashboard-item p {
-  color: #b7c0cc;
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-ion-chip {
-  margin: 0;
-  font-weight: 700;
-  font-size: 0.8rem;
-  --border-radius: 30px;
-  border-radius: 30px;
-  padding: 0 12px;
-}
-
-.empty-section {
-  color: #6c7a89;
-  font-style: italic;
-  padding: 10px 0;
-  font-size: 0.95rem;
-}
-
-.clickable {
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.clickable:hover {
-  background: rgba(255, 255, 255, 0.04);
-  transform: translateY(-1px);
-}
-
-.admin-actions {
-  display: flex;
-  justify-content: center;
-  margin-top: 24px;
-}
-
-.admin-actions ion-button {
-  width: 260px;
-  height: 48px;
-  margin: 0;
-  font-weight: 600;
-  letter-spacing: -0.2px;
-
-  --background: rgba(255, 255, 255, 0.06);
-  --color: #ffffff;
-  --border-radius: 16px;
-  --border-width: 1px;
-  --border-style: solid;
-  --border-color: rgba(255, 255, 255, 0.15);
-  --box-shadow: none;
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 16px;
-  overflow: hidden;
-  transform: translateZ(0);
-  transition: all 0.2s ease;
-
-  &:hover {
-    --background: #f5a623;
-    --border-color: #f5a623;
-    --color: #0b0f14;
-    transform: translateY(-2px) translateZ(0);
-  }
-}
-
-ion-modal.dark-modal {
-  --border-radius: 28px;
-  --height: 440px; 
-  --background: #0b0f14; 
-}
-
-.modal-content-dark {
-  --background: transparent; 
-}
-
-.modal-content-dark::part(scroll) {
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.modal-form-container {
-  padding: 32px 24px;
-}
-
-.dark-input-item {
-  --background: #151b23;
-  --color: white;
-  --placeholder-color: #6c7a89;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --border-radius: 30px;
-  border-radius: 30px;
-  margin-bottom: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  ion-input, ion-select {
-    color: white;
-    --padding-start: 24px; 
-  }
-}
-
-.modal-save-btn {
-  margin-top: 32px;
-  height: 52px;
-  --background: #f5a623;
-  --color: #0b0f14;
-  --border-radius: 30px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  
-  background: transparent;
-  box-shadow: none; 
-  --box-shadow: 0 8px 20px rgba(245, 166, 35, 0.2); 
-  
-  transition: transform 0.2s ease;
-
-  &:active {
-    transform: scale(0.97);
-  }
-}
-
-.btn-glass-save {
-  margin: 0;
-  height: 48px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
-
-  --border-radius: 16px;
-  --border-width: 1px;
-  --border-style: solid;
-  --box-shadow: none;
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 16px;
-  overflow: hidden;
-  transform: translateZ(0);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-
-  --background: rgba(245, 166, 35, 0.12);
-  --color: #f5a623;
-  --border-color: rgba(245, 166, 35, 0.2);
-
-  &:hover {
-    --background: #f5a623;
-    --border-color: #f5a623;
-    --color: #0b0f14;
-    transform: translateY(-2px);
-  }
-
-  &.button-disabled {
-    opacity: 0.5;
-    --background: rgba(255, 255, 255, 0.05);
-    --color: #6c7a89;
-    --border-color: rgba(255, 255, 255, 0.1);
-  }
-}
-
-.btn-glass-upload {
-  margin: 0;
-  height: 42px;
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
-  
-  --border-radius: 12px;
-  --box-shadow: none;
-  --background: rgba(245, 166, 35, 0.08);
-  --color: #f5a623;
-  --border-color: rgba(245, 166, 35, 0.3);
-  --border-width: 1px;
-  --border-style: solid;
-  
-  transition: all 0.2s ease;
-
-  &:hover {
-    --background: #f5a623;
-    --color: #0b0f14;
-    transform: translateY(-2px);
-  }
-}
-
-/* --- Stili per la lista con immagine --- */
-.catalog-list-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 16px;
-}
-
-.catalog-thumbnail {
-  flex-shrink: 0;
-  width: 85px;
-  height: 85px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #0f141b;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-
-.catalog-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.catalog-price {
-  margin: 4px 0 10px 0 !important;
-}
-
-.item-actions {
-  display: flex;
-  gap: 12px;
-  margin-left: -8px; 
-  
-  ion-button {
-    margin: 0;
-    font-weight: 600;
-  }
-}
-
-/* --- Stile per le liste con altezza fissa e scrollbar --- */
-.scrollable-list {
-  max-height: 340px; 
-  overflow-y: auto;
-  padding-right: 6px; 
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 10px;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: rgba(245, 166, 35, 0.2); 
-    border-radius: 10px;
-    transition: background 0.3s ease;
-  }
-  
-  &::-webkit-scrollbar-thumb:hover {
-    background: rgba(245, 166, 35, 0.6); 
-  }
-}
-</file>
-
 <file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.scss">
 ion-content {
   --background: #0b0f14;
@@ -8382,78 +7677,464 @@ ion-chip {
 }
 </file>
 
-<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.html">
+<file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.scss">
+ion-content {
+  --background: #0b0f14;
+}
+
+.detail-header {
+  padding: 42px 22px 20px;
+  text-align: center;
+  color: white;
+}
+
+.detail-header h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.detail-header p {
+  max-width: 760px;
+  margin: 14px auto 0;
+  color: #b7c0cc;
+  line-height: 1.6;
+}
+
+.detail-card {
+  max-width: 900px;
+  margin: 22px auto;
+  --background: #151b23;
+
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  overflow: hidden;
+}
+
+ion-card-header {
+  padding: 24px 24px 8px;
+}
+
+ion-card-content {
+  padding: 8px 24px 24px;
+}
+
+ion-card-title {
+  color: #f5a623;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+
+  align-items: center;
+
+  padding: 18px 0;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row span {
+  color: #b7c0cc;
+  font-weight: 700;
+}
+
+.info-row strong {
+  color: white;
+  text-align: right;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+/* LA CLASSE MODIFICATA: tolto il background e il color fissi */
+.info-row ion-chip {
+  width: fit-content;
+  justify-self: end;
+  margin: 0;
+  font-weight: 800;
+
+  --border-radius: 30px;
+  border-radius: 30px;
+}
+
+.proposal-box {
+  padding: 18px;
+  border-radius: 16px;
+
+  background: rgba(245, 166, 35, 0.12);
+
+  color: #f5a623;
+  font-weight: 800;
+  text-align: center;
+
+  border: 1px solid rgba(245, 166, 35, 0.18);
+}
+
+.proposal-box strong {
+  color: white;
+}
+
+.proposal-box.empty {
+  color: #b7c0cc;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.btn-glass-accept,
+.btn-glass-propose,
+.btn-glass-reject {
+  margin: 0;
+  height: 52px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-glass-accept,
+.btn-glass-propose {
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+}
+
+.btn-glass-accept:hover,
+.btn-glass-propose:hover {
+  --background: #f5a623;
+  --border-color: #f5a623;
+  --color: #0b0f14;
+  transform: translateY(-2px);
+}
+
+.btn-glass-reject {
+  --background: rgba(235, 68, 90, 0.12);
+  --color: #eb445a;
+  --border-color: rgba(235, 68, 90, 0.2);
+}
+
+.btn-glass-reject:hover {
+  --background: #eb445a;
+  --border-color: #eb445a;
+  --color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* CAMPO CALENDARIO UGUALE A RICHIEDI INTERVENTO */
+
+.calendar-trigger-item {
+  --background: transparent;
+  --color: white;
+  --border-color: rgba(255, 255, 255, 0.12);
+  margin-bottom: 16px;
+}
+
+.calendar-trigger-item ion-label {
+  color: #f5a623 !important;
+  font-weight: 700;
+}
+
+.calendar-trigger-item ion-input,
+.calendar-trigger-item ion-textarea {
+  --color: white;
+  --placeholder-color: #8f9aaa;
+}
+
+/* CALENDARIO UGUALE A RICHIEDI INTERVENTO */
+
+ion-modal.dark-calendar-modal {
+  --width: max-content;
+  --height: max-content;
+  --background: transparent;
+  --box-shadow: none;
+  --border-radius: 24px;
+
+  align-items: center;
+  justify-content: center;
+
+  ion-datetime.custom-amber-calendar {
+    --background: #151b23;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+
+    color: #ffffff;
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255, 255, 255;
+
+    --ion-color-primary: #f5a623;
+    --ion-color-primary-rgb: 245, 166, 35;
+    --ion-color-primary-contrast: #0b0f14;
+    --ion-color-primary-contrast-rgb: 11, 15, 20;
+
+    &::part(month-year-button) {
+      pointer-events: none;
+      color: transparent;
+      text-shadow: 0 0 0 #f5a623;
+    }
+
+    &::part(prev-month-button),
+    &::part(next-month-button) {
+      color: #f5a623;
+      opacity: 1 !important;
+    }
+
+    &::part(prev-month-button):hover,
+    &::part(next-month-button):hover,
+    &::part(prev-month-button):active,
+    &::part(next-month-button):active {
+      background: #151b23 !important;
+      background-color: #151b23 !important;
+      opacity: 1 !important;
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  .detail-card {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: start;
+  }
+
+  .info-row strong {
+    text-align: left;
+  }
+
+  .info-row ion-chip {
+    justify-self: start;
+  }
+}
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page.html">
 <ion-header class="ion-no-border">
   <ion-toolbar color="dark">
     <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-cliente">
+      <ion-button routerLink="/dashboard-dipendente">
         <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Dettaglio Preventivo</ion-title>
+    <ion-title>Dashboard Dipendente</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  @if (preventivo) {
-    <section class="detail-header">
-      <h1>Preventivo #{{ preventivoId }}</h1>
-      <p>Riepilogo della tua richiesta e stato di avanzamento.</p>
-    </section>
+  <section class="detail-header">
+    <h1>Intervento #{{ interventoId }}</h1>
+    <p>Consulta i dettagli dell’intervento assegnato e aggiorna lo stato operativo.</p>
+  </section>
 
+  @if (intervento) {
     <ion-card class="detail-card">
       <ion-card-header>
-        <ion-card-title>Stato Preventivo</ion-card-title>
+        <ion-card-title>Informazioni Cliente</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <div class="info-row">
-          <span>Stato Amministrazione</span>
-          <ion-chip>{{ preventivo.stato_admin }}</ion-chip>
+          <span>Cliente</span>
+          <strong>{{ intervento.cliente_nome }} {{ intervento.cliente_cognome }}</strong>
         </div>
-        
         <div class="info-row">
-          <span>La tua risposta</span>
-          <ion-chip>{{ preventivo.stato_risposta_cliente }}</ion-chip>
+          <span>Email</span>
+          <strong>{{ intervento.cliente_email }}</strong>
         </div>
-
-        @if (preventivo.prezzo_proposto) {
-          <div class="price-box">
-            Prezzo proposto da Metal Lab:
-            <strong>€ {{ preventivo.prezzo_proposto }}</strong>
-          </div>
-        } @else {
-          <div class="price-box empty">
-            Nessun prezzo ancora proposto.
-          </div>
-        }
+        <div class="info-row">
+          <span>Telefono</span>
+          <strong>{{ intervento.cliente_telefono }}</strong>
+        </div>
       </ion-card-content>
     </ion-card>
 
     <ion-card class="detail-card">
       <ion-card-header>
-        <ion-card-title>Dati Tecnici Richiesta</ion-card-title>
+        <ion-card-title>Dati Intervento</ion-card-title>
       </ion-card-header>
+      <ion-card-content>
+        <div class="info-row">
+          <span>Descrizione</span>
+          <strong>{{ intervento.descrizione }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Luogo</span>
+          <strong>{{ intervento.luogo }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Priorità</span>
+          <strong>{{ intervento.priorita }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Data intervento</span>
+          <strong>{{ intervento.data_accettata || intervento.data_proposta_admin || 'Da programmare' }}</strong>
+        </div>
+        
+        <div class="info-row">
+          <span>Stato lavorazione</span>
+          <ion-chip
+            [color]="
+              intervento.stato_lavorazione === 'Terminato' ? 'success' :
+              intervento.stato_lavorazione === 'In lavorazione' ? 'tertiary' :
+              intervento.stato_lavorazione === 'Programmato' ? 'primary' :
+              'warning'
+            ">
+            {{ intervento.stato_lavorazione }}
+          </ion-chip>
+        </div>
+        
+        <div class="actions">
+          <ion-button
+            expand="block"
+            class="btn-glass-update"
+            (click)="modificaStatoIntervento()">
+            Modifica stato intervento
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+  } @else {
+    <div class="ion-padding ion-text-center">
+      <p>Caricamento dati in corso...</p>
+    </div>
+  }
+</ion-content>
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-admin">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+     Dashboard Admin
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  @if (preventivo) {
+    <section class="detail-header">
+      <h1>
+        Preventivo #{{ preventivoId }}
+      </h1>
+      <p>
+        Riepilogo della richiesta inviata dal cliente.
+      </p>
+    </section>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>
+          Informazioni Cliente
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="info-row">
+          <span>Cliente</span>
+          <strong>{{ preventivo.cliente_nome }} {{ preventivo.cliente_cognome }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Email</span>
+          <strong>{{ preventivo.cliente_email }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Stato Admin</span>
+          <ion-chip
+            [color]="
+              preventivo.stato_admin === 'Preventivo concordato' ? 'success' :
+              preventivo.stato_admin === 'Rifiutato' ? 'danger' :
+              preventivo.stato_admin === 'Prezzo proposto' ? 'tertiary' :
+              'warning'
+            ">
+            {{ preventivo.stato_admin }}
+          </ion-chip>
+        </div>
+        
+        <div class="info-row">
+          <span>Risposta Cliente</span>
+          <ion-chip
+            [color]="
+              preventivo.stato_risposta_cliente === 'Accettato' ? 'success' :
+              preventivo.stato_risposta_cliente === 'Rifiutato' ? 'danger' :
+              'warning'
+            ">
+            {{ preventivo.stato_risposta_cliente }}
+          </ion-chip>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>
+          Dati Tecnici Richiesta
+        </ion-card-title>
+      </ion-card-header>
+
       <ion-card-content>
         <div class="description-box">
           <h3>Descrizione</h3>
           <p>{{ preventivo.descrizione }}</p>
         </div>
+
         <div class="info-row">
           <span>Servizio richiesto</span>
           <strong>{{ preventivo.servizio }}</strong>
         </div>
+
         <div class="info-row">
           <span>Materiale</span>
           <strong>{{ preventivo.materiale }}</strong>
         </div>
+
         <div class="info-row">
           <span>Dimensioni</span>
           <strong>{{ preventivo.dimensioni }}</strong>
         </div>
+
         <div class="info-row">
           <span>Finitura</span>
           <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
         </div>
+
        <div class="info-row">
           <span>Allegati tecnici</span>
           @if (preventivo.allegatiArray && preventivo.allegatiArray.length > 0) {
@@ -8474,42 +8155,52 @@ ion-chip {
 
     <ion-card class="detail-card">
       <ion-card-header>
-        <ion-card-title>Risposta alla proposta</ion-card-title>
+        <ion-card-title>
+          Gestione Admin
+        </ion-card-title>
       </ion-card-header>
+
       <ion-card-content>
-        @if (preventivo.stato_admin === 'Prezzo proposto' && preventivo.stato_risposta_cliente === 'In attesa') {
-          <p class="response-text">
-            Puoi accettare o rifiutare il prezzo proposto da Metal Lab.
-          </p>
+        @if (preventivo.prezzo_proposto) {
+          <div class="price-box">
+            Prezzo proposto:
+            <strong>€ {{ preventivo.prezzo_proposto }}</strong>
+          </div>
+        } @else {
+          <div class="price-box empty">
+            Nessun prezzo ancora proposto.
+          </div>
+        }
+
+        @if (preventivo.stato_risposta_cliente === 'In attesa') {
           <div class="actions">
-            <ion-button expand="block" class="btn-glass-accept" (click)="accettaPreventivo()">
-              Accetta preventivo
+            <ion-button 
+              expand="block" 
+              class="btn-glass-propose" 
+              (click)="proponiPrezzo()">
+              Proponi prezzo
             </ion-button>
-            <ion-button expand="block" class="btn-glass-reject" (click)="rifiutaPreventivo()">
+
+            <ion-button 
+              expand="block" 
+              class="btn-glass-reject" 
+              (click)="rifiutaPreventivo()">
               Rifiuta preventivo
             </ion-button>
           </div>
-        } @else if (preventivo.stato_risposta_cliente !== 'In attesa') {
-          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
-            Hai già risposto a questo preventivo. Il ciclo è concluso.
-          </div>
-        } @else if (preventivo.stato_admin === 'Rifiutato') {
-          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
-            Metal Lab ha rifiutato la richiesta di lavorazione.
-          </div>
         } @else {
-          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
-            In attesa che l'officina formuli un prezzo per la tua richiesta...
+          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center; margin-top: 15px;">
+            Questo preventivo è chiuso. Non sono possibili altre interazioni.
           </div>
         }
       </ion-card-content>
     </ion-card>
-
   } @else {
     <div class="ion-padding ion-text-center">
       <p>Caricamento preventivo in corso...</p>
     </div>
   }
+
 </ion-content>
 </file>
 
@@ -9354,6 +9045,407 @@ const bcrypt = require('bcrypt');
 }
 </file>
 
+<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.scss">
+ion-content {
+  --background: #0b0f14;
+}
+
+.dashboard-header {
+  padding: 32px 22px 16px;
+  text-align: center;
+  color: white;
+}
+
+.dashboard-header h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  margin: 0;
+}
+
+.dashboard-header p {
+  color: #b7c0cc;
+  margin-top: 8px;
+}
+
+// Riga contatori orizzontali
+.summary-row {
+  max-width: 1400px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+
+.summary-card {
+  background: #151b23;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.summary-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #f5a623;
+}
+
+.summary-label {
+  font-size: 0.8rem;
+  color: #b7c0cc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+// Struttura layout verticale per i dettagli
+.details-row {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.detail-section-card {
+  --background: #151b23;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 10px;
+  height: auto;
+  min-height: 120px;
+}
+
+// Aggiunta per allineare il titolo e il bottone "Nuovo"
+.card-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+ion-card-title {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+/* Stili per le liste Interventi e Preventivi */
+.dashboard-item {
+  padding: 16px; 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px; 
+  margin-bottom: 4px;
+}
+
+.dashboard-item:last-child {
+  border-bottom: none;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.dashboard-item h3 {
+  color: white;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.dashboard-item p {
+  color: #b7c0cc;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+ion-chip {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.8rem;
+  --border-radius: 30px;
+  border-radius: 30px;
+  padding: 0 12px;
+}
+
+.empty-section {
+  color: #6c7a89;
+  font-style: italic;
+  padding: 10px 0;
+  font-size: 0.95rem;
+}
+
+.clickable {
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.clickable:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-1px);
+}
+
+.admin-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.admin-actions ion-button {
+  width: 260px;
+  height: 48px;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+
+  --background: rgba(255, 255, 255, 0.06);
+  --color: #ffffff;
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --border-color: rgba(255, 255, 255, 0.15);
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.2s ease;
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px) translateZ(0);
+  }
+}
+
+ion-modal.dark-modal {
+  --border-radius: 28px;
+  --height: 440px; 
+  --background: #0b0f14; 
+}
+
+.modal-content-dark {
+  --background: transparent; 
+}
+
+.modal-content-dark::part(scroll) {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.modal-form-container {
+  padding: 32px 24px;
+}
+
+.dark-input-item {
+  --background: #151b23;
+  --color: white;
+  --placeholder-color: #6c7a89;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-radius: 30px;
+  border-radius: 30px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  ion-input, ion-select {
+    color: white;
+    --padding-start: 24px; 
+  }
+}
+
+.modal-save-btn {
+  margin-top: 32px;
+  height: 52px;
+  --background: #f5a623;
+  --color: #0b0f14;
+  --border-radius: 30px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  
+  background: transparent;
+  box-shadow: none; 
+  --box-shadow: 0 8px 20px rgba(245, 166, 35, 0.2); 
+  
+  transition: transform 0.2s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.btn-glass-save {
+  margin: 0;
+  height: 48px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --box-shadow: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --background: rgba(245, 166, 35, 0.12);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.2);
+
+  &:hover {
+    --background: #f5a623;
+    --border-color: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px);
+  }
+
+  &.button-disabled {
+    opacity: 0.5;
+    --background: rgba(255, 255, 255, 0.05);
+    --color: #6c7a89;
+    --border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.btn-glass-upload {
+  margin: 0;
+  height: 42px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  
+  --border-radius: 12px;
+  --box-shadow: none;
+  --background: rgba(245, 166, 35, 0.08);
+  --color: #f5a623;
+  --border-color: rgba(245, 166, 35, 0.3);
+  --border-width: 1px;
+  --border-style: solid;
+  
+  transition: all 0.2s ease;
+
+  &:hover {
+    --background: #f5a623;
+    --color: #0b0f14;
+    transform: translateY(-2px);
+  }
+}
+
+/* --- Stili per la lista con immagine --- */
+.catalog-list-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+}
+
+.catalog-thumbnail {
+  flex-shrink: 0;
+  width: 85px;
+  height: 85px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0f141b;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.catalog-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.catalog-price {
+  margin: 4px 0 10px 0 !important;
+}
+
+.item-actions {
+  display: flex;
+  gap: 12px;
+  margin-left: -8px; 
+  
+  ion-button {
+    margin: 0;
+    font-weight: 600;
+  }
+}
+
+/* --- Stile per le liste con altezza fissa e scrollbar --- */
+.scrollable-list {
+  max-height: 340px; 
+  overflow-y: auto;
+  padding-right: 6px; 
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(245, 166, 35, 0.2); 
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(245, 166, 35, 0.6); 
+  }
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.catalog-list-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  
+  /* Trasforma l'elemento in una vera Card indipendente */
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  margin: 0 !important; /* Disabilita i margini delle liste classiche */
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(245, 166, 35, 0.3) !important;
+    transform: translateY(-2px);
+  }
+}
+
+/* Ritorna a 1 colonna sugli schermi più piccoli di un iPad (Cellulari) */
+@media (max-width: 850px) {
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</file>
+
 <file path="Frontend/src/app/pages/dashboard-dipendente/dashboard-dipendente.page.html">
 <ion-header class="ion-no-border">
   <ion-toolbar color="dark"> 
@@ -9445,6 +9537,152 @@ const bcrypt = require('bcrypt');
 
     </ion-row>
   </ion-grid>
+</ion-content>
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-cliente">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Dettaglio Preventivo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (preventivo) {
+    <section class="detail-header">
+      <h1>Preventivo #{{ preventivoId }}</h1>
+      <p>Riepilogo della tua richiesta e stato di avanzamento.</p>
+    </section>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Stato Preventivo</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-row">
+          <span>Stato Amministrazione</span>
+          <ion-chip
+            [color]="
+              preventivo.stato_admin === 'Preventivo concordato' ? 'success' :
+              preventivo.stato_admin === 'Rifiutato' ? 'danger' :
+              preventivo.stato_admin === 'Prezzo proposto' ? 'tertiary' :
+              'warning'
+            ">
+            {{ preventivo.stato_admin }}
+          </ion-chip>
+        </div>
+        
+        <div class="info-row">
+          <span>La tua risposta</span>
+          <ion-chip
+            [color]="
+              preventivo.stato_risposta_cliente === 'Accettato' ? 'success' :
+              preventivo.stato_risposta_cliente === 'Rifiutato' ? 'danger' :
+              'warning'
+            ">
+            {{ preventivo.stato_risposta_cliente }}
+          </ion-chip>
+        </div>
+
+        @if (preventivo.prezzo_proposto) {
+          <div class="price-box">
+            Prezzo proposto da Metal Lab:
+            <strong>€ {{ preventivo.prezzo_proposto }}</strong>
+          </div>
+        } @else {
+          <div class="price-box empty">
+            Nessun prezzo ancora proposto.
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Dati Tecnici Richiesta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="description-box">
+          <h3>Descrizione</h3>
+          <p>{{ preventivo.descrizione }}</p>
+        </div>
+        <div class="info-row">
+          <span>Servizio richiesto</span>
+          <strong>{{ preventivo.servizio }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Materiale</span>
+          <strong>{{ preventivo.materiale }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Dimensioni</span>
+          <strong>{{ preventivo.dimensioni }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Finitura</span>
+          <strong>{{ preventivo.finitura || 'Non specificata' }}</strong>
+        </div>
+       <div class="info-row">
+          <span>Allegati tecnici</span>
+          @if (preventivo.allegatiArray && preventivo.allegatiArray.length > 0) {
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
+              @for (file of preventivo.allegatiArray; track $index) {
+                <ion-button fill="outline" color="warning" size="small" [href]="'http://localhost:3000' + file" target="_blank" style="margin: 0; --border-radius: 12px; height: 32px;">
+                  <ion-icon slot="start" name="document-attach-outline"></ion-icon>
+                  Allegato {{ $index + 1 }}
+                </ion-button>
+              }
+            </div>
+          } @else {
+            <strong>Nessun allegato</strong>
+          }
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>Risposta alla proposta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        @if (preventivo.stato_admin === 'Prezzo proposto' && preventivo.stato_risposta_cliente === 'In attesa') {
+          <p class="response-text">
+            Puoi accettare o rifiutare il prezzo proposto da Metal Lab.
+          </p>
+          <div class="actions">
+            <ion-button expand="block" class="btn-glass-accept" (click)="accettaPreventivo()">
+              Accetta preventivo
+            </ion-button>
+            <ion-button expand="block" class="btn-glass-reject" (click)="rifiutaPreventivo()">
+              Rifiuta preventivo
+            </ion-button>
+          </div>
+        } @else if (preventivo.stato_risposta_cliente !== 'In attesa') {
+          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
+            Hai già risposto a questo preventivo. Il ciclo è concluso.
+          </div>
+        } @else if (preventivo.stato_admin === 'Rifiutato') {
+          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
+            Metal Lab ha rifiutato la richiesta di lavorazione.
+          </div>
+        } @else {
+          <div class="price-box empty" style="color: var(--ion-color-medium); text-align: center;">
+            In attesa che l'officina formuli un prezzo per la tua richiesta...
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
+  } @else {
+    <div class="ion-padding ion-text-center">
+      <p>Caricamento preventivo in corso...</p>
+    </div>
+  }
 </ion-content>
 </file>
 
@@ -9559,6 +9797,372 @@ export class DashboardDipendentePage {
 }
 </file>
 
+<file path="Frontend/src/app/models/intervento.model.ts">
+export interface Intervento {
+  id: number;
+
+  cliente_id?: number;
+
+  descrizione: string;
+
+  luogo: string;
+
+  priorita: 'Bassa' | 'Media' | 'Alta';
+
+  stato_admin:
+    | 'Intervento concordato'
+    | 'Richiesto'
+    | 'Rifiutato'
+    | 'Data proposta'
+    | 'In attesa nuova valutazione';
+
+  stato_risposta_cliente:
+    | 'In attesa'
+    | 'Data accettata'
+    | 'Nuova data proposta'
+    | 'Intervento annullato';
+
+  stato_lavorazione:
+    | 'Da programmare'
+    | 'Programmato'
+    | 'In lavorazione'
+    | 'Terminato';
+
+  // Campo di comodo usato in alcune viste frontend
+  dataOra?: string;
+
+  // Vecchi campi usati nei mock/pagine già esistenti
+  cliente?: string;
+
+  emailCliente?: string;
+
+  telefonoCliente?: string;
+
+  // Campi reali restituiti dal backend nelle query admin con JOIN users
+  cliente_nome?: string;
+
+  cliente_cognome?: string;
+
+  cliente_email?: string;
+
+  cliente_telefono?: string;
+
+  // Date del database
+  data_richiesta?: string;
+
+  data_proposta_cliente?: string;
+
+  data_proposta_admin?: string;
+
+  data_accettata?: string;
+
+  created_at?: string;
+
+  updated_at?: string;
+
+  dipendentiAssegnati?: string[];
+
+  numero_dipendenti?: number;
+}
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-button routerLink="/dashboard-admin">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      Dashboard Admin
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <section class="detail-header">
+    <h1>
+      Intervento #{{ interventoId }}
+    </h1>
+
+    <p>
+      Riepilogo della richiesta tecnica e assegnazione al personale operativo.
+    </p>
+  </section>
+
+  @if (intervento) {
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>
+          Informazioni Cliente
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <div class="info-row">
+          <span>Cliente</span>
+          <strong>
+            {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Email</span>
+          <strong>
+            {{ intervento.cliente_email }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Telefono</span>
+          <strong>
+            {{ intervento.cliente_telefono }}
+          </strong>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="detail-card">
+      <ion-card-header>
+        <ion-card-title>
+          Dati Intervento
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <div class="info-row">
+          <span>Descrizione</span>
+          <strong>
+            {{ intervento.descrizione }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Luogo</span>
+          <strong>
+            {{ intervento.luogo }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Priorità</span>
+          <strong>
+            {{ intervento.priorita }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Data richiesta</span>
+          <strong>
+            {{ intervento.data_richiesta }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Data proposta dal cliente</span>
+          <strong>
+            {{ intervento.data_proposta_cliente || 'Nessuna data proposta' }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Data proposta dall'admin</span>
+          <strong>
+            {{ intervento.data_proposta_admin || 'Nessuna data proposta' }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Data accettata</span>
+          <strong>
+            {{ intervento.data_accettata || 'Non ancora accettata' }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Risposta cliente</span>
+          <ion-chip
+            [color]="intervento.stato_risposta_cliente === 'Intervento annullato' ? 'danger' : 'warning'">
+            {{ intervento.stato_risposta_cliente }}
+          </ion-chip>
+        </div>
+
+        <div class="info-row">
+          <span>Stato lavorazione</span>
+          <ion-chip
+            [color]="intervento.stato_lavorazione === 'Terminato' ? 'success' : 'warning'">
+            {{ intervento.stato_lavorazione }}
+          </ion-chip>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+    @if (
+      intervento.stato_admin !== 'Rifiutato' &&
+      intervento.stato_risposta_cliente !== 'Intervento annullato'
+    ) {
+
+      <ion-card class="detail-card">
+        <ion-card-header>
+          <ion-card-title>
+            Pannello di Gestione
+          </ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+
+          @if (intervento.stato_admin === 'Data proposta') {
+
+            <div class="assignment-box">
+
+
+              In attesa della risposta del cliente.
+            </div>
+          }
+
+          @if (intervento.stato_admin === 'Intervento concordato') {
+
+            @if (dipendentiAssegnati.length > 0) {
+
+              <div class="assignment-box">
+                Dipendenti assegnati:
+                <strong>
+                  @for (dipendente of dipendentiAssegnati; track dipendente.id) {
+                    {{ dipendente.nome }} {{ dipendente.cognome }}
+                  }
+                </strong>
+              </div>
+
+            } @else {
+
+              <div class="assignment-box empty">
+                Nessun dipendente ancora assegnato.
+              </div>
+
+            }
+
+          }
+
+          <div class="actions">
+
+            @if (intervento.stato_admin === 'Intervento concordato' && intervento.stato_lavorazione !== 'Terminato') {
+
+              <ion-button
+                expand="block"
+                class="btn-glass-assign"
+                (click)="assegnaDipendente()">
+                Assegna dipendente
+              </ion-button>
+
+            }
+
+            @if (
+              intervento.stato_admin === 'Richiesto' ||
+              intervento.stato_admin === 'In attesa nuova valutazione'
+            ) {
+
+              <ion-button
+                expand="block"
+                class="btn-glass-assign"
+                (click)="accettaDataCliente()">
+                Accetta data proposta dal cliente
+              </ion-button>
+
+              <ion-item
+                button="true"
+                detail="false"
+                id="apri-calendario-data-admin"
+                class="calendar-trigger-item">
+
+                <ion-label position="stacked">
+                  Data da proporre al cliente
+                </ion-label>
+
+                <ion-input
+                  [readonly]="true"
+                  placeholder="Seleziona una data"
+                  [value]="dataAdminFormattata">
+                </ion-input>
+
+                <ion-icon
+                  slot="end"
+                  name="calendar-outline"
+                  style="color: #f5a623; font-size: 22px; margin-top: 14px;">
+                </ion-icon>
+
+              </ion-item>
+
+              <ion-modal
+                trigger="apri-calendario-data-admin"
+                class="dark-calendar-modal">
+
+                <ng-template>
+
+                  <ion-datetime
+                    presentation="date"
+                    [(ngModel)]="dataPropostaAdmin"
+                    [min]="dataMinima"
+                    class="custom-amber-calendar"
+                    [showDefaultButtons]="true"
+                    doneText="Conferma"
+                    cancelText="Annulla">
+                  </ion-datetime>
+
+                </ng-template>
+
+              </ion-modal>
+
+              <ion-button
+                expand="block"
+                class="btn-glass-assign"
+                [disabled]="!dataPropostaAdmin"
+                (click)="confermaDataAdmin()">
+                Proponi un'altra data
+              </ion-button>
+
+              <ion-button
+                expand="block"
+                class="btn-glass-reject"
+                (click)="rifiutaIntervento()">
+                Rifiuta intervento
+              </ion-button>
+
+            }
+
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+
+    }
+
+  } @else {
+
+    <div class="ion-padding ion-text-center">
+      @if (caricamento) {
+        <p>
+          Caricamento dati...
+        </p>
+      } @else {
+        <p>
+          Intervento non trovato.
+        </p>
+      }
+    </div>
+
+  }
+
+</ion-content>
+</file>
+
 <file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.html">
 <ion-header class="ion-no-border">
   <ion-toolbar color="dark">
@@ -9648,25 +10252,41 @@ export class DashboardDipendentePage {
 
         <div class="info-row">
           <span>Stato admin</span>
-        <ion-chip
-  [color]="intervento.stato_admin === 'Rifiutato' ? 'danger' : 'warning'">
-  {{ intervento.stato_admin }}
-</ion-chip>
+          <ion-chip
+            [color]="
+              intervento.stato_admin === 'Intervento concordato' ? 'success' :
+              intervento.stato_admin === 'Rifiutato' ? 'danger' :
+              intervento.stato_admin === 'Data proposta' ? 'medium' :
+              'warning'
+            ">
+            {{ intervento.stato_admin }}
+          </ion-chip>
         </div>
 
         <div class="info-row">
           <span>Risposta cliente</span>
-         <ion-chip
-  [color]="intervento.stato_risposta_cliente === 'Intervento annullato' ? 'danger' : 'warning'">
-  {{ intervento.stato_risposta_cliente }}
-</ion-chip>
+          <ion-chip
+            [color]="
+              intervento.stato_risposta_cliente === 'Data accettata' ? 'success' :
+              intervento.stato_risposta_cliente === 'Intervento annullato' ? 'danger' :
+              intervento.stato_risposta_cliente === 'Nuova data proposta' ? 'medium' :
+              'warning'
+            ">
+            {{ intervento.stato_risposta_cliente }}
+          </ion-chip>
         </div>
 
         <div class="info-row">
           <span>Stato lavorazione</span>
-          <ion-chip>
-  {{ intervento.stato_lavorazione }}
-</ion-chip>
+          <ion-chip
+            [color]="
+              intervento.stato_lavorazione === 'Terminato' ? 'success' :
+              intervento.stato_lavorazione === 'In lavorazione' ? 'tertiary' :
+              intervento.stato_lavorazione === 'Programmato' ? 'primary' :
+              'warning'
+            ">
+            {{ intervento.stato_lavorazione }}
+          </ion-chip>
         </div>
 
       </ion-card-content>
@@ -9795,6 +10415,232 @@ export class DashboardDipendentePage {
   }
 
 </ion-content>
+</file>
+
+<file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.ts">
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonChip,
+  IonModal,
+  IonDatetime,
+  IonItem,
+  IonLabel,
+  IonInput
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+
+import {
+  arrowBackOutline,
+  checkmarkCircleOutline,
+  calendarOutline,
+  closeCircleOutline
+} from 'ionicons/icons';
+
+import { Intervento } from 'src/app/models/intervento.model';
+import { InterventiService } from 'src/app/services/interventi.service';
+
+@Component({
+  selector: 'app-dettaglio-intervento-cliente',
+  templateUrl: './dettaglio-intervento-cliente.page.html',
+  styleUrls: ['./dettaglio-intervento-cliente.page.scss'],
+  standalone: true,
+  imports: [
+    RouterLink,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonChip,
+    IonModal,
+    IonDatetime,
+    IonItem,
+    IonLabel,
+    IonInput
+  ]
+})
+export class DettaglioInterventoClientePage implements OnInit {
+
+  interventoId = '';
+
+  intervento: Intervento | null = null;
+
+  caricamento = true;
+
+  nuovaDataCliente = '';
+
+  dataMinima = '';
+
+  constructor(
+    private route: ActivatedRoute,
+    private alertController: AlertController,
+    private interventiService: InterventiService
+  ) {
+    addIcons({
+      arrowBackOutline,
+      checkmarkCircleOutline,
+      calendarOutline,
+      closeCircleOutline
+    });
+
+    const domani = new Date();
+    domani.setDate(domani.getDate() + 1);
+
+    const tzoffset = domani.getTimezoneOffset() * 60000;
+
+    this.dataMinima = new Date(
+      domani.getTime() - tzoffset
+    ).toISOString().split('T')[0];
+  }
+
+  ngOnInit() {
+    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
+
+    this.caricaIntervento();
+  }
+
+  caricaIntervento() {
+    this.caricamento = true;
+
+    this.interventiService.getInterventoClienteById(this.interventoId).subscribe({
+      next: (intervento) => {
+        this.intervento = intervento;
+        this.caricamento = false;
+      },
+      error: (err) => {
+        console.error('Errore caricamento dettaglio intervento cliente:', err);
+        this.caricamento = false;
+      }
+    });
+  }
+
+  get puoRispondereAllaProposta(): boolean {
+    return (
+      !!this.intervento &&
+      this.intervento.stato_admin === 'Data proposta' &&
+      this.intervento.stato_risposta_cliente === 'In attesa' &&
+      !!this.intervento.data_proposta_admin
+    );
+  }
+get negoziazioneConclusa(): boolean {
+  return (
+    !!this.intervento &&
+    (
+      this.intervento.stato_admin === 'Intervento concordato' ||
+      this.intervento.stato_admin === 'Rifiutato' ||
+      this.intervento.stato_risposta_cliente === 'Data accettata' ||
+      this.intervento.stato_risposta_cliente === 'Intervento annullato'
+    )
+  );
+}
+  get nuovaDataFormattata(): string {
+    if (!this.nuovaDataCliente) {
+      return '';
+    }
+
+    const d = new Date(this.nuovaDataCliente);
+
+    return d.toLocaleDateString('it-IT');
+  }
+
+  accettaDataAdmin() {
+    if (!this.intervento) {
+      return;
+    }
+
+    this.interventiService.clienteRispondeData(this.interventoId, {
+      azione: 'accetta_data'
+    }).subscribe({
+      next: () => {
+        this.caricaIntervento();
+      },
+      error: (err) => {
+        console.error('Errore accettazione data:', err);
+      }
+    });
+  }
+
+  confermaNuovaData() {
+  if (!this.intervento || !this.nuovaDataCliente) {
+    return;
+  }
+
+  const dataPulita = this.nuovaDataCliente.split('T')[0];
+
+  this.interventiService.clienteRispondeData(this.interventoId, {
+    azione: 'proponi_nuova_data',
+    nuova_data: dataPulita
+  }).subscribe({
+    next: () => {
+      this.nuovaDataCliente = '';
+      this.caricaIntervento();
+    },
+    error: (err) => {
+      console.error('Errore proposta nuova data:', err);
+    }
+  });}
+
+  async annullaIntervento() {
+  if (!this.intervento) {
+    return;
+  }
+
+  const alert = await this.alertController.create({
+    header: 'Annulla intervento',
+    message: 'Vuoi annullare definitivamente questo intervento?',
+    cssClass: 'custom-dark-alert',
+    buttons: [
+      {
+        text: 'Indietro',
+        role: 'cancel'
+      },
+      {
+        text: 'Annulla intervento',
+        role: 'destructive',
+        handler: () => {
+          this.interventiService.clienteRispondeData(this.interventoId, {
+            azione: 'annulla_intervento'
+          }).subscribe({
+            next: () => {
+              this.caricaIntervento();
+            },
+            error: (err) => {
+              console.error('Errore annullamento intervento:', err);
+            }
+          });
+
+          return true;
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
+}
 </file>
 
 <file path="Frontend/src/app/services/interventi.service.ts">
@@ -9978,6 +10824,21 @@ aggiornaStatoLavorazioneDipendente(
     `http://localhost:3000/api/dipendente/interventi/${interventoId}/stato`,
     {
       stato_lavorazione
+    },
+    {
+      headers: this.getHeaders()
+    }
+  );
+}
+
+aggiornaDipendentiAssegnati(
+  interventoId: number | string,
+  dipendenteIds: number[]
+): Observable<any> {
+  return this.http.put(
+    `${this.adminApiUrl}/${interventoId}/dipendenti`,
+    {
+      dipendente_ids: dipendenteIds
     },
     {
       headers: this.getHeaders()
@@ -10381,372 +11242,67 @@ exports.updateStatoLavorazioneForDipendente = (
     );
   });
 };
-</file>
 
-<file path="Frontend/src/app/models/intervento.model.ts">
-export interface Intervento {
-  id: number;
+exports.aggiornaDipendentiAssegnati = (intervento_id, dipendente_ids) => {
+  return new Promise((resolve, reject) => {
+    db.serialize(() => {
+      db.run('BEGIN TRANSACTION');
 
-  cliente_id?: number;
-
-  descrizione: string;
-
-  luogo: string;
-
-  priorita: 'Bassa' | 'Media' | 'Alta';
-
-  stato_admin:
-    | 'Intervento concordato'
-    | 'Richiesto'
-    | 'Rifiutato'
-    | 'Data proposta'
-    | 'In attesa nuova valutazione';
-
-  stato_risposta_cliente:
-    | 'In attesa'
-    | 'Data accettata'
-    | 'Nuova data proposta'
-    | 'Intervento annullato';
-
-  stato_lavorazione:
-    | 'Da programmare'
-    | 'Programmato'
-    | 'In lavorazione'
-    | 'Terminato';
-
-  // Campo di comodo usato in alcune viste frontend
-  dataOra?: string;
-
-  // Vecchi campi usati nei mock/pagine già esistenti
-  cliente?: string;
-
-  emailCliente?: string;
-
-  telefonoCliente?: string;
-
-  // Campi reali restituiti dal backend nelle query admin con JOIN users
-  cliente_nome?: string;
-
-  cliente_cognome?: string;
-
-  cliente_email?: string;
-
-  cliente_telefono?: string;
-
-  // Date del database
-  data_richiesta?: string;
-
-  data_proposta_cliente?: string;
-
-  data_proposta_admin?: string;
-
-  data_accettata?: string;
-
-  created_at?: string;
-
-  updated_at?: string;
-
-  dipendentiAssegnati?: string[];
-
-  numero_dipendenti?: number;
-}
-</file>
-
-<file path="Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-admin">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-
-    <ion-title>
-      Dashboard Admin
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
-  <section class="detail-header">
-    <h1>
-      Intervento #{{ interventoId }}
-    </h1>
-
-    <p>
-      Riepilogo della richiesta tecnica e assegnazione al personale operativo.
-    </p>
-  </section>
-
-  @if (intervento) {
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Informazioni Cliente
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-
-        <div class="info-row">
-          <span>Cliente</span>
-          <strong>
-            {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }}
-          </strong>
-        </div>
-
-        <div class="info-row">
-          <span>Email</span>
-          <strong>
-            {{ intervento.cliente_email }}
-          </strong>
-        </div>
-
-        <div class="info-row">
-          <span>Telefono</span>
-          <strong>
-            {{ intervento.cliente_telefono }}
-          </strong>
-        </div>
-
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card class="detail-card">
-      <ion-card-header>
-        <ion-card-title>
-          Dati Intervento
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-
-        <div class="info-row">
-          <span>Descrizione</span>
-          <strong>
-            {{ intervento.descrizione }}
-          </strong>
-        </div>
-
-        <div class="info-row">
-          <span>Luogo</span>
-          <strong>
-            {{ intervento.luogo }}
-          </strong>
-        </div>
-
-        <div class="info-row">
-          <span>Priorità</span>
-          <strong>
-            {{ intervento.priorita }}
-          </strong>
-        </div>
-
-        <div class="info-row">
-          <span>Data richiesta</span>
-          <strong>
-            {{ intervento.data_richiesta }}
-          </strong>
-        </div>
-
-        <div class="info-row">
-          <span>Data proposta dal cliente</span>
-          <strong>
-            {{ intervento.data_proposta_cliente || 'Nessuna data proposta' }}
-          </strong>
-        </div>
-
-        <div class="info-row">
-          <span>Data proposta dall'admin</span>
-          <strong>
-            {{ intervento.data_proposta_admin || 'Nessuna data proposta' }}
-          </strong>
-        </div>
-
-        <div class="info-row">
-          <span>Data accettata</span>
-          <strong>
-            {{ intervento.data_accettata || 'Non ancora accettata' }}
-          </strong>
-        </div>
-
-        <div class="info-row">
-          <span>Risposta cliente</span>
-          <ion-chip
-            [color]="intervento.stato_risposta_cliente === 'Intervento annullato' ? 'danger' : 'warning'">
-            {{ intervento.stato_risposta_cliente }}
-          </ion-chip>
-        </div>
-
-        <div class="info-row">
-          <span>Stato lavorazione</span>
-          <ion-chip
-            [color]="intervento.stato_lavorazione === 'Terminato' ? 'success' : 'warning'">
-            {{ intervento.stato_lavorazione }}
-          </ion-chip>
-        </div>
-
-      </ion-card-content>
-    </ion-card>
-
-    @if (
-      intervento.stato_admin !== 'Rifiutato' &&
-      intervento.stato_risposta_cliente !== 'Intervento annullato'
-    ) {
-
-      <ion-card class="detail-card">
-        <ion-card-header>
-          <ion-card-title>
-            Pannello di Gestione
-          </ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content>
-
-          @if (intervento.stato_admin === 'Data proposta') {
-
-            <div class="assignment-box">
-
-
-              In attesa della risposta del cliente.
-            </div>
+      db.run(
+        `
+          DELETE FROM dipendenti_interventi
+          WHERE intervento_id = ?
+        `,
+        [intervento_id],
+        (err) => {
+          if (err) {
+            db.run('ROLLBACK');
+            return reject(err);
           }
 
-          @if (intervento.stato_admin === 'Intervento concordato') {
+          if (!dipendente_ids || dipendente_ids.length === 0) {
+            db.run('COMMIT', (commitErr) => {
+              if (commitErr) {
+                reject(commitErr);
+              } else {
+                resolve({ changes: 0 });
+              }
+            });
 
-            @if (dipendentiAssegnati.length > 0) {
-
-              <div class="assignment-box">
-                Dipendenti assegnati:
-                <strong>
-                  @for (dipendente of dipendentiAssegnati; track dipendente.id) {
-                    {{ dipendente.nome }} {{ dipendente.cognome }}
-                  }
-                </strong>
-              </div>
-
-            } @else {
-
-              <div class="assignment-box empty">
-                Nessun dipendente ancora assegnato.
-              </div>
-
-            }
-
+            return;
           }
 
-          <div class="actions">
+          const stmt = db.prepare(
+            `
+              INSERT INTO dipendenti_interventi
+              (intervento_id, dipendente_id)
+              VALUES (?, ?)
+            `
+          );
 
-            @if (intervento.stato_admin === 'Intervento concordato' && intervento.stato_lavorazione !== 'Terminato') {
+          for (const dipendente_id of dipendente_ids) {
+            stmt.run(intervento_id, dipendente_id);
+          }
 
-              <ion-button
-                expand="block"
-                class="btn-glass-assign"
-                (click)="assegnaDipendente()">
-                Assegna dipendente
-              </ion-button>
-
+          stmt.finalize((finalizeErr) => {
+            if (finalizeErr) {
+              db.run('ROLLBACK');
+              return reject(finalizeErr);
             }
 
-            @if (
-              intervento.stato_admin === 'Richiesto' ||
-              intervento.stato_admin === 'In attesa nuova valutazione'
-            ) {
-
-              <ion-button
-                expand="block"
-                class="btn-glass-assign"
-                (click)="accettaDataCliente()">
-                Accetta data proposta dal cliente
-              </ion-button>
-
-              <ion-item
-                button="true"
-                detail="false"
-                id="apri-calendario-data-admin"
-                class="calendar-trigger-item">
-
-                <ion-label position="stacked">
-                  Data da proporre al cliente
-                </ion-label>
-
-                <ion-input
-                  [readonly]="true"
-                  placeholder="Seleziona una data"
-                  [value]="dataAdminFormattata">
-                </ion-input>
-
-                <ion-icon
-                  slot="end"
-                  name="calendar-outline"
-                  style="color: #f5a623; font-size: 22px; margin-top: 14px;">
-                </ion-icon>
-
-              </ion-item>
-
-              <ion-modal
-                trigger="apri-calendario-data-admin"
-                class="dark-calendar-modal">
-
-                <ng-template>
-
-                  <ion-datetime
-                    presentation="date"
-                    [(ngModel)]="dataPropostaAdmin"
-                    [min]="dataMinima"
-                    class="custom-amber-calendar"
-                    [showDefaultButtons]="true"
-                    doneText="Conferma"
-                    cancelText="Annulla">
-                  </ion-datetime>
-
-                </ng-template>
-
-              </ion-modal>
-
-              <ion-button
-                expand="block"
-                class="btn-glass-assign"
-                [disabled]="!dataPropostaAdmin"
-                (click)="confermaDataAdmin()">
-                Proponi un'altra data
-              </ion-button>
-
-              <ion-button
-                expand="block"
-                class="btn-glass-reject"
-                (click)="rifiutaIntervento()">
-                Rifiuta intervento
-              </ion-button>
-
-            }
-
-          </div>
-
-        </ion-card-content>
-      </ion-card>
-
-    }
-
-  } @else {
-
-    <div class="ion-padding ion-text-center">
-      @if (caricamento) {
-        <p>
-          Caricamento dati...
-        </p>
-      } @else {
-        <p>
-          Intervento non trovato.
-        </p>
-      }
-    </div>
-
-  }
-
-</ion-content>
+            db.run('COMMIT', (commitErr) => {
+              if (commitErr) {
+                reject(commitErr);
+              } else {
+                resolve({ changes: dipendente_ids.length });
+              }
+            });
+          });
+        }
+      );
+    });
+  });
+};
 </file>
 
 <file path="Frontend/src/app/pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page.ts">
@@ -10893,17 +11449,26 @@ caricaDipendentiAssegnati() {
     return;
   }
 
-  if (this.intervento.stato_admin !== 'Intervento concordato' || this.intervento.stato_lavorazione === 'Terminato') {
-      return;
-    }
+  if (
+    this.intervento.stato_admin !== 'Intervento concordato' ||
+    this.intervento.stato_lavorazione === 'Terminato'
+  ) {
+    return;
+  }
+
+  const idsGiaAssegnati = this.dipendentiAssegnati.map(
+    dipendente => Number(dipendente.id)
+  );
+
   const alert = await this.alertController.create({
-    header: 'Assegna dipendente',
-    message: 'Seleziona il dipendente da assegnare a questo intervento.',
+    header: 'Assegna dipendenti',
+    message: 'Seleziona uno o più dipendenti da assegnare a questo intervento.',
     cssClass: 'custom-dark-alert',
     inputs: this.dipendentiDisponibili.map(dipendente => ({
-      type: 'radio',
+      type: 'checkbox',
       label: `${dipendente.nome} ${dipendente.cognome}`,
-      value: dipendente.id
+      value: Number(dipendente.id),
+      checked: idsGiaAssegnati.includes(Number(dipendente.id))
     })),
     buttons: [
       {
@@ -10912,20 +11477,19 @@ caricaDipendentiAssegnati() {
       },
       {
         text: 'Conferma',
-        handler: (dipendenteId: number) => {
-          if (!dipendenteId) {
-            return false;
-          }
+        handler: (dipendenteIds: number[]) => {
+          const idsSelezionati = dipendenteIds || [];
 
-          this.interventiService.assegnaDipendente(
+          this.interventiService.aggiornaDipendentiAssegnati(
             this.interventoId,
-            dipendenteId
+            idsSelezionati
           ).subscribe({
-            next: () => {
-              this.caricaDipendentiAssegnati();
+            next: (res) => {
+              this.dipendentiAssegnati = res.dipendenti;
+              this.caricaIntervento();
             },
             error: (err) => {
-              console.error('Errore assegnazione dipendente:', err);
+              console.error('Errore aggiornamento dipendenti assegnati:', err);
             }
           });
 
@@ -11011,232 +11575,6 @@ async rifiutaIntervento() {
             },
             error: (err) => {
               console.error('Errore rifiuto intervento:', err);
-            }
-          });
-
-          return true;
-        }
-      }
-    ]
-  });
-
-  await alert.present();
-}
-}
-</file>
-
-<file path="Frontend/src/app/pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page.ts">
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-import { FormsModule } from '@angular/forms';
-
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonChip,
-  IonModal,
-  IonDatetime,
-  IonItem,
-  IonLabel,
-  IonInput
-} from '@ionic/angular/standalone';
-
-import { addIcons } from 'ionicons';
-
-import {
-  arrowBackOutline,
-  checkmarkCircleOutline,
-  calendarOutline,
-  closeCircleOutline
-} from 'ionicons/icons';
-
-import { Intervento } from 'src/app/models/intervento.model';
-import { InterventiService } from 'src/app/services/interventi.service';
-
-@Component({
-  selector: 'app-dettaglio-intervento-cliente',
-  templateUrl: './dettaglio-intervento-cliente.page.html',
-  styleUrls: ['./dettaglio-intervento-cliente.page.scss'],
-  standalone: true,
-  imports: [
-    RouterLink,
-    FormsModule,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonChip,
-    IonModal,
-    IonDatetime,
-    IonItem,
-    IonLabel,
-    IonInput
-  ]
-})
-export class DettaglioInterventoClientePage implements OnInit {
-
-  interventoId = '';
-
-  intervento: Intervento | null = null;
-
-  caricamento = true;
-
-  nuovaDataCliente = '';
-
-  dataMinima = '';
-
-  constructor(
-    private route: ActivatedRoute,
-    private alertController: AlertController,
-    private interventiService: InterventiService
-  ) {
-    addIcons({
-      arrowBackOutline,
-      checkmarkCircleOutline,
-      calendarOutline,
-      closeCircleOutline
-    });
-
-    const domani = new Date();
-    domani.setDate(domani.getDate() + 1);
-
-    const tzoffset = domani.getTimezoneOffset() * 60000;
-
-    this.dataMinima = new Date(
-      domani.getTime() - tzoffset
-    ).toISOString().split('T')[0];
-  }
-
-  ngOnInit() {
-    this.interventoId = this.route.snapshot.paramMap.get('id') || '';
-
-    this.caricaIntervento();
-  }
-
-  caricaIntervento() {
-    this.caricamento = true;
-
-    this.interventiService.getInterventoClienteById(this.interventoId).subscribe({
-      next: (intervento) => {
-        this.intervento = intervento;
-        this.caricamento = false;
-      },
-      error: (err) => {
-        console.error('Errore caricamento dettaglio intervento cliente:', err);
-        this.caricamento = false;
-      }
-    });
-  }
-
-  get puoRispondereAllaProposta(): boolean {
-    return (
-      !!this.intervento &&
-      this.intervento.stato_admin === 'Data proposta' &&
-      this.intervento.stato_risposta_cliente === 'In attesa' &&
-      !!this.intervento.data_proposta_admin
-    );
-  }
-get negoziazioneConclusa(): boolean {
-  return (
-    !!this.intervento &&
-    (
-      this.intervento.stato_admin === 'Intervento concordato' ||
-      this.intervento.stato_admin === 'Rifiutato' ||
-      this.intervento.stato_risposta_cliente === 'Data accettata' ||
-      this.intervento.stato_risposta_cliente === 'Intervento annullato'
-    )
-  );
-}
-  get nuovaDataFormattata(): string {
-    if (!this.nuovaDataCliente) {
-      return '';
-    }
-
-    const d = new Date(this.nuovaDataCliente);
-
-    return d.toLocaleDateString('it-IT');
-  }
-
-  accettaDataAdmin() {
-    if (!this.intervento) {
-      return;
-    }
-
-    this.interventiService.clienteRispondeData(this.interventoId, {
-      azione: 'accetta_data'
-    }).subscribe({
-      next: () => {
-        this.caricaIntervento();
-      },
-      error: (err) => {
-        console.error('Errore accettazione data:', err);
-      }
-    });
-  }
-
-  confermaNuovaData() {
-  if (!this.intervento || !this.nuovaDataCliente) {
-    return;
-  }
-
-  const dataPulita = this.nuovaDataCliente.split('T')[0];
-
-  this.interventiService.clienteRispondeData(this.interventoId, {
-    azione: 'proponi_nuova_data',
-    nuova_data: dataPulita
-  }).subscribe({
-    next: () => {
-      this.nuovaDataCliente = '';
-      this.caricaIntervento();
-    },
-    error: (err) => {
-      console.error('Errore proposta nuova data:', err);
-    }
-  });}
-
-  async annullaIntervento() {
-  if (!this.intervento) {
-    return;
-  }
-
-  const alert = await this.alertController.create({
-    header: 'Annulla intervento',
-    message: 'Vuoi annullare definitivamente questo intervento?',
-    cssClass: 'custom-dark-alert',
-    buttons: [
-      {
-        text: 'Indietro',
-        role: 'cancel'
-      },
-      {
-        text: 'Annulla intervento',
-        role: 'destructive',
-        handler: () => {
-          this.interventiService.clienteRispondeData(this.interventoId, {
-            azione: 'annulla_intervento'
-          }).subscribe({
-            next: () => {
-              this.caricaIntervento();
-            },
-            error: (err) => {
-              console.error('Errore annullamento intervento:', err);
             }
           });
 
@@ -11673,222 +12011,43 @@ exports.aggiornaStatoLavorazioneDipendente = async (req, res) => {
     });
   }
 };
-</file>
 
-<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.html">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark"> 
-    <ion-buttons slot="start">
-      <ion-button routerLink="/home">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Home</ion-title>
-  </ion-toolbar>
-</ion-header>
+exports.aggiornaDipendentiAssegnati = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { dipendente_ids } = req.body;
 
-<ion-content>
-  <section class="dashboard-header">
-    <h1>Area Amministrativa</h1>
-    <p>Gestione globale della piattaforma, gestione dipendenti e modifica catalogo.</p>
-    <div class="admin-actions">
-      <ion-button routerLink="/gestione-dipendenti">
-        <ion-icon slot="start" name="people-outline"></ion-icon>
-        Gestione Dipendenti
-      </ion-button>
-    </div>
-  </section>
+    if (!Array.isArray(dipendente_ids)) {
+      return res.status(400).json({
+        message: 'La lista dei dipendenti deve essere un array.'
+      });
+    }
 
-  <ion-grid>
-    <ion-row class="summary-row">
-      <ion-col size="12" size-md="4">
-        <div class="summary-card">
-          <span class="summary-value">{{ totalePreventivi }}</span>
-          <span class="summary-label">Preventivi Da Gestire</span>
-        </div>
-      </ion-col>
-      <ion-col size="12" size-md="4">
-        <div class="summary-card">
-          <span class="summary-value">{{ interventiAperti }}</span>
-          <span class="summary-label">Interventi Aperti</span>
-        </div>
-      </ion-col>
-      <ion-col size="12" size-md="4">
-        <div class="summary-card">
-          <span class="summary-value">{{ vociCatalogo }}</span>
-          <span class="summary-label">Voci in Catalogo</span>
-        </div>
-      </ion-col>
-    </ion-row>
+    const intervento = await Intervento.findById(id);
 
-    <ion-row class="details-row">
-      
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header class="card-header-flex">
-            <ion-card-title>Gestione Preventivi</ion-card-title>
-          </ion-card-header>
-          <ion-card-content class="scrollable-list">
-           @for (preventivo of preventivi; track preventivo.id) {
-            <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-admin', preventivo.id]" routerDirection="forward">
-              <div class="item-header">
-                <h3>{{ preventivo.descrizione }}</h3>
-                <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
-                  <ion-chip 
-                    [color]="getStatoPreventivoUX(preventivo).color" 
-                    style="margin: 0; font-size: 0.75rem;">
-                    <ion-icon [name]="getStatoPreventivoUX(preventivo).icon"></ion-icon>
-                    <ion-label>{{ getStatoPreventivoUX(preventivo).label }}</ion-label>
-                  </ion-chip>
-                </div>
-              </div>
-              <p>Cliente: {{ preventivo.cliente_nome }} {{ preventivo.cliente_cognome }} | Preventivo #{{ preventivo.id }}</p>
-            </div>
-           } @empty {
-             <div class="empty-section">Nessun preventivo da gestire.</div>
-           }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+    if (!intervento) {
+      return res.status(404).json({
+        message: 'Intervento non trovato.'
+      });
+    }
 
-      <ion-col size="12" size-md="6">
-        <ion-card class="detail-section-card">
-          <ion-card-header class="card-header-flex">
-            <ion-card-title>Gestione Interventi</ion-card-title>
-          </ion-card-header>
-          <ion-card-content class="scrollable-list">
-            @for (intervento of interventi; track intervento.id) {
-              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-admin', intervento.id]">
-                <div class="item-header">
-                  <h3>{{ intervento.descrizione }}</h3>
-                  <ion-chip [color]="getStatoInterventoUX(intervento).color" style="margin: 0; font-size: 0.75rem;">
-                    <ion-icon [name]="getStatoInterventoUX(intervento).icon"></ion-icon>
-                    <ion-label>{{ getStatoInterventoUX(intervento).label }}</ion-label>
-                  </ion-chip>
-                </div>
-                <p>Cliente: {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }} | Priorità: {{ intervento.priorita }}</p>
-                <p>Luogo: {{ intervento.luogo }}</p>
-              </div>
-            } @empty {
-              <div class="empty-section">Nessun intervento da gestire.</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+    await Intervento.aggiornaDipendentiAssegnati(id, dipendente_ids);
 
-      <ion-col size="12">
-        <ion-card class="detail-section-card">
-          <ion-card-header class="card-header-flex">
-            <ion-card-title>Gestione Catalogo</ion-card-title>
-            <ion-button fill="clear" color="warning" size="small" (click)="aggiungiVoceCatalogo()">
-              <ion-icon slot="start" name="add-outline"></ion-icon>
-              Nuovo
-            </ion-button>
-          </ion-card-header>
-          <ion-card-content class="scrollable-list">
-            @for (voce of catalogo; track voce.id) {
-              <div class="dashboard-item catalog-list-item">
-                <div class="catalog-thumbnail">
-                  <img [src]="getImmagineUrl(voce.immagine)" alt="Anteprima">
-                </div>
-                <div class="catalog-info">
-                  <div class="item-header">
-                    <h3>{{ voce.nome }}</h3>
-                    <ion-chip color="medium">{{ voce.categoria }}</ion-chip>
-                  </div>
-                  <p class="catalog-price">Prezzo Base: {{ voce.prezzoBase }}</p>
-                  <div class="item-actions">
-                    <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
-                      <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
-                    </ion-button>
-                    <ion-button fill="clear" color="danger" size="small" (click)="eliminaVoceCatalogo(voce.id)">
-                      <ion-icon slot="start" name="trash-outline"></ion-icon> Elimina
-                    </ion-button>
-                  </div>
-                </div>
-              </div>
-            } @empty {
-              <div class="empty-section">Il catalogo è vuoto.</div>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+    const dipendenti = await Intervento.findDipendentiAssegnati(id);
 
-    </ion-row>
-  </ion-grid>
+    return res.json({
+      message: 'Dipendenti assegnati aggiornati correttamente.',
+      dipendenti
+    });
 
-  <ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
-    <ng-template>
-      <ion-header class="ion-no-border">
-        <ion-toolbar color="dark">
-          <ion-title>{{ modalMode === 'crea' ? 'Nuova Voce' : 'Modifica Voce' }}</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="chiudiModale()">
-              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+  } catch (error) {
+    console.error('Errore aggiornamento dipendenti assegnati:', error);
 
-      <ion-content class="ion-padding" style="--background: #151b23;">
-        @if (formCatalogo.immagine) {
-          <div style="text-align: center; margin-bottom: 20px;">
-            <img 
-              [src]="(formCatalogo.immagine.startsWith('blob:') || formCatalogo.immagine.startsWith('http')) 
-                     ? formCatalogo.immagine 
-                     : 'http://localhost:3000' + formCatalogo.immagine" 
-              alt="Anteprima" 
-              style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-          </div>
-        }
-
-        <ion-item color="dark" class="custom-input-item">
-          <ion-input label="Nome Voce" labelPlacement="stacked" type="text" [(ngModel)]="formCatalogo.nome" placeholder="Es: Taglio Laser"></ion-input>
-        </ion-item>
-
-        <ion-item color="dark" class="custom-input-item" style="margin-top: 15px;">
-          <ion-select 
-            label="Categoria" 
-            labelPlacement="stacked" 
-            [(ngModel)]="formCatalogo.categoria" 
-            interface="popover" 
-            [interfaceOptions]="{ cssClass: 'status-popover-theme' }">
-            <ion-select-option value="Prodotto">Prodotto</ion-select-option>
-            <ion-select-option value="Servizio">Servizio</ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-item color="dark" class="custom-input-item" style="margin-top: 15px;">
-          <ion-input label="Prezzo Base" labelPlacement="stacked" type="text" [(ngModel)]="formCatalogo.prezzoBase" placeholder="Es: Da 50€/mq (Opzionale)"></ion-input>
-        </ion-item>
-
-        <div style="margin-top: 20px; display: flex; align-items: center; gap: 12px; padding: 0 4px;">
-          <ion-button fill="outline" class="btn-glass-upload" (click)="fileInput.click()">
-            <ion-icon slot="start" name="camera-outline"></ion-icon>
-            Carica Immagine
-          </ion-button>
-          <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" accept="image/*">
-          <span style="font-size: 0.85rem; color: #b7c0cc; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-            {{ nomeFileSelezionato || 'Nessun file' }}
-          </span>
-        </div>
-      </ion-content>
-
-      <ion-footer class="ion-no-border">
-        <ion-toolbar style="--background: #0b0f14; padding: 16px;">
-          <ion-button 
-            expand="block" 
-            class="btn-glass-save" 
-            (click)="salvaVoceCatalogo()" 
-            [disabled]="!formCatalogoValido">
-            <ion-icon slot="start" name="save-outline"></ion-icon>
-            Salva nel Catalogo
-          </ion-button>
-        </ion-toolbar>
-      </ion-footer>
-    </ng-template>
-  </ion-modal>
-</ion-content>
+    return res.status(500).json({
+      message: 'Errore durante l’aggiornamento dei dipendenti assegnati.'
+    });
+  }
+};
 </file>
 
 <file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.html">
@@ -12012,6 +12171,468 @@ exports.aggiornaStatoLavorazioneDipendente = async (req, res) => {
 </ion-content>
 </file>
 
+<file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.html">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark"> 
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <section class="dashboard-header">
+    <h1>Area Amministrativa</h1>
+    <p>Gestione globale della piattaforma, gestione dipendenti e modifica catalogo.</p>
+    <div class="admin-actions">
+      <ion-button routerLink="/gestione-dipendenti">
+        <ion-icon slot="start" name="people-outline"></ion-icon>
+        Gestione Dipendenti
+      </ion-button>
+    </div>
+  </section>
+
+  <ion-grid>
+    <ion-row class="summary-row">
+      <ion-col size="12" size-md="4">
+        <div class="summary-card">
+          <span class="summary-value">{{ totalePreventivi }}</span>
+          <span class="summary-label">Preventivi Da Gestire</span>
+        </div>
+      </ion-col>
+      <ion-col size="12" size-md="4">
+        <div class="summary-card">
+          <span class="summary-value">{{ interventiAperti }}</span>
+          <span class="summary-label">Interventi Aperti</span>
+        </div>
+      </ion-col>
+      <ion-col size="12" size-md="4">
+        <div class="summary-card">
+          <span class="summary-value">{{ vociCatalogo }}</span>
+          <span class="summary-label">Voci in Catalogo</span>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="details-row">
+      
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Preventivi</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="scrollable-list">
+           @for (preventivo of preventivi; track preventivo.id) {
+            <div class="dashboard-item clickable" [routerLink]="['/dettaglio-preventivo-admin', preventivo.id]" routerDirection="forward">
+              <div class="item-header">
+                <h3>{{ preventivo.descrizione }}</h3>
+                <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
+                  <ion-chip 
+                    [color]="getStatoPreventivoUX(preventivo).color" 
+                    style="margin: 0; font-size: 0.75rem;">
+                    <ion-icon [name]="getStatoPreventivoUX(preventivo).icon"></ion-icon>
+                    <ion-label>{{ getStatoPreventivoUX(preventivo).label }}</ion-label>
+                  </ion-chip>
+                </div>
+              </div>
+              <p>Cliente: {{ preventivo.cliente_nome }} {{ preventivo.cliente_cognome }} | Preventivo #{{ preventivo.id }}</p>
+            </div>
+           } @empty {
+             <div class="empty-section">Nessun preventivo da gestire.</div>
+           }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="6">
+        <ion-card class="detail-section-card">
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Interventi</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="scrollable-list">
+            @for (intervento of interventi; track intervento.id) {
+              <div class="dashboard-item clickable" [routerLink]="['/dettaglio-intervento-admin', intervento.id]">
+                <div class="item-header">
+                  <h3>{{ intervento.descrizione }}</h3>
+                  <ion-chip [color]="getStatoInterventoUX(intervento).color" style="margin: 0; font-size: 0.75rem;">
+                    <ion-icon [name]="getStatoInterventoUX(intervento).icon"></ion-icon>
+                    <ion-label>{{ getStatoInterventoUX(intervento).label }}</ion-label>
+                  </ion-chip>
+                </div>
+                <p>Cliente: {{ intervento.cliente_nome }} {{ intervento.cliente_cognome }} | Priorità: {{ intervento.priorita }}</p>
+                <p>Luogo: {{ intervento.luogo }}</p>
+              </div>
+            } @empty {
+              <div class="empty-section">Nessun intervento da gestire.</div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12">
+        <ion-card class="detail-section-card">
+          <ion-card-header class="card-header-flex">
+            <ion-card-title>Gestione Catalogo</ion-card-title>
+            <ion-button fill="clear" color="warning" size="small" (click)="aggiungiVoceCatalogo()">
+              <ion-icon slot="start" name="add-outline"></ion-icon>
+              Nuovo
+            </ion-button>
+          </ion-card-header>
+          
+          <ion-card-content class="scrollable-list">
+            
+            @if (prodottiCatalogo.length > 0) {
+              <h4 style="color: #f5a623; margin: 4px 0 12px 4px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px;">Prodotti</h4>
+              <div class="catalog-grid">
+                @for (voce of prodottiCatalogo; track voce.id) {
+                  <div class="dashboard-item catalog-list-item">
+                    <div class="catalog-thumbnail">
+                      <img [src]="getImmagineUrl(voce.immagine)" alt="Anteprima">
+                    </div>
+                    <div class="catalog-info">
+                      <div class="item-header">
+                        <h3>{{ voce.nome }}</h3>
+                        <ion-chip color="medium">{{ voce.categoria }}</ion-chip>
+                      </div>
+                      <p class="catalog-price">Prezzo Base: {{ voce.prezzoBase }}</p>
+                      <div class="item-actions">
+                        <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
+                          <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
+                        </ion-button>
+                        <ion-button fill="clear" color="danger" size="small" (click)="eliminaVoceCatalogo(voce.id)">
+                          <ion-icon slot="start" name="trash-outline"></ion-icon> Elimina
+                        </ion-button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (serviziCatalogo.length > 0) {
+              <h4 style="color: #f5a623; margin: 24px 0 12px 4px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px;">Servizi</h4>
+              <div class="catalog-grid">
+                @for (voce of serviziCatalogo; track voce.id) {
+                  <div class="dashboard-item catalog-list-item">
+                    <div class="catalog-thumbnail">
+                      <img [src]="getImmagineUrl(voce.immagine)" alt="Anteprima">
+                    </div>
+                    <div class="catalog-info">
+                      <div class="item-header">
+                        <h3>{{ voce.nome }}</h3>
+                        <ion-chip color="medium">{{ voce.categoria }}</ion-chip>
+                      </div>
+                      <p class="catalog-price">Prezzo Base: {{ voce.prezzoBase }}</p>
+                      <div class="item-actions">
+                        <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
+                          <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
+                        </ion-button>
+                        <ion-button fill="clear" color="danger" size="small" (click)="eliminaVoceCatalogo(voce.id)">
+                          <ion-icon slot="start" name="trash-outline"></ion-icon> Elimina
+                        </ion-button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (catalogo.length === 0) {
+              <div class="empty-section">Il catalogo è vuoto.</div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="chiudiModale()" class="dark-modal">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar color="dark">
+          <ion-title>{{ modalMode === 'crea' ? 'Nuova Voce' : 'Modifica Voce' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="chiudiModale()">
+              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding" style="--background: #151b23;">
+        @if (formCatalogo.immagine) {
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img 
+              [src]="(formCatalogo.immagine.startsWith('blob:') || formCatalogo.immagine.startsWith('http')) 
+                     ? formCatalogo.immagine 
+                     : 'http://localhost:3000' + formCatalogo.immagine" 
+              alt="Anteprima" 
+              style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+          </div>
+        }
+
+        <ion-item color="dark" class="custom-input-item">
+          <ion-input label="Nome Voce" labelPlacement="stacked" type="text" [(ngModel)]="formCatalogo.nome" placeholder="Es: Taglio Laser"></ion-input>
+        </ion-item>
+
+        <ion-item color="dark" class="custom-input-item" style="margin-top: 15px;">
+          <ion-select 
+            label="Categoria" 
+            labelPlacement="stacked" 
+            [(ngModel)]="formCatalogo.categoria" 
+            interface="popover" 
+            [interfaceOptions]="{ cssClass: 'status-popover-theme' }">
+            <ion-select-option value="Prodotto">Prodotto</ion-select-option>
+            <ion-select-option value="Servizio">Servizio</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item color="dark" class="custom-input-item" style="margin-top: 15px;">
+          <ion-input label="Prezzo Base" labelPlacement="stacked" type="text" [(ngModel)]="formCatalogo.prezzoBase" placeholder="Es: Da 50€/mq (Opzionale)"></ion-input>
+        </ion-item>
+
+        <div style="margin-top: 20px; display: flex; align-items: center; gap: 12px; padding: 0 4px;">
+          <ion-button fill="outline" class="btn-glass-upload" (click)="fileInput.click()">
+            <ion-icon slot="start" name="camera-outline"></ion-icon>
+            Carica Immagine
+          </ion-button>
+          <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" accept="image/*">
+          <span style="font-size: 0.85rem; color: #b7c0cc; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            {{ nomeFileSelezionato || 'Nessun file' }}
+          </span>
+        </div>
+      </ion-content>
+
+      <ion-footer class="ion-no-border">
+        <ion-toolbar style="--background: #0b0f14; padding: 16px;">
+          <ion-button 
+            expand="block" 
+            class="btn-glass-save" 
+            (click)="salvaVoceCatalogo()" 
+            [disabled]="!formCatalogoValido">
+            <ion-icon slot="start" name="save-outline"></ion-icon>
+            Salva nel Catalogo
+          </ion-button>
+        </ion-toolbar>
+      </ion-footer>
+    </ng-template>
+  </ion-modal>
+</ion-content>
+</file>
+
+<file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.ts">
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
+import {
+  IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent,
+  IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonChip, IonButton,
+  IonButtons, IonIcon, IonLabel
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+import { 
+  arrowBackOutline, documentTextOutline, constructOutline,
+  checkmarkDoneOutline, closeCircleOutline, trashOutline, alertCircleOutline, 
+  calendarNumberOutline, timeOutline, personAddOutline, calendarOutline, 
+  buildOutline, helpCircleOutline
+} from 'ionicons/icons';
+
+import { Preventivo } from 'src/app/models/preventivo.model';
+import { InterventiService } from '../../services/interventi.service';
+import { PreventiviService } from '../../services/preventivi.service';
+
+@Component({
+  selector: 'app-dashboard-cliente',
+  templateUrl: './dashboard-cliente.page.html',
+  styleUrls: ['./dashboard-cliente.page.scss'],
+  standalone: true,
+  imports: [
+    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
+    IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow,
+    IonCol, IonChip, IonButton, IonButtons, IonIcon, IonLabel
+  ]
+})
+export class DashboardClientePage { 
+
+  tuttiGliInterventi: any[] = [];
+  interventiFuturi: any[] = [];
+  preventivi: Preventivo[] = [];
+  nomeCliente = '';
+
+  constructor(
+    private interventiService: InterventiService,
+    private preventiviService: PreventiviService,
+  ) {
+    addIcons({ 
+      arrowBackOutline, documentTextOutline, constructOutline,
+      checkmarkDoneOutline, closeCircleOutline, trashOutline, alertCircleOutline, 
+      calendarNumberOutline, timeOutline, personAddOutline, calendarOutline, 
+      buildOutline, helpCircleOutline
+    });
+  }
+
+  ionViewWillEnter() {
+    this.nomeCliente = sessionStorage.getItem('nomeUtente') || 'Cliente';
+    this.caricaInterventi();
+    this.caricaPreventivi(); 
+  }
+
+  // ==========================================
+  // GESTIONE INTERVENTI E CALENDARIO
+  // ==========================================
+  caricaInterventi() {
+    this.interventiService.getInterventiCliente().subscribe({
+      next: (dati) => {
+        // 1. Ordinamento con priorità Cliente (Lista principale)
+        this.tuttiGliInterventi = dati.sort((a, b) => {
+          const pesoA = this.calcolaPesoIntervento(a);
+          const pesoB = this.calcolaPesoIntervento(b);
+          
+          if (pesoA !== pesoB) return pesoA - pesoB;
+          return (b.id || 0) - (a.id || 0);
+        });
+
+        // 2. LOGICA CALENDARIO: Assegnati, In Lavorazione, Terminati da < 24h
+        const oraAttuale = new Date().getTime();
+        const ventiquattroOreFa = oraAttuale - (24 * 60 * 60 * 1000); 
+        
+        let filtratiCalendario = dati.filter(intervento => {
+          const dataDaUsare = intervento.data_accettata || intervento.data_proposta_admin || intervento.data_proposta_cliente || intervento.data_richiesta;
+          if (!dataDaUsare) return false;
+          
+          const timestampEvento = new Date(dataDaUsare).getTime();
+
+          // Condizione A: Assegnato al tecnico (Programmato + almeno 1 dipendente)
+          const isAssegnato = intervento.stato_lavorazione === 'Programmato' && (intervento.numero_dipendenti && intervento.numero_dipendenti > 0);
+          
+          // Condizione B: Tecnico fisicamente a lavoro
+          const isInLavorazione = intervento.stato_lavorazione === 'In lavorazione';
+          
+          // Condizione C: Lavoro completato da meno di 24 ore
+          const isTerminatoRecente = intervento.stato_lavorazione === 'Terminato' && timestampEvento >= ventiquattroOreFa;
+
+          return isAssegnato || isInLavorazione || isTerminatoRecente;
+        });
+
+        // 3. ORDINAMENTO CALENDARIO: Ordine cronologico (Dal più vicino al più lontano)
+        this.interventiFuturi = filtratiCalendario.sort((a, b) => {
+          const dataStringA = a.data_accettata || a.data_proposta_admin || a.data_proposta_cliente || a.data_richiesta || '';
+          const dataStringB = b.data_accettata || b.data_proposta_admin || b.data_proposta_cliente || b.data_richiesta || '';
+          
+          const tempoA = new Date(dataStringA).getTime();
+          const tempoB = new Date(dataStringB).getTime();
+          
+          return tempoA - tempoB; 
+        });
+      },
+      error: (err) => console.error('Errore caricamento interventi', err)
+    });
+  }
+
+  calcolaPesoIntervento(intervento: any): number {
+    // 3. In fondo: Pratiche chiuse o rifiutate
+    if (
+      intervento.stato_admin === 'Rifiutato' || 
+      intervento.stato_risposta_cliente === 'Intervento annullato' ||
+      intervento.stato_lavorazione === 'Terminato'
+    ) return 3; 
+
+    // 1. In cima: Il cliente deve confermare la data proposta dall'admin
+    if (intervento.stato_admin === 'Data proposta' && intervento.stato_risposta_cliente === 'In attesa') return 1; 
+
+    // 2. In mezzo: Il cliente aspetta (in valutazione, assegnazione tecnico, in lavorazione)
+    return 2;
+  }
+
+  // ==========================================
+  // GESTIONE PREVENTIVI
+  // ==========================================
+  caricaPreventivi() {
+    this.preventiviService.getPreventivi().subscribe({
+      next: (dati) => {
+        // Ordinamento con priorità Cliente
+        this.preventivi = dati.sort((a, b) => {
+          const pesoA = this.calcolaPesoPreventivo(a);
+          const pesoB = this.calcolaPesoPreventivo(b);
+          
+          if (pesoA !== pesoB) return pesoA - pesoB;
+          return (b.id || 0) - (a.id || 0); // Dal più recente
+        });
+      },
+      error: (err) => console.error('Errore caricamento preventivi:', err)
+    });
+  }
+
+  calcolaPesoPreventivo(p: any): number {
+    const statoAdmin = p.stato_admin;
+    const statoCliente = p.stato_risposta_cliente;
+
+    // 3. In fondo: Chiusi/Rifiutati
+    if (statoAdmin === 'Rifiutato' || statoCliente === 'Rifiutato') return 3; 
+    
+    // 1. In cima: L'officina ha mandato il prezzo, il cliente deve rispondere
+    if (statoAdmin === 'Prezzo proposto' && statoCliente === 'In attesa') return 1;
+    
+    // 2. In mezzo: Lavori accettati o in attesa di prezzatura
+    return 2;
+  }
+
+  // ==========================================
+  // HELPER UX: TRADUZIONE STATI
+  // ==========================================
+  getStatoPreventivoUX(preventivo: any): { label: string, color: string, icon: string } {
+    const statoAdmin = preventivo.stato_admin;
+    const statoCliente = preventivo.stato_risposta_cliente;
+
+    if (statoAdmin === 'Rifiutato' || statoCliente === 'Rifiutato') return { label: 'Rifiutato', color: 'danger', icon: 'close-circle-outline' };
+    if (statoCliente === 'Accettato' || statoAdmin === 'Preventivo concordato') return { label: 'Accettato', color: 'success', icon: 'checkmark-done-outline' };
+    if (statoAdmin === 'Da valutare') return { label: 'In valutazione', color: 'medium', icon: 'time-outline' };
+    if (statoAdmin === 'Prezzo proposto' && statoCliente === 'In attesa') return { label: 'Risposta Richiesta', color: 'warning', icon: 'alert-circle-outline' };
+
+    return { label: statoAdmin, color: 'medium', icon: 'help-circle-outline' };
+  }
+
+  getStatoInterventoUX(intervento: any): { label: string, color: string, icon: string } {
+    if (intervento.stato_lavorazione === 'Terminato') return { label: 'Completato', color: 'success', icon: 'checkmark-done-outline' };
+    if (intervento.stato_admin === 'Rifiutato') return { label: 'Rifiutato', color: 'danger', icon: 'close-circle-outline' };
+    if (intervento.stato_risposta_cliente === 'Intervento annullato') return { label: 'Annullato', color: 'danger', icon: 'trash-outline' };
+
+    if (intervento.stato_admin === 'Richiesto') return { label: 'In valutazione', color: 'medium', icon: 'time-outline' };
+    if (intervento.stato_admin === 'Data proposta' && intervento.stato_risposta_cliente === 'In attesa') return { label: 'Conferma Data', color: 'warning', icon: 'alert-circle-outline' };
+    if (intervento.stato_admin === 'In attesa nuova valutazione') return { label: 'In attesa conferma', color: 'medium', icon: 'time-outline' };
+    
+    if (intervento.stato_lavorazione === 'Programmato') {
+      if (intervento.numero_dipendenti > 0) {
+        return { label: 'Assegnato al Tecnico', color: 'primary', icon: 'calendar-outline' };
+      } else {
+        return { label: 'Ricerca Tecnico in corso', color: 'medium', icon: 'time-outline' }; 
+      }
+    }
+
+    if (intervento.stato_lavorazione === 'In lavorazione') return { label: 'Tecnico a lavoro', color: 'tertiary', icon: 'build-outline' };
+
+    return { label: 'In lavorazione', color: 'light', icon: 'help-circle-outline' };
+  }
+}
+</file>
+
+<file path=".gitignore">
+# Nascondi i motori e il DB del Backend
+Backend/node_modules/
+Backend/database.sqlite
+**/database.sqlite
+
+# Nascondi i motori del Frontend
+Frontend/node_modules/
+Frontend/.angular/
+</file>
+
 <file path="Frontend/src/app/pages/dashboard-admin/dashboard-admin.page.ts">
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -12064,6 +12685,15 @@ export class DashboardAdminPage {
   isModalOpen = false;
   modalMode: 'crea' | 'modifica' = 'crea';
   formCatalogo: Partial<VoceCatalogo> = {};
+  
+  get prodottiCatalogo(): VoceCatalogo[] {
+    return this.catalogo.filter(v => v.categoria === 'Prodotto');
+  }
+
+  get serviziCatalogo(): VoceCatalogo[] {
+    return this.catalogo.filter(v => v.categoria === 'Servizio');
+  }
+
 
   constructor(
     private alertController: AlertController,
@@ -12334,215 +12964,6 @@ export class DashboardAdminPage {
     return 'http://localhost:3000' + immagine;
   }
 }
-</file>
-
-<file path="Frontend/src/app/pages/dashboard-cliente/dashboard-cliente.page.ts">
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-
-import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent,
-  IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonChip, IonButton,
-  IonButtons, IonIcon, IonLabel
-} from '@ionic/angular/standalone';
-
-import { addIcons } from 'ionicons';
-import { 
-  arrowBackOutline, documentTextOutline, constructOutline,
-  checkmarkDoneOutline, closeCircleOutline, trashOutline, alertCircleOutline, 
-  calendarNumberOutline, timeOutline, personAddOutline, calendarOutline, 
-  buildOutline, helpCircleOutline
-} from 'ionicons/icons';
-
-import { Preventivo } from 'src/app/models/preventivo.model';
-import { InterventiService } from '../../services/interventi.service';
-import { PreventiviService } from '../../services/preventivi.service';
-
-@Component({
-  selector: 'app-dashboard-cliente',
-  templateUrl: './dashboard-cliente.page.html',
-  styleUrls: ['./dashboard-cliente.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
-    IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow,
-    IonCol, IonChip, IonButton, IonButtons, IonIcon, IonLabel
-  ]
-})
-export class DashboardClientePage { 
-
-  tuttiGliInterventi: any[] = [];
-  interventiFuturi: any[] = [];
-  preventivi: Preventivo[] = [];
-  nomeCliente = '';
-
-  constructor(
-    private interventiService: InterventiService,
-    private preventiviService: PreventiviService,
-  ) {
-    addIcons({ 
-      arrowBackOutline, documentTextOutline, constructOutline,
-      checkmarkDoneOutline, closeCircleOutline, trashOutline, alertCircleOutline, 
-      calendarNumberOutline, timeOutline, personAddOutline, calendarOutline, 
-      buildOutline, helpCircleOutline
-    });
-  }
-
-  ionViewWillEnter() {
-    this.nomeCliente = sessionStorage.getItem('nomeUtente') || 'Cliente';
-    this.caricaInterventi();
-    this.caricaPreventivi(); 
-  }
-
-  // ==========================================
-  // GESTIONE INTERVENTI E CALENDARIO
-  // ==========================================
-  caricaInterventi() {
-    this.interventiService.getInterventiCliente().subscribe({
-      next: (dati) => {
-        // 1. Ordinamento con priorità Cliente (Lista principale)
-        this.tuttiGliInterventi = dati.sort((a, b) => {
-          const pesoA = this.calcolaPesoIntervento(a);
-          const pesoB = this.calcolaPesoIntervento(b);
-          
-          if (pesoA !== pesoB) return pesoA - pesoB;
-          return (b.id || 0) - (a.id || 0);
-        });
-
-        // 2. LOGICA CALENDARIO: Assegnati, In Lavorazione, Terminati da < 24h
-        const oraAttuale = new Date().getTime();
-        const ventiquattroOreFa = oraAttuale - (24 * 60 * 60 * 1000); 
-        
-        let filtratiCalendario = dati.filter(intervento => {
-          const dataDaUsare = intervento.data_accettata || intervento.data_proposta_admin || intervento.data_proposta_cliente || intervento.data_richiesta;
-          if (!dataDaUsare) return false;
-          
-          const timestampEvento = new Date(dataDaUsare).getTime();
-
-          // Condizione A: Assegnato al tecnico (Programmato + almeno 1 dipendente)
-          const isAssegnato = intervento.stato_lavorazione === 'Programmato' && (intervento.numero_dipendenti && intervento.numero_dipendenti > 0);
-          
-          // Condizione B: Tecnico fisicamente a lavoro
-          const isInLavorazione = intervento.stato_lavorazione === 'In lavorazione';
-          
-          // Condizione C: Lavoro completato da meno di 24 ore
-          const isTerminatoRecente = intervento.stato_lavorazione === 'Terminato' && timestampEvento >= ventiquattroOreFa;
-
-          return isAssegnato || isInLavorazione || isTerminatoRecente;
-        });
-
-        // 3. ORDINAMENTO CALENDARIO: Ordine cronologico (Dal più vicino al più lontano)
-        this.interventiFuturi = filtratiCalendario.sort((a, b) => {
-          const dataStringA = a.data_accettata || a.data_proposta_admin || a.data_proposta_cliente || a.data_richiesta || '';
-          const dataStringB = b.data_accettata || b.data_proposta_admin || b.data_proposta_cliente || b.data_richiesta || '';
-          
-          const tempoA = new Date(dataStringA).getTime();
-          const tempoB = new Date(dataStringB).getTime();
-          
-          return tempoA - tempoB; 
-        });
-      },
-      error: (err) => console.error('Errore caricamento interventi', err)
-    });
-  }
-
-  calcolaPesoIntervento(intervento: any): number {
-    // 3. In fondo: Pratiche chiuse o rifiutate
-    if (
-      intervento.stato_admin === 'Rifiutato' || 
-      intervento.stato_risposta_cliente === 'Intervento annullato' ||
-      intervento.stato_lavorazione === 'Terminato'
-    ) return 3; 
-
-    // 1. In cima: Il cliente deve confermare la data proposta dall'admin
-    if (intervento.stato_admin === 'Data proposta' && intervento.stato_risposta_cliente === 'In attesa') return 1; 
-
-    // 2. In mezzo: Il cliente aspetta (in valutazione, assegnazione tecnico, in lavorazione)
-    return 2;
-  }
-
-  // ==========================================
-  // GESTIONE PREVENTIVI
-  // ==========================================
-  caricaPreventivi() {
-    this.preventiviService.getPreventivi().subscribe({
-      next: (dati) => {
-        // Ordinamento con priorità Cliente
-        this.preventivi = dati.sort((a, b) => {
-          const pesoA = this.calcolaPesoPreventivo(a);
-          const pesoB = this.calcolaPesoPreventivo(b);
-          
-          if (pesoA !== pesoB) return pesoA - pesoB;
-          return (b.id || 0) - (a.id || 0); // Dal più recente
-        });
-      },
-      error: (err) => console.error('Errore caricamento preventivi:', err)
-    });
-  }
-
-  calcolaPesoPreventivo(p: any): number {
-    const statoAdmin = p.stato_admin;
-    const statoCliente = p.stato_risposta_cliente;
-
-    // 3. In fondo: Chiusi/Rifiutati
-    if (statoAdmin === 'Rifiutato' || statoCliente === 'Rifiutato') return 3; 
-    
-    // 1. In cima: L'officina ha mandato il prezzo, il cliente deve rispondere
-    if (statoAdmin === 'Prezzo proposto' && statoCliente === 'In attesa') return 1;
-    
-    // 2. In mezzo: Lavori accettati o in attesa di prezzatura
-    return 2;
-  }
-
-  // ==========================================
-  // HELPER UX: TRADUZIONE STATI
-  // ==========================================
-  getStatoPreventivoUX(preventivo: any): { label: string, color: string, icon: string } {
-    const statoAdmin = preventivo.stato_admin;
-    const statoCliente = preventivo.stato_risposta_cliente;
-
-    if (statoAdmin === 'Rifiutato' || statoCliente === 'Rifiutato') return { label: 'Rifiutato', color: 'danger', icon: 'close-circle-outline' };
-    if (statoCliente === 'Accettato' || statoAdmin === 'Preventivo concordato') return { label: 'Accettato', color: 'success', icon: 'checkmark-done-outline' };
-    if (statoAdmin === 'Da valutare') return { label: 'In valutazione', color: 'medium', icon: 'time-outline' };
-    if (statoAdmin === 'Prezzo proposto' && statoCliente === 'In attesa') return { label: 'Risposta Richiesta', color: 'warning', icon: 'alert-circle-outline' };
-
-    return { label: statoAdmin, color: 'medium', icon: 'help-circle-outline' };
-  }
-
-  getStatoInterventoUX(intervento: any): { label: string, color: string, icon: string } {
-    if (intervento.stato_lavorazione === 'Terminato') return { label: 'Completato', color: 'success', icon: 'checkmark-done-outline' };
-    if (intervento.stato_admin === 'Rifiutato') return { label: 'Rifiutato', color: 'danger', icon: 'close-circle-outline' };
-    if (intervento.stato_risposta_cliente === 'Intervento annullato') return { label: 'Annullato', color: 'danger', icon: 'trash-outline' };
-
-    if (intervento.stato_admin === 'Richiesto') return { label: 'In valutazione', color: 'medium', icon: 'time-outline' };
-    if (intervento.stato_admin === 'Data proposta' && intervento.stato_risposta_cliente === 'In attesa') return { label: 'Conferma Data', color: 'warning', icon: 'alert-circle-outline' };
-    if (intervento.stato_admin === 'In attesa nuova valutazione') return { label: 'In attesa conferma', color: 'medium', icon: 'time-outline' };
-    
-    if (intervento.stato_lavorazione === 'Programmato') {
-      if (intervento.numero_dipendenti > 0) {
-        return { label: 'Assegnato al Tecnico', color: 'primary', icon: 'calendar-outline' };
-      } else {
-        return { label: 'Ricerca Tecnico in corso', color: 'medium', icon: 'time-outline' }; 
-      }
-    }
-
-    if (intervento.stato_lavorazione === 'In lavorazione') return { label: 'Tecnico a lavoro', color: 'tertiary', icon: 'build-outline' };
-
-    return { label: 'In lavorazione', color: 'light', icon: 'help-circle-outline' };
-  }
-}
-</file>
-
-<file path=".gitignore">
-# Nascondi i motori e il DB del Backend
-Backend/node_modules/
-Backend/database.sqlite
-**/database.sqlite
-
-# Nascondi i motori del Frontend
-Frontend/node_modules/
-Frontend/.angular/
 </file>
 
 <file path="Backend/database/database.js">
@@ -12938,7 +13359,12 @@ router.post(
   middleware.isAdmin,
   interventiController.assegnaDipendente
 );
-
+router.put(
+  '/admin/interventi/:id/dipendenti',
+  middleware.verifyToken,
+  middleware.isAdmin,
+  interventiController.aggiornaDipendentiAssegnati
+);
 router.get(
   '/admin/interventi/:id/dipendenti',
   middleware.verifyToken,
