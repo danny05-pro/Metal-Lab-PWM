@@ -19,7 +19,6 @@ import {
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, alertCircleOutline } from 'ionicons/icons';
 
-// 1. Importiamo il Service
 import { AuthService } from '../../services/auth.service';
 import { HeaderComponent } from '../../components/header/header.component';
 import { RegisterResponse } from '../../models/user.model';
@@ -56,9 +55,9 @@ export class RegisterPage {
 
   erroreRegistrazione = '';
 
-  // 2. Iniettiamo l'AuthService e rimuoviamo HttpClient
+
   constructor(
-    private router: Router, 
+    private router: Router,
     private authService: AuthService
   ) {
     addIcons({
@@ -74,7 +73,7 @@ export class RegisterPage {
     input.value = this.telefono;
   }
 
-  // 3. Regex aggiornata: l'indirizzo deve cominciare per forza con una lettera ([a-zA-Z])
+
   emailValida(email: string): boolean {
     return /^[a-zA-Z][^\s@]*@[^\s@]+\.[^\s@]+$/.test(email);
   }
@@ -86,11 +85,11 @@ export class RegisterPage {
 
   get passwordValida(): boolean {
     const p = this.password;
-    
+
     const haMaiuscola = /[A-Z]/.test(p);
     const haMinuscola = /[a-z]/.test(p);
     const haNumero = /[0-9]/.test(p);
-    const haSpeciale = /[\W_]/.test(p); 
+    const haSpeciale = /[\W_]/.test(p);
     const lungaAbbastanza = p.length >= 6;
 
     return haMaiuscola && haMinuscola && haNumero && haSpeciale && lungaAbbastanza;
@@ -102,7 +101,7 @@ export class RegisterPage {
       this.cognome.trim() !== '' &&
       this.emailValida(this.email) &&
       this.telefonoValido(this.telefono) &&
-      this.passwordValida 
+      this.passwordValida
     );
   }
 
@@ -121,10 +120,9 @@ export class RegisterPage {
       password: this.password
     };
 
-    // 4. Deleghiamo il lavoro sporco al Service
+
     this.authService.register(payload).subscribe({
-      next: (response: RegisterResponse) => {
-        console.log('Registrato con successo:', response);
+      next: (_response: RegisterResponse) => {
         this.router.navigate(['/login']);
       },
       error: (err: HttpErrorResponse) => {

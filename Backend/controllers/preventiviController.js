@@ -2,7 +2,7 @@ const Preventivo = require('../models/preventiviModel');
 
 exports.creaPreventivo = async (req, res) => {
   try {
-    const cliente_id = req.user.id; 
+    const cliente_id = req.user.id;
     const { descrizione, servizio, materiale, dimensioni, finitura } = req.body;
 
     if (!descrizione || !servizio || !materiale || !dimensioni) {
@@ -10,14 +10,14 @@ exports.creaPreventivo = async (req, res) => {
     }
 
     // Trasformiamo l'array di file nei percorsi fisici
-    const percorsiAllegati = req.files && req.files.length > 0 
-      ? req.files.map(f => `/uploads/${f.filename}`).join(',') 
+    const percorsiAllegati = req.files && req.files.length > 0
+      ? req.files.map(f => `/uploads/${f.filename}`).join(',')
       : null;
 
     const nuovoPreventivo = await Preventivo.create({
       cliente_id, descrizione, servizio, materiale, dimensioni,
       finitura: finitura || null,
-      allegato: percorsiAllegati // <--- Salviamo la stringa con i percorsi reali!
+      allegato: percorsiAllegati
     });
 
     res.status(201).json({ message: 'Preventivo inviato con successo!', preventivo: nuovoPreventivo });
@@ -69,7 +69,7 @@ exports.getPreventivoClienteById = async (req, res) => {
 exports.clienteRispondePreventivo = async (req, res) => {
   try {
     const { id } = req.params;
-    const { azione } = req.body; 
+    const { azione } = req.body;
 
     const preventivo = await Preventivo.findById(id);
     if (!preventivo) return res.status(404).json({ message: 'Preventivo non trovato.' });
@@ -86,7 +86,7 @@ exports.clienteRispondePreventivo = async (req, res) => {
 
     // Calcoliamo i due nuovi stati
     const nuovoStatoCliente = azione === 'accetta' ? 'Accettato' : 'Rifiutato';
-    
+
     // Se il cliente accetta, l'admin vedrà "Preventivo concordato". Se rifiuta, lo diamo per "Rifiutato" anche all'admin.
     const nuovoStatoAdmin = azione === 'accetta' ? 'Preventivo concordato' : 'Rifiutato';
 
@@ -105,7 +105,7 @@ exports.clienteRispondePreventivo = async (req, res) => {
 exports.getPreventivoAdminById = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Usiamo la funzione del modello che fa la JOIN con gli utenti
     const preventivo = await Preventivo.findByIdForAdmin(id);
 
@@ -148,11 +148,11 @@ exports.adminProponePrezzo = async (req, res) => {
 
     // Recuperiamo il preventivo aggiornato per restituirlo
     const preventivoAggiornato = await Preventivo.findByIdForAdmin(id);
-    return res.json({ 
-      message: 'Prezzo proposto con successo.', 
-      preventivo: preventivoAggiornato 
+    return res.json({
+      message: 'Prezzo proposto con successo.',
+      preventivo: preventivoAggiornato
     });
-    
+
   } catch (error) {
     console.error('Errore proposta prezzo admin:', error);
     return res.status(500).json({ message: 'Errore durante la proposta del prezzo.' });
@@ -163,7 +163,7 @@ exports.adminProponePrezzo = async (req, res) => {
 exports.adminRifiutaPreventivo = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Controlliamo che il preventivo esista
     const preventivo = await Preventivo.findById(id);
     if (!preventivo) {
@@ -177,9 +177,9 @@ exports.adminRifiutaPreventivo = async (req, res) => {
 
     // Cambiamo lo stato in rifiutato nel database
     await Preventivo.adminRifiutaPreventivo(id);
-    
+
     return res.json({ message: 'Preventivo rifiutato con successo.' });
-    
+
   } catch (error) {
     console.error('Errore rifiuto preventivo admin:', error);
     return res.status(500).json({ message: 'Errore durante il rifiuto.' });

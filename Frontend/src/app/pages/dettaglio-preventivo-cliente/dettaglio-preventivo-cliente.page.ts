@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { CommonModule } from '@angular/common'; 
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
@@ -13,10 +13,11 @@ import {AlertController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { documentAttachOutline } from 'ionicons/icons';
 
-// Importiamo il service
+
 import { PreventiviService } from '../../services/preventivi.service';
 import { HeaderComponent } from '../../components/header/header.component';
 import { Preventivo, PreventivoDettaglio } from '../../models/preventivo.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-dettaglio-preventivo-cliente',
@@ -35,12 +36,13 @@ export class DettaglioPreventivoClientePage implements OnInit {
   preventivoId = '';
   preventivo: PreventivoDettaglio | null = null;
   caricamento = true;
+  apiBaseUrl = environment.serverBaseUrl;
 
   constructor(
-    private route: ActivatedRoute, 
+    private route: ActivatedRoute,
     private router: Router,
     private alertController: AlertController,
-    private preventiviService: PreventiviService 
+    private preventiviService: PreventiviService
   ) {
     addIcons({ documentAttachOutline });
     this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
@@ -69,7 +71,7 @@ export class DettaglioPreventivoClientePage implements OnInit {
     });
   }
 
-  // <-- CORREZIONE 2: Ora i bottoni chiamano il VERO database
+
   async accettaPreventivo() {
     if (!this.preventivo) return;
 
@@ -80,7 +82,7 @@ export class DettaglioPreventivoClientePage implements OnInit {
       buttons: [
         { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
         {
-          text: 'Accetta', 
+          text: 'Accetta',
           cssClass: 'dark-alert-btn-confirm',
           handler: () => {
             this.eseguiRisposta('accetta');
@@ -99,8 +101,8 @@ export class DettaglioPreventivoClientePage implements OnInit {
       buttons: [
         { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
         {
-          text: 'Rifiuta', 
-          role: 'destructive', 
+          text: 'Rifiuta',
+          role: 'destructive',
           cssClass: 'dark-alert-btn-danger',
           handler: () => {
             this.eseguiRisposta('rifiuta');

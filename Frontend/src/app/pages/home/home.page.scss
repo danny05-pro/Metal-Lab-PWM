@@ -16,13 +16,13 @@ ion-content {
 }
 
 .hero-container {
-  max-width: 1300px; 
+  max-width: 1300px;
   width: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 60px; 
+  gap: 60px;
 }
 
 /* Colonna Sinistra: Testo e Tasto */
@@ -42,7 +42,7 @@ ion-content {
 }
 
 .hero-content h1 {
-  font-size: clamp(2.5rem, 4vw, 3.8rem); 
+  font-size: clamp(2.5rem, 4vw, 3.8rem);
   line-height: 1.1;
   font-weight: 900;
   margin: 0;
@@ -59,13 +59,13 @@ ion-content {
 /* Tasto Hero - Stile Vetro Apple */
 .hero-actions {
   margin-top: 32px;
-  display: flex;        
-  flex-direction: row;  
+  display: flex;
+  flex-direction: row;
   gap: 16px;
 }
 
 .hero-actions ion-button {
-  width: 240px; 
+  width: 240px;
   margin: 0;
   height: 52px;
   font-weight: 600;
@@ -83,7 +83,7 @@ ion-content {
   -webkit-backdrop-filter: blur(12px);
   border-radius: 16px;
   overflow: hidden;
-  transform: translateZ(0); 
+  transform: translateZ(0);
   transition: all 0.2s ease;
 
   &:hover {
@@ -100,7 +100,7 @@ ion-content {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 550px; 
+  max-width: 550px;
 }
 
 .service-glass-card {
@@ -115,7 +115,7 @@ ion-content {
   align-items: flex-start;
   gap: 20px;
   transition: all 0.3s ease;
-  
+
   &:hover {
     transform: translateX(-6px);
     background: rgba(255, 255, 255, 0.06);
@@ -145,7 +145,7 @@ ion-content {
 
 /* --- SEZIONE COMPETENZE RESA TRASPARENTE --- */
 .features {
-  background: transparent; 
+  background: transparent;
   color: white;
   padding: 80px 5%;
 }
@@ -186,15 +186,14 @@ ion-content {
   padding: 30px 24px;
   min-height: 220px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  
+
   /* 1. AGGIUNGIAMO LA TRANSIZIONE (coerente 0.2s) */
   transition: transform 0.2s ease, border-color 0.2s ease;
-  
+
   /* 2. AGGIUNGIAMO L'EFFETTO HOVER */
   &:hover {
-    /* NUOVO EFFETTO COERENTE CON LA SEZIONE SOTTO: spostamento verso l'alto */
-    transform: translateY(-4px); 
-    
+    transform: translateY(-4px);
+
     /* E il bagliore arancione del bordo coerente con l'altra sezione */
     border-color: rgba(245, 166, 35, 0.3);
   }
@@ -243,7 +242,7 @@ ion-content {
 
 /* --- SEZIONE STAFF ADVANTAGE RESA TRASPARENTE --- */
 .staff-advantage {
-  background: transparent; 
+  background: transparent;
   color: white;
   padding: 80px 5%;
 }
@@ -272,7 +271,7 @@ ion-content {
 
   ion-icon {
     font-size: 44px;
-    color: #f5a623; 
+    color: #f5a623;
     margin-bottom: 16px;
   }
 

@@ -12,6 +12,7 @@ import { documentAttachOutline } from 'ionicons/icons';
 import { PreventiviService } from 'src/app/services/preventivi.service';
 import { PreventivoDettaglio } from 'src/app/models/preventivo.model';
 import { HeaderComponent } from 'src/app/components/header/header.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-dettaglio-preventivo-admin',
@@ -29,12 +30,13 @@ export class DettaglioPreventivoAdminPage implements OnInit {
   preventivoId = '';
   preventivo: PreventivoDettaglio | null = null;
   caricamento = true;
+  apiBaseUrl = environment.serverBaseUrl;
 
   constructor(
-    private route: ActivatedRoute, 
-    private router: Router, 
+    private route: ActivatedRoute,
+    private router: Router,
     private alertController: AlertController,
-    private preventiviService: PreventiviService 
+    private preventiviService: PreventiviService
   ) {
     addIcons({ documentAttachOutline });
     this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
@@ -108,7 +110,7 @@ export class DettaglioPreventivoAdminPage implements OnInit {
               next: () => this.router.navigate(['/dashboard-admin']),
               error: (err) => console.error('Errore proposta prezzo:', err)
             });
-            
+
             return true;
           }
         }

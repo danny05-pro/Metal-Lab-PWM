@@ -76,7 +76,7 @@ type DipendenteForm = Partial<DipendenteRequest> & { id?: number; stato?: 'Attiv
   ]
 })
 export class GestioneDipendentiPage implements OnInit {
-  
+
   dipendenti: DipendenteCard[] = [];
   isModalOpen = false;
   modalMode: 'crea' | 'modifica' = 'crea';
@@ -85,11 +85,11 @@ export class GestioneDipendentiPage implements OnInit {
   // 2. INIETTIAMO IL SERVICE AL POSTO DI HTTPCLIENT
   constructor(
     private alertController: AlertController,
-    private dipendentiService: DipendentiService 
+    private dipendentiService: DipendentiService
   ) {
     addIcons({
       addOutline, createOutline, trashOutline,
-      personOutline, closeOutline, saveOutline, callOutline 
+      personOutline, closeOutline, saveOutline, callOutline
     });
   }
 
@@ -98,7 +98,7 @@ export class GestioneDipendentiPage implements OnInit {
     const cognomeValido = (this.formDipendente.cognome?.trim() ?? '') !== '';
     const emailValido = (this.formDipendente.email?.trim() ?? '') !== '';
     const telefonoValido = (this.formDipendente.telefono?.trim() ?? '') !== '';
-    
+
     if (this.modalMode === 'crea') {
       const passwordValida = (this.formDipendente.password?.trim() ?? '') !== '';
       return nomeValido && cognomeValido && emailValido && telefonoValido && passwordValida;
@@ -143,7 +143,7 @@ export class GestioneDipendentiPage implements OnInit {
 
   apriModaleCrea() {
     this.modalMode = 'crea';
-    this.formDipendente = { stato: 'Attivo' }; 
+    this.formDipendente = { stato: 'Attivo' };
     this.isModalOpen = true;
   }
 
@@ -171,7 +171,7 @@ export class GestioneDipendentiPage implements OnInit {
       // CHIAMATA POST
       this.dipendentiService.creaDipendente(this.formDipendente as DipendenteRequest).subscribe({
         next: () => {
-          this.caricaDipendenti(); 
+          this.caricaDipendenti();
           this.chiudiModale();
         },
         error: async (err: HttpErrorResponse) => {
@@ -187,13 +187,13 @@ export class GestioneDipendentiPage implements OnInit {
           await alert.present();
         }
       });
-    
+
     } else {
       if (this.formDipendente.id) {
         // CHIAMATA PUT
         this.dipendentiService.modificaDipendente(this.formDipendente.id, this.formDipendente as DipendenteRequest).subscribe({
           next: () => {
-            this.caricaDipendenti(); 
+            this.caricaDipendenti();
             this.chiudiModale();
           },
           error: async (err: HttpErrorResponse) => {

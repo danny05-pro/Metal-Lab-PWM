@@ -40,7 +40,6 @@ const isAdmin = (req, res, next) => {
   }
 };
 
-// NUOVO: Protegge le rotte esclusive dei clienti (come creare una richiesta)
 const isCliente = (req, res, next) => {
   if (req.user && req.user.ruolo === 'cliente') {
     next();
@@ -51,7 +50,6 @@ const isCliente = (req, res, next) => {
   }
 };
 
-// NUOVO: Proteggerà le rotte future dei dipendenti (come cambiare lo stato in "Completato")
 const isDipendente = (req, res, next) => {
   if (req.user && req.user.ruolo === 'dipendente') {
     next();

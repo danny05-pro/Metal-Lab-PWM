@@ -6,7 +6,7 @@
 </app-header>
 
 <ion-content>
-  
+
   @if (preventivo) {
     <section class="detail-header">
       <h1>
@@ -47,7 +47,7 @@
             {{ preventivo.stato_admin }}
           </ion-chip>
         </div>
-        
+
         <div class="info-row">
           <span>Risposta Cliente</span>
           <ion-chip
@@ -100,7 +100,7 @@
           @if (preventivo.allegatiArray && preventivo.allegatiArray.length > 0) {
             <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
               @for (file of preventivo.allegatiArray; track $index) {
-                <ion-button fill="outline" color="warning" size="small" [href]="'http://localhost:3000' + file" target="_blank" style="margin: 0; --border-radius: 12px; height: 32px;">
+                <ion-button fill="outline" color="warning" size="small" [href]="apiBaseUrl + file" target="_blank" style="margin: 0; --border-radius: 12px; height: 32px;">
                   <ion-icon slot="start" name="document-attach-outline"></ion-icon>
                   Allegato {{ $index + 1 }}
                 </ion-button>
@@ -134,16 +134,16 @@
 
         @if (preventivo.stato_risposta_cliente === 'In attesa') {
           <div class="actions">
-            <ion-button 
-              expand="block" 
-              class="btn-glass-propose" 
+            <ion-button
+              expand="block"
+              class="btn-glass-propose"
               (click)="proponiPrezzo()">
               Proponi prezzo
             </ion-button>
 
-            <ion-button 
-              expand="block" 
-              class="btn-glass-reject" 
+            <ion-button
+              expand="block"
+              class="btn-glass-reject"
               (click)="rifiutaPreventivo()">
               Rifiuta preventivo
             </ion-button>

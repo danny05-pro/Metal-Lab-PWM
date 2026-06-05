@@ -19,7 +19,6 @@ import {
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, alertCircleOutline } from 'ionicons/icons';
 
-// IMPORT CORRETTO E SICURO
 import { AuthService } from 'src/app/services/auth.service';
 import { LoginResponse } from 'src/app/models/user.model';
 import { getHttpErrorMessage } from 'src/app/utils/http-error.util';
@@ -51,12 +50,12 @@ export class LoginPage {
   email = '';
   password = '';
   returnUrl = '/home';
-  erroreLogin = ''; 
+  erroreLogin = '';
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService 
+    private authService: AuthService
   ) {
     addIcons({
       arrowBackOutline,
@@ -65,11 +64,11 @@ export class LoginPage {
 
     this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/home';
   }
-  
+
   accedi() {
     if (!this.loginValido) return;
 
-    this.erroreLogin = ''; 
+    this.erroreLogin = '';
 
     const body = {
       email: this.email,
@@ -78,15 +77,13 @@ export class LoginPage {
 
     this.authService.login(body).subscribe({
       next: (response: LoginResponse) => {
-        console.log('Login riuscito:', response);
-
         if (response.token) {
           sessionStorage.setItem('token', response.token);
         }
-        
+
         sessionStorage.setItem('utenteLoggato', 'true');
-        
-        // Salviamo tutti i dati dell'utente nel SessionStorage
+
+
         sessionStorage.setItem('ruoloUtente', response.user.ruolo);
         sessionStorage.setItem('nomeUtente', response.user.nome);
 
@@ -95,7 +92,7 @@ export class LoginPage {
       },
       error: (err: HttpErrorResponse) => {
         console.error('Errore login:', err);
-        
+
         if (err.status === 401 || err.status === 400) {
           this.erroreLogin = getHttpErrorMessage(err, 'Credenziali non valide.');
         } else {
@@ -104,7 +101,7 @@ export class LoginPage {
       }
     });
   }
-  
+
   get loginValido(): boolean {
     return (
       this.email.trim() !== '' &&

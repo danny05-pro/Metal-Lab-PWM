@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular'; // <--- Importante per gli avvisi
+import { AlertController } from '@ionic/angular';
 
 import {
   IonContent, IonSegment, IonSegmentButton, IonLabel
@@ -14,6 +14,7 @@ import { ProductCardComponent } from '../../components/product-card/product-card
 import { ServiceCardComponent } from '../../components/service-card/service-card.component';
 import { CatalogoService } from '../../services/catalogo.service';
 import { HeaderComponent } from '../../components/header/header.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-catalogo',
@@ -34,7 +35,7 @@ export class CatalogoPage implements OnInit {
 
   constructor(
     private catalogoService: CatalogoService,
-    private alertController: AlertController // <--- Iniettato
+    private alertController: AlertController
   ) {
     addIcons({ heart, heartOutline, arrowBackOutline });
   }
@@ -55,7 +56,7 @@ export class CatalogoPage implements OnInit {
             error: () => this.smistaDati(datiDB, [])
           });
         } else {
-          // Utente non loggato, niente preferiti
+
           this.smistaDati(datiDB, []);
         }
       },
@@ -63,14 +64,14 @@ export class CatalogoPage implements OnInit {
     });
   }
 
-  // Helper per dividere i dati e assegnare lo stato "preferito"
+
   smistaDati(datiDB: CatalogoItem[], preferitiIds: number[]) {
     this.prodotti = [];
     this.servizi = [];
     const placeholder = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=1200&auto=format&fit=crop';
 
     datiDB.forEach(voce => {
-      const immagineReale = voce.immagine ? (voce.immagine.startsWith('http') ? voce.immagine : 'http://localhost:3000' + voce.immagine) : placeholder;
+      const immagineReale = voce.immagine ? (voce.immagine.startsWith('http') ? voce.immagine : environment.serverBaseUrl + voce.immagine) : placeholder;
       const isPreferito = preferitiIds.includes(voce.id); // Controlla se l'ID è nel DB
 
       if (voce.categoria === 'Prodotto') {

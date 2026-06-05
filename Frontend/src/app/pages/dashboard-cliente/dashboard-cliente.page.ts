@@ -9,10 +9,10 @@ import {
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { 
+import {
   arrowBackOutline, documentTextOutline, constructOutline,
-  checkmarkDoneOutline, closeCircleOutline, trashOutline, alertCircleOutline, 
-  calendarNumberOutline, timeOutline, personAddOutline, calendarOutline, 
+  checkmarkDoneOutline, closeCircleOutline, trashOutline, alertCircleOutline,
+  calendarNumberOutline, timeOutline, personAddOutline, calendarOutline,
   buildOutline, helpCircleOutline
 } from 'ionicons/icons';
 
@@ -34,7 +34,7 @@ import { HeaderComponent } from '../../components/header/header.component';
     IonCol, IonChip, IonButton, IonIcon, IonLabel
   ]
 })
-export class DashboardClientePage { 
+export class DashboardClientePage {
 
   tuttiGliInterventi: Intervento[] = [];
   interventiFuturi: Intervento[] = [];
@@ -45,10 +45,10 @@ export class DashboardClientePage {
     private interventiService: InterventiService,
     private preventiviService: PreventiviService,
   ) {
-    addIcons({ 
+    addIcons({
       arrowBackOutline, documentTextOutline, constructOutline,
-      checkmarkDoneOutline, closeCircleOutline, trashOutline, alertCircleOutline, 
-      calendarNumberOutline, timeOutline, personAddOutline, calendarOutline, 
+      checkmarkDoneOutline, closeCircleOutline, trashOutline, alertCircleOutline,
+      calendarNumberOutline, timeOutline, personAddOutline, calendarOutline,
       buildOutline, helpCircleOutline
     });
   }
@@ -56,7 +56,7 @@ export class DashboardClientePage {
   ionViewWillEnter() {
     this.nomeCliente = sessionStorage.getItem('nomeUtente') || 'Cliente';
     this.caricaInterventi();
-    this.caricaPreventivi(); 
+    this.caricaPreventivi();
   }
 
   // ==========================================
@@ -69,27 +69,27 @@ export class DashboardClientePage {
         this.tuttiGliInterventi = dati.sort((a, b) => {
           const pesoA = this.calcolaPesoIntervento(a);
           const pesoB = this.calcolaPesoIntervento(b);
-          
+
           if (pesoA !== pesoB) return pesoA - pesoB;
           return (b.id || 0) - (a.id || 0);
         });
 
         // 2. LOGICA CALENDARIO: Assegnati, In Lavorazione, Terminati da < 24h
         const oraAttuale = new Date().getTime();
-        const ventiquattroOreFa = oraAttuale - (24 * 60 * 60 * 1000); 
-        
+        const ventiquattroOreFa = oraAttuale - (24 * 60 * 60 * 1000);
+
         let filtratiCalendario = dati.filter(intervento => {
           const dataDaUsare = intervento.data_accettata || intervento.data_proposta_admin || intervento.data_proposta_cliente || intervento.data_richiesta;
           if (!dataDaUsare) return false;
-          
+
           const timestampEvento = new Date(dataDaUsare).getTime();
 
           // Condizione A: Assegnato al tecnico (Programmato + almeno 1 dipendente)
           const isAssegnato = intervento.stato_lavorazione === 'Programmato' && (intervento.numero_dipendenti && intervento.numero_dipendenti > 0);
-          
+
           // Condizione B: Tecnico fisicamente a lavoro
           const isInLavorazione = intervento.stato_lavorazione === 'In lavorazione';
-          
+
           // Condizione C: Lavoro completato da meno di 24 ore
           const isTerminatoRecente = intervento.stato_lavorazione === 'Terminato' && timestampEvento >= ventiquattroOreFa;
 
@@ -100,11 +100,11 @@ export class DashboardClientePage {
         this.interventiFuturi = filtratiCalendario.sort((a, b) => {
           const dataStringA = a.data_accettata || a.data_proposta_admin || a.data_proposta_cliente || a.data_richiesta || '';
           const dataStringB = b.data_accettata || b.data_proposta_admin || b.data_proposta_cliente || b.data_richiesta || '';
-          
+
           const tempoA = new Date(dataStringA).getTime();
           const tempoB = new Date(dataStringB).getTime();
-          
-          return tempoA - tempoB; 
+
+          return tempoA - tempoB;
         });
       },
       error: (err) => console.error('Errore caricamento interventi', err)
@@ -114,13 +114,13 @@ export class DashboardClientePage {
   calcolaPesoIntervento(intervento: Intervento): number {
     // 3. In fondo: Pratiche chiuse o rifiutate
     if (
-      intervento.stato_admin === 'Rifiutato' || 
+      intervento.stato_admin === 'Rifiutato' ||
       intervento.stato_risposta_cliente === 'Intervento annullato' ||
       intervento.stato_lavorazione === 'Terminato'
-    ) return 3; 
+    ) return 3;
 
     // 1. In cima: Il cliente deve confermare la data proposta dall'admin
-    if (intervento.stato_admin === 'Data proposta' && intervento.stato_risposta_cliente === 'In attesa') return 1; 
+    if (intervento.stato_admin === 'Data proposta' && intervento.stato_risposta_cliente === 'In attesa') return 1;
 
     // 2. In mezzo: Il cliente aspetta (in valutazione, assegnazione tecnico, in lavorazione)
     return 2;
@@ -136,7 +136,7 @@ export class DashboardClientePage {
         this.preventivi = dati.sort((a, b) => {
           const pesoA = this.calcolaPesoPreventivo(a);
           const pesoB = this.calcolaPesoPreventivo(b);
-          
+
           if (pesoA !== pesoB) return pesoA - pesoB;
           return (b.id || 0) - (a.id || 0); // Dal più recente
         });
@@ -150,11 +150,11 @@ export class DashboardClientePage {
     const statoCliente = p.stato_risposta_cliente;
 
     // 3. In fondo: Chiusi/Rifiutati
-    if (statoAdmin === 'Rifiutato' || statoCliente === 'Rifiutato') return 3; 
-    
+    if (statoAdmin === 'Rifiutato' || statoCliente === 'Rifiutato') return 3;
+
     // 1. In cima: L'officina ha mandato il prezzo, il cliente deve rispondere
     if (statoAdmin === 'Prezzo proposto' && statoCliente === 'In attesa') return 1;
-    
+
     // 2. In mezzo: Lavori accettati o in attesa di prezzatura
     return 2;
   }
@@ -182,12 +182,12 @@ export class DashboardClientePage {
     if (intervento.stato_admin === 'Richiesto') return { label: 'In valutazione', color: 'medium', icon: 'time-outline' };
     if (intervento.stato_admin === 'Data proposta' && intervento.stato_risposta_cliente === 'In attesa') return { label: 'Conferma Data', color: 'warning', icon: 'alert-circle-outline' };
     if (intervento.stato_admin === 'In attesa nuova valutazione') return { label: 'In attesa conferma', color: 'medium', icon: 'time-outline' };
-    
+
     if (intervento.stato_lavorazione === 'Programmato') {
       if ((intervento.numero_dipendenti ?? 0) > 0) {
         return { label: 'Assegnato al Tecnico', color: 'primary', icon: 'calendar-outline' };
       } else {
-        return { label: 'Ricerca Tecnico in corso', color: 'medium', icon: 'time-outline' }; 
+        return { label: 'Ricerca Tecnico in corso', color: 'medium', icon: 'time-outline' };
       }
     }
 

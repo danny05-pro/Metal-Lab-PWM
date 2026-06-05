@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-// 1. Aggiungiamo l'AlertController per la gestione visiva degli errori
+
 import { AlertController } from '@ionic/angular';
 
 import {
@@ -23,7 +23,7 @@ import {
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, documentAttachOutline, trashOutline } from 'ionicons/icons';
 
-// 2. Importiamo il nostro nuovo Service
+
 import { PreventiviService, PreventivoRichiesta } from '../../services/preventivi.service';
 import { HeaderComponent } from '../../components/header/header.component';
 import { getHttpErrorMessage } from '../../utils/http-error.util';
@@ -51,7 +51,7 @@ import { getHttpErrorMessage } from '../../utils/http-error.util';
 })
 export class PreventiviPage {
 
-  // RIGOROSAMENTE NESSUN DATO FITTIZIO: solo contenitori vuoti per il form
+
   descrizione: string = '';
   servizio: string = '';
   materiale: string = '';
@@ -71,7 +71,7 @@ export class PreventiviPage {
     );
   }
 
-  // 3. Iniettiamo il service e l'alert controller
+
   constructor(
     private router: Router,
     private preventiviService: PreventiviService,
@@ -88,10 +88,10 @@ export class PreventiviPage {
 
 selezionaFile(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.allegatiFiles = []; 
+    this.allegatiFiles = [];
     if (input.files && input.files.length > 0) {
       for (let i = 0; i < input.files.length; i++) {
-        this.allegatiFiles.push(input.files[i]); // Salviamo il file VERO
+        this.allegatiFiles.push(input.files[i]);
       }
     }
   }
@@ -109,12 +109,12 @@ inviaPreventivo() {
     formData.append('servizio', this.servizio);
     formData.append('materiale', this.materiale);
     formData.append('dimensioni', this.dimensioni);
-    
+
     if (this.finitura) {
       formData.append('finitura', this.finitura);
     }
 
-    // 2. Aggiungiamo tutti i file fisici uno ad uno
+
     this.allegatiFiles.forEach(file => {
       formData.append('allegati', file);
     });

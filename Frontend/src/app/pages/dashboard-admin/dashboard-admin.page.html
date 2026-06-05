@@ -40,7 +40,7 @@
     </ion-row>
 
     <ion-row class="details-row">
-      
+
       <ion-col size="12" size-md="6">
         <ion-card class="detail-section-card">
           <ion-card-header class="card-header-flex">
@@ -52,8 +52,8 @@
               <div class="item-header">
                 <h3>{{ preventivo.descrizione }}</h3>
                 <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
-                  <ion-chip 
-                    [color]="getStatoPreventivoUX(preventivo).color" 
+                  <ion-chip
+                    [color]="getStatoPreventivoUX(preventivo).color"
                     style="margin: 0; font-size: 0.75rem;">
                     <ion-icon [name]="getStatoPreventivoUX(preventivo).icon"></ion-icon>
                     <ion-label>{{ getStatoPreventivoUX(preventivo).label }}</ion-label>
@@ -103,9 +103,9 @@
               Nuovo
             </ion-button>
           </ion-card-header>
-          
+
           <ion-card-content class="scrollable-list">
-            
+
             @if (prodottiCatalogo.length > 0) {
               <h4 style="color: #f5a623; margin: 4px 0 12px 4px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px;">Prodotti</h4>
               <div class="catalog-grid">
@@ -188,11 +188,11 @@
       <ion-content class="ion-padding" style="--background: #151b23;">
         @if (formCatalogo.immagine) {
           <div style="text-align: center; margin-bottom: 20px;">
-            <img 
-              [src]="(formCatalogo.immagine.startsWith('blob:') || formCatalogo.immagine.startsWith('http')) 
-                     ? formCatalogo.immagine 
-                     : 'http://localhost:3000' + formCatalogo.immagine" 
-              alt="Anteprima" 
+            <img
+              [src]="(formCatalogo.immagine.startsWith('blob:') || formCatalogo.immagine.startsWith('http'))
+                     ? formCatalogo.immagine
+                     : apiBaseUrl + formCatalogo.immagine"
+              alt="Anteprima"
               style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
           </div>
         }
@@ -202,11 +202,11 @@
         </ion-item>
 
         <ion-item color="dark" class="custom-input-item" style="margin-top: 15px;">
-          <ion-select 
-            label="Categoria" 
-            labelPlacement="stacked" 
-            [(ngModel)]="formCatalogo.categoria" 
-            interface="popover" 
+          <ion-select
+            label="Categoria"
+            labelPlacement="stacked"
+            [(ngModel)]="formCatalogo.categoria"
+            interface="popover"
             [interfaceOptions]="{ cssClass: 'status-popover-theme' }">
             <ion-select-option value="Prodotto">Prodotto</ion-select-option>
             <ion-select-option value="Servizio">Servizio</ion-select-option>
@@ -231,10 +231,10 @@
 
       <ion-footer class="ion-no-border">
         <ion-toolbar style="--background: #0b0f14; padding: 16px;">
-          <ion-button 
-            expand="block" 
-            class="btn-glass-save" 
-            (click)="salvaVoceCatalogo()" 
+          <ion-button
+            expand="block"
+            class="btn-glass-save"
+            (click)="salvaVoceCatalogo()"
             [disabled]="!formCatalogoValido">
             <ion-icon slot="start" name="save-outline"></ion-icon>
             Salva nel Catalogo

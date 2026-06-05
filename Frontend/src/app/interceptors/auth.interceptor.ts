@@ -2,8 +2,8 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-const API_BASE_URL = 'http://localhost:3000/api';
 const PUBLIC_AUTH_URLS = [
   '/auth/login',
   '/auth/register'
@@ -21,7 +21,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const isPublicAuthRequest = PUBLIC_AUTH_URLS.includes(req.url);
 
   const apiRequest = req.clone({
-    url: `${API_BASE_URL}${req.url}`,
+    url: `${environment.apiBaseUrl}${req.url}`,
     setHeaders: token && !isPublicAuthRequest
       ? { Authorization: `Bearer ${token}` }
       : {}
