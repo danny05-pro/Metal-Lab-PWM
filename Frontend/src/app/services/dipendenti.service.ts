@@ -1,17 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Dipendente, DipendenteRequest } from '../models/user.model';
 
-// Tipizziamo il dipendente per mantenere il codice rigoroso
-export interface Dipendente {
-  id?: number; 
-  nome: string;
-  cognome: string;
-  email: string;
-  telefono: string; 
-  stato?: string; 
-  password?: string;
-}
+export type { Dipendente } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,11 +23,11 @@ export class DipendentiService {
     return this.http.get<Dipendente[]>(this.apiUrl);
   }
 
-  creaDipendente(dati: Dipendente): Observable<Dipendente> {
+  creaDipendente(dati: DipendenteRequest): Observable<Dipendente> {
     return this.http.post<Dipendente>(this.apiUrl, dati);
   }
 
-  modificaDipendente(id: number, dati: Dipendente): Observable<any> {
+  modificaDipendente(id: number, dati: DipendenteRequest): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, dati);
   }
 

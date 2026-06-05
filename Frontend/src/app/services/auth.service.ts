@@ -1,33 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { LoginData, LoginResponse, RegisterData, RegisterResponse } from '../models/user.model';
 
-// 1. Tipizziamo i dati in ingresso per il Login
-export interface LoginData {
-  email: string;
-  password: string;
-}
-
-// 2. Tipizziamo i dati in ingresso per la Registrazione
-export interface RegisterData {
-  nome: string;
-  cognome: string;
-  telefono: string; 
-  email: string;
-  password: string;
-}
-
-// 3. Tipizziamo la risposta che ci aspettiamo dal backend Node.js
-export interface AuthResponse {
-  message?: string;
-  token?: string;
-  utente?: {
-    id: number;
-    nome: string;
-    email: string;
-    ruolo: string;
-  };
-}
+export type {
+  AuthResponse,
+  LoginData,
+  LoginResponse,
+  RegisterData,
+  RegisterResponse
+} from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -43,11 +25,11 @@ export class AuthService {
   // CHIAMATE HTTP
   // ==========================================
 
-  login(dati: LoginData): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, dati);
+  login(dati: LoginData): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, dati);
   }
 
-  register(dati: RegisterData): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, dati);
+  register(dati: RegisterData): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, dati);
   }
 }

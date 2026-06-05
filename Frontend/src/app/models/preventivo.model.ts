@@ -12,7 +12,7 @@ export type PreventivoStatoRispostaCliente =
 export interface Preventivo {
   id: number;
 
-  cliente_id?: number;
+  cliente_id: number;
 
   descrizione: string;
 
@@ -40,11 +40,29 @@ export interface Preventivo {
   cliente_email?: string;
 
   cliente_telefono?: string;
+}
 
-  // Alias storici usati da alcune pagine/mock del frontend.
-  cliente?: string;
+export interface PreventivoRichiesta {
+  descrizione: string;
+  servizio: string;
+  materiale: string;
+  dimensioni: string;
+  finitura?: string | null;
+  allegato?: string | null;
+}
 
-  emailCliente?: string;
+export interface PreventivoCreato {
+  id: number;
+  cliente_id: number;
+  descrizione: string;
+  servizio: string;
+  materiale: string;
+  dimensioni: string;
+  finitura: string | null;
+  allegato: string | null;
+}
 
-  prezzoProposto?: number | null;
+export interface PreventivoCreateResponse {
+  message: string;
+  preventivo: PreventivoCreato;
 }

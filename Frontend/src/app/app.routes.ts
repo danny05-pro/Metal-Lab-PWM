@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 
 // 1. IMPORTIAMO I LUCCHETTI (GUARDS)
-import { adminGuard } from './guards/admin-guard';
-import { clienteGuard } from './guards/cliente-guard';
-import { dipendenteGuard } from './guards/dipendente-guard';
+import { AdminGuard } from './guards/admin-guard';
+import { ClienteGuard } from './guards/cliente-guard';
+import { DipendenteGuard } from './guards/dipendente-guard';
 
 export const routes: Routes = [
   // ==========================================
@@ -32,70 +32,70 @@ export const routes: Routes = [
   },
 
   // ==========================================
-  // AREA CLIENTE (Lucchetto: clienteGuard)
+  // AREA CLIENTE (Lucchetto: ClienteGuard)
   // ==========================================
   {
     path: 'dashboard-cliente',
     loadComponent: () => import('./pages/dashboard-cliente/dashboard-cliente.page').then(m => m.DashboardClientePage),
-    canActivate: [clienteGuard]
+    canActivate: [ClienteGuard]
   },
   {
     path: 'preventivi',
     loadComponent: () => import('./pages/preventivi/preventivi.page').then(m => m.PreventiviPage),
-    canActivate: [clienteGuard]
+    canActivate: [ClienteGuard]
   },
   {
     path: 'interventi',
     loadComponent: () => import('./pages/interventi/interventi.page').then( m => m.InterventiPage),
-    canActivate: [clienteGuard]
+    canActivate: [ClienteGuard]
   },
   {
     path: 'dettaglio-preventivo-cliente/:id',
     loadComponent: () => import('./pages/dettaglio-preventivo-cliente/dettaglio-preventivo-cliente.page').then(m => m.DettaglioPreventivoClientePage),
-    canActivate: [clienteGuard]
+    canActivate: [ClienteGuard]
   },
   {
     path: 'dettaglio-intervento-cliente/:id',
     loadComponent: () => import('./pages/dettaglio-intervento-cliente/dettaglio-intervento-cliente.page').then(m => m.DettaglioInterventoClientePage),
-    canActivate: [clienteGuard]
+    canActivate: [ClienteGuard]
   },
 
   // ==========================================
-  // AREA ADMIN (Lucchetto: adminGuard)
+  // AREA ADMIN (Lucchetto: AdminGuard)
   // ==========================================
   {
     path: 'dashboard-admin',
     loadComponent: () => import('./pages/dashboard-admin/dashboard-admin.page').then(m => m.DashboardAdminPage),
-    canActivate: [adminGuard]
+    canActivate: [AdminGuard]
   },
   {
     path: 'gestione-dipendenti',
     loadComponent: () => import('./pages/gestione-dipendenti/gestione-dipendenti.page').then( m => m.GestioneDipendentiPage),
-    canActivate: [adminGuard]
+    canActivate: [AdminGuard]
   },
   {
     path: 'dettaglio-preventivo-admin/:id',
     loadComponent: () => import('./pages/dettaglio-preventivo-admin/dettaglio-preventivo-admin.page').then(m => m.DettaglioPreventivoAdminPage),
-    canActivate: [adminGuard]
+    canActivate: [AdminGuard]
   },
   {
     path: 'dettaglio-intervento-admin/:id',
     loadComponent: () => import('./pages/dettaglio-intervento-admin/dettaglio-intervento-admin.page').then(m => m.DettaglioInterventoAdminPage),
-    canActivate: [adminGuard]
+    canActivate: [AdminGuard]
   },
 
   // ==========================================
-  // AREA DIPENDENTE (Lucchetto: dipendenteGuard)
+  // AREA DIPENDENTE (Lucchetto: DipendenteGuard)
   // ==========================================
   {
     path: 'dashboard-dipendente',
     loadComponent: () => import('./pages/dashboard-dipendente/dashboard-dipendente.page').then(m => m.DashboardDipendentePage),
-    canActivate: [dipendenteGuard]
+    canActivate: [DipendenteGuard]
   },
   {
     path: 'dettaglio-intervento-dipendente/:id',
     loadComponent: () => import('./pages/dettaglio-intervento-dipendente/dettaglio-intervento-dipendente.page').then(m => m.DettaglioInterventoDipendentePage),
-    canActivate: [dipendenteGuard]
+    canActivate: [DipendenteGuard]
   },
 
   // ==========================================

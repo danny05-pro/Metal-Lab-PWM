@@ -1,3 +1,40 @@
-<p>
-  header works!
-</p>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark" [class.main-toolbar]="variant === 'home'">
+    @if (variant === 'home') {
+      <ion-title class="brand">
+        <span class="brand-icon">⚙</span>
+        Metal Lab
+      </ion-title>
+
+      <ion-buttons slot="end">
+        @if (!utenteLoggato()) {
+          <ion-button class="apple-btn-header" routerLink="/login">
+            Login
+          </ion-button>
+        }
+
+        @if (utenteLoggato()) {
+          <ion-button class="apple-btn-header" [routerLink]="dashboardLink">
+            {{ dashboardLabel }}
+          </ion-button>
+
+          <ion-button class="apple-btn-header btn-logout" (click)="logout()">
+            Logout
+          </ion-button>
+        }
+      </ion-buttons>
+    } @else {
+      @if (showBack) {
+        <ion-buttons slot="start">
+          <ion-button [routerLink]="backLink">
+            <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      }
+
+      <ion-title>
+        {{ title }}
+      </ion-title>
+    }
+  </ion-toolbar>
+</ion-header>

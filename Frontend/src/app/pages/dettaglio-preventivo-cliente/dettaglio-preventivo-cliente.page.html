@@ -1,13 +1,4 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-cliente">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Dettaglio Preventivo</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header title="Dettaglio Preventivo" backLink="/dashboard-cliente"></app-header>
 
 <ion-content>
   @if (preventivo) {

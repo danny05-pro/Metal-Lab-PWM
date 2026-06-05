@@ -1,14 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 
 import {
   IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
   IonButton,
   IonIcon,
   IonCard,
@@ -26,7 +22,6 @@ import {
 import { addIcons } from 'ionicons';
 
 import {
-  arrowBackOutline,
   checkmarkCircleOutline,
   calendarOutline,
   closeCircleOutline
@@ -34,6 +29,7 @@ import {
 
 import { Intervento } from 'src/app/models/intervento.model';
 import { InterventiService } from 'src/app/services/interventi.service';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @Component({
   selector: 'app-dettaglio-intervento-cliente',
@@ -41,13 +37,9 @@ import { InterventiService } from 'src/app/services/interventi.service';
   styleUrls: ['./dettaglio-intervento-cliente.page.scss'],
   standalone: true,
   imports: [
-    RouterLink,
+    HeaderComponent,
     FormsModule,
     IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
     IonButton,
     IonIcon,
     IonCard,
@@ -80,7 +72,6 @@ export class DettaglioInterventoClientePage implements OnInit {
     private interventiService: InterventiService
   ) {
     addIcons({
-      arrowBackOutline,
       checkmarkCircleOutline,
       calendarOutline,
       closeCircleOutline
@@ -221,4 +212,3 @@ get negoziazioneConclusa(): boolean {
   await alert.present();
 }
 }
-

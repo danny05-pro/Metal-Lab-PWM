@@ -1,7 +1,7 @@
 <ion-card class="catalog-card">
 
   <img
-    [src]="prodotto.immagine"
+    [src]="prodotto.immagine || ''"
     [alt]="prodotto.nome">
 
   <ion-card-header>
@@ -19,7 +19,7 @@
   <ion-card-content>
 
     <p>
-      {{ prodotto.descrizione }}
+      Voce prodotto del catalogo Metal Lab.
     </p>
 
     <div class="card-info">
@@ -28,7 +28,7 @@
       </ion-badge>
 
       <strong>
-        {{ prodotto.prezzoBase || 'Su preventivo' }}
+        {{ prodotto.prezzo_base || 'Su preventivo' }}
       </strong>
     </div>
     

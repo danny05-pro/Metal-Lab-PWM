@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {
+  CatalogoCreateResponse,
+  CatalogoItem,
+  CatalogoMessageResponse
+} from '../models/catalogo.model';
 
-export interface VoceCatalogo {
-  id?: number;
-  nome: string;
-  categoria: string;
-  prezzo_base?: string;
-  prezzoBase?: string;
-  immagine?: string;
-}
+export type VoceCatalogo = CatalogoItem;
 
 @Injectable({
   providedIn: 'root'
@@ -21,23 +19,23 @@ export class CatalogoService {
 
   // --- LE CHIAMATE ---
 
-  getCatalogo(): Observable<any[]> {
+  getCatalogo(): Observable<VoceCatalogo[]> {
     // Per la GET usiamo il formato standard
-    return this.http.get<any[]>(`${this.apiUrl}/catalogo`);
+    return this.http.get<VoceCatalogo[]>(`${this.apiUrl}/catalogo`);
   }
 
-  creaVoce(formData: FormData): Observable<any> {
+  creaVoce(formData: FormData): Observable<CatalogoCreateResponse> {
     // Per i file, NON passare Content-Type. HttpClient lo farà per te.
-    return this.http.post<any>(`${this.apiUrl}/admin/catalogo`, formData);
+    return this.http.post<CatalogoCreateResponse>(`${this.apiUrl}/admin/catalogo`, formData);
   }
 
-  modificaVoce(id: number, formData: FormData): Observable<any> {
+  modificaVoce(id: number, formData: FormData): Observable<CatalogoMessageResponse> {
     // Anche qui, inviamo FormData.
-    return this.http.put<any>(`${this.apiUrl}/admin/catalogo/${id}`, formData);
+    return this.http.put<CatalogoMessageResponse>(`${this.apiUrl}/admin/catalogo/${id}`, formData);
   }
 
-  eliminaVoce(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/admin/catalogo/${id}`);
+  eliminaVoce(id: number): Observable<CatalogoMessageResponse> {
+    return this.http.delete<CatalogoMessageResponse>(`${this.apiUrl}/admin/catalogo/${id}`);
   }
 
   // --- PREFERITI ---
@@ -45,11 +43,11 @@ export class CatalogoService {
     return this.http.get<number[]>(`${this.apiUrl}/preferiti`);
   }
 
-  aggiungiPreferito(id: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/preferiti/${id}`, {});
+  aggiungiPreferito(id: number): Observable<CatalogoMessageResponse> {
+    return this.http.post<CatalogoMessageResponse>(`${this.apiUrl}/preferiti/${id}`, {});
   }
 
-  rimuoviPreferito(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/preferiti/${id}`);
+  rimuoviPreferito(id: number): Observable<CatalogoMessageResponse> {
+    return this.http.delete<CatalogoMessageResponse>(`${this.apiUrl}/preferiti/${id}`);
   }
 }

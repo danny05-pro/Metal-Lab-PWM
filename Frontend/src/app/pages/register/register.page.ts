@@ -3,12 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
   IonButton,
-  IonButtons,
   IonIcon,
   IonCard,
   IonCardContent,
@@ -24,6 +20,7 @@ import { arrowBackOutline, alertCircleOutline } from 'ionicons/icons';
 
 // 1. Importiamo il Service
 import { AuthService } from '../../services/auth.service';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-register',
@@ -31,14 +28,11 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./register.page.scss'],
   standalone: true,
   imports: [
+    HeaderComponent,
     FormsModule,
     RouterLink,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonButton,
-    IonButtons,
     IonIcon,
     IonCard,
     IonCardContent,

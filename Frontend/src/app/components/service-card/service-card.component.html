@@ -1,6 +1,6 @@
 <ion-card class="catalog-card">
 
-  <img [src]="servizio.immagine" [alt]="servizio.nome">
+  <img [src]="servizio.immagine || ''" [alt]="servizio.nome">
 
   <ion-card-header>
     <ion-card-subtitle>
@@ -14,16 +14,16 @@
 
   <ion-card-content>
     <p>
-      {{ servizio.descrizione }}
+      Servizio professionale disponibile su richiesta.
     </p>
 
     <div class="card-info">
       <ion-badge color="success">
-        {{ servizio.stato }}
+        {{ servizio.categoria }}
       </ion-badge>
 
       <strong style="color: #f5a623; font-size: 1.2rem;">
-        {{ servizio.prezzoBase || 'Su preventivo' }}
+        {{ servizio.prezzo_base || 'Su preventivo' }}
       </strong>
     </div>
 

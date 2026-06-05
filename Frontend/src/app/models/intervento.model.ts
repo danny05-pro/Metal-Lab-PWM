@@ -1,3 +1,5 @@
+import { Dipendente } from './user.model';
+
 export type InterventoPriorita =
   | 'Bassa'
   | 'Media'
@@ -22,24 +24,12 @@ export type InterventoStatoLavorazione =
   | 'In lavorazione'
   | 'Terminato';
 
-export interface DipendenteAssegnato {
-  id: number;
-
-  nome: string;
-
-  cognome: string;
-
-  email: string;
-
-  telefono?: string | null;
-
-  ruolo: 'dipendente';
-}
+export type DipendenteAssegnato = Dipendente;
 
 export interface Intervento {
   id: number;
 
-  cliente_id?: number;
+  cliente_id: number;
 
   descrizione: string;
 
@@ -52,16 +42,6 @@ export interface Intervento {
   stato_risposta_cliente: InterventoStatoRispostaCliente;
 
   stato_lavorazione: InterventoStatoLavorazione;
-
-  // Campo di comodo usato in alcune viste frontend
-  dataOra?: string;
-
-  // Vecchi campi usati nei mock/pagine già esistenti
-  cliente?: string;
-
-  emailCliente?: string;
-
-  telefonoCliente?: string;
 
   // Campi reali restituiti dal backend nelle query admin con JOIN users
   cliente_nome?: string;
@@ -81,14 +61,29 @@ export interface Intervento {
 
   data_accettata?: string | null;
 
-  // Campi non presenti nello schema SQLite attuale, tenuti come alias legacy.
-  created_at?: string;
-
-  updated_at?: string;
-
-  dipendentiAssegnati?: string[];
-
   dipendenti_assegnati?: DipendenteAssegnato[];
 
   numero_dipendenti?: number;
+}
+
+export interface InterventoRichiesta {
+  descrizione: string;
+  luogo: string;
+  priorita: InterventoPriorita;
+  data_proposta_cliente?: string;
+}
+
+export interface InterventoCreato {
+  id: number;
+  cliente_id: number;
+  descrizione: string;
+  luogo: string;
+  priorita: InterventoPriorita;
+  data_richiesta: string;
+  data_proposta_cliente?: string | null;
+}
+
+export interface InterventoCreateResponse {
+  message: string;
+  intervento: InterventoCreato;
 }

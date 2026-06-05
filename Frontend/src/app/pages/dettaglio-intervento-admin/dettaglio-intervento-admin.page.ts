@@ -1,14 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 
 import {
   IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
   IonButton,
   IonIcon,
   IonCard,
@@ -24,10 +20,11 @@ import {
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { arrowBackOutline, calendarOutline } from 'ionicons/icons';
+import { calendarOutline } from 'ionicons/icons';
 
 import { Intervento } from 'src/app/models/intervento.model';
 import { InterventiService } from 'src/app/services/interventi.service';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @Component({
   selector: 'app-dettaglio-intervento-admin',
@@ -35,12 +32,8 @@ import { InterventiService } from 'src/app/services/interventi.service';
   styleUrls: ['./dettaglio-intervento-admin.page.scss'],
   standalone: true,
   imports: [
-    RouterLink,
+    HeaderComponent,
     IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
     IonButton,
     IonIcon,
     IonCard,
@@ -79,7 +72,7 @@ dipendentiAssegnati: any[] = [];
     private interventiService: InterventiService
   ) {
     addIcons({
-      arrowBackOutline, calendarOutline
+      calendarOutline
     });
     const domani = new Date();
 domani.setDate(domani.getDate() + 1);

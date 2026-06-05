@@ -1,17 +1,19 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
-import { dipendenteGuard } from './dipendente-guard';
+import { DipendenteGuard } from './dipendente-guard';
 
-describe('dipendenteGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => dipendenteGuard(...guardParameters));
+describe('DipendenteGuard', () => {
+  let guard: DipendenteGuard;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideRouter([])]
+    });
+    guard = TestBed.inject(DipendenteGuard);
   });
 
   it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
+    expect(guard).toBeTruthy();
   });
 });

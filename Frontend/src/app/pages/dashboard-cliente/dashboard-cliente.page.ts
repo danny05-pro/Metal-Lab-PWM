@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent,
+  IonContent, IonCard, IonCardContent,
   IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonChip, IonButton,
-  IonButtons, IonIcon, IonLabel
+  IonIcon, IonLabel
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -19,6 +19,7 @@ import {
 import { Preventivo } from 'src/app/models/preventivo.model';
 import { InterventiService } from '../../services/interventi.service';
 import { PreventiviService } from '../../services/preventivi.service';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-dashboard-cliente',
@@ -26,9 +27,10 @@ import { PreventiviService } from '../../services/preventivi.service';
   styleUrls: ['./dashboard-cliente.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
+    HeaderComponent,
+    CommonModule, RouterLink, IonContent,
     IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow,
-    IonCol, IonChip, IonButton, IonButtons, IonIcon, IonLabel
+    IonCol, IonChip, IonButton, IonIcon, IonLabel
   ]
 })
 export class DashboardClientePage { 

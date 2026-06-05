@@ -3,20 +3,21 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent,
-  IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonChip, IonButton,
-  IonButtons, IonIcon, IonLabel
+  IonContent, IonCard, IonCardContent,
+  IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonChip,
+  IonIcon, IonLabel
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
 import { 
-  arrowBackOutline, caretDownOutline,
+  caretDownOutline,
   checkmarkDoneOutline, closeCircleOutline, trashOutline, alertCircleOutline, 
   calendarNumberOutline, timeOutline, personAddOutline, calendarOutline, 
   buildOutline, helpCircleOutline
 } from 'ionicons/icons';
 import { Intervento } from 'src/app/models/intervento.model';
 import { InterventiService } from 'src/app/services/interventi.service';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 interface Storico {
   id: number;
@@ -35,9 +36,10 @@ interface Storico {
   styleUrls: ['./dashboard-dipendente.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
+    HeaderComponent,
+    CommonModule, RouterLink, IonContent,
     IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow,
-    IonCol, IonChip, IonButton, IonButtons, IonIcon, IonLabel
+    IonCol, IonChip, IonIcon, IonLabel
   ]
 })
 export class DashboardDipendentePage {
@@ -48,7 +50,7 @@ export class DashboardDipendentePage {
 
   constructor(private interventiService: InterventiService) {
     addIcons({
-      arrowBackOutline, caretDownOutline,
+      caretDownOutline,
       checkmarkDoneOutline, closeCircleOutline, trashOutline, alertCircleOutline, 
       calendarNumberOutline, timeOutline, personAddOutline, calendarOutline, 
       buildOutline, helpCircleOutline

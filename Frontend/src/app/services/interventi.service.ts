@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Intervento } from 'src/app/models/intervento.model';
+import {
+  DipendenteAssegnato,
+  Intervento,
+  InterventoCreateResponse,
+  InterventoRichiesta,
+  InterventoStatoLavorazione
+} from 'src/app/models/intervento.model';
 
-export interface InterventoRichiesta {
-  descrizione: string;
-  luogo: string;
-  priorita: 'Bassa' | 'Media' | 'Alta';
-  data_proposta_cliente?: string;
-}
+export type { InterventoRichiesta } from 'src/app/models/intervento.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,8 @@ export class InterventiService {
 
   constructor(private http: HttpClient) {}
 
-  creaIntervento(dati: InterventoRichiesta): Observable<any> {
-    return this.http.post(this.apiUrl, dati);
+  creaIntervento(dati: InterventoRichiesta): Observable<InterventoCreateResponse> {
+    return this.http.post<InterventoCreateResponse>(this.apiUrl, dati);
   }
 
   getInterventiCliente(): Observable<Intervento[]> {
@@ -72,12 +73,12 @@ export class InterventiService {
     });
   }
 
-  getDipendentiAssegnati(interventoId: number | string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.adminApiUrl}/${interventoId}/dipendenti`);
+  getDipendentiAssegnati(interventoId: number | string): Observable<DipendenteAssegnato[]> {
+    return this.http.get<DipendenteAssegnato[]>(`${this.adminApiUrl}/${interventoId}/dipendenti`);
   }
 
-  getDipendentiDisponibili(): Observable<any[]> {
-    return this.http.get<any[]>('http://localhost:3000/api/gestione-dipendenti');
+  getDipendentiDisponibili(): Observable<DipendenteAssegnato[]> {
+    return this.http.get<DipendenteAssegnato[]>('http://localhost:3000/api/gestione-dipendenti');
   }
 
   getInterventiDipendente(): Observable<Intervento[]> {
@@ -90,7 +91,7 @@ export class InterventiService {
 
   aggiornaStatoLavorazioneDipendente(
     interventoId: number | string,
-    stato_lavorazione: 'Programmato' | 'In lavorazione' | 'Terminato'
+    stato_lavorazione: Extract<InterventoStatoLavorazione, 'Programmato' | 'In lavorazione' | 'Terminato'>
   ): Observable<any> {
     return this.http.patch(`http://localhost:3000/api/dipendente/interventi/${interventoId}/stato`, {
       stato_lavorazione

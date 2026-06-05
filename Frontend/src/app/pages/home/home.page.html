@@ -1,29 +1,4 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar class="main-toolbar">
-    <ion-title class="brand">
-      <span class="brand-icon">⚙</span>
-      Metal Lab
-    </ion-title>
-
-    <ion-buttons slot="end">
-      @if (!utenteLoggato()) {
-        <ion-button class="apple-btn-header" routerLink="/login">
-          Login
-        </ion-button>
-      }
-
-      @if (utenteLoggato()) {
-        <ion-button class="apple-btn-header" [routerLink]="dashboardLink">
-           {{ dashboardLabel }}
-        </ion-button>
-
-        <ion-button class="apple-btn-header btn-logout" (click)="logout()">
-          Logout
-        </ion-button>
-      }
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-header variant="home"></app-header>
 
 <ion-content>
 

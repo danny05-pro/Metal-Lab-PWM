@@ -1,16 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Preventivo } from '../models/preventivo.model';
+import {
+  Preventivo,
+  PreventivoCreateResponse,
+  PreventivoRichiesta
+} from '../models/preventivo.model';
 
-export interface PreventivoRichiesta {
-  descrizione: string;
-  servizio: string;
-  materiale: string;
-  dimensioni: string;
-  finitura?: string;
-  allegato?: string;
-}
+export type { PreventivoRichiesta } from '../models/preventivo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +21,8 @@ export class PreventiviService {
   constructor(private http: HttpClient) {}
 
   // 2. Modifica creaPreventivo per accettare FormData
-  creaPreventivo(dati: FormData): Observable<any> {
-    return this.http.post(this.apiUrl, dati);
+  creaPreventivo(dati: FormData): Observable<PreventivoCreateResponse> {
+    return this.http.post<PreventivoCreateResponse>(this.apiUrl, dati);
   }
 
   getPreventivi(): Observable<Preventivo[]> {
@@ -37,8 +34,8 @@ export class PreventiviService {
   }
 
   // 2. NUOVA FUNZIONE: Recupera il dettaglio di un singolo preventivo per l'ADMIN
-  getPreventivoAdminById(id: number | string): Observable<any> {
-    return this.http.get<any>(`${this.adminApiUrl}/${id}`);
+  getPreventivoAdminById(id: number | string): Observable<Preventivo> {
+    return this.http.get<Preventivo>(`${this.adminApiUrl}/${id}`);
   }
 
   adminProponePrezzo(id: number | string, prezzo: number): Observable<any> {

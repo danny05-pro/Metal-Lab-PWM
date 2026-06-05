@@ -1,16 +1,22 @@
-import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 
-export const adminGuard: CanActivateFn = (route, state) => {
-  const router = inject(Router);
-  
-  const ruolo = sessionStorage.getItem('ruoloUtente');
-  const token = sessionStorage.getItem('token'); 
-  
-  if (ruolo === 'admin' && token) {
-    return true;
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminGuard implements CanActivate {
+
+  constructor(private router: Router) {}
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    const ruolo = sessionStorage.getItem('ruoloUtente');
+    const token = sessionStorage.getItem('token');
+
+    if (ruolo === 'admin' && token) {
+      return true;
+    }
+
+    this.router.navigate(['/login']);
+    return false;
   }
-
-  router.navigate(['/login']);
-  return false;
-};
+}

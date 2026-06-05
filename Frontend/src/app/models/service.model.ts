@@ -1,11 +1,6 @@
-export interface Service {
-  id: number;
-  nome: string;
-  descrizione: string;
+import { CatalogoItem } from './catalogo.model';
+
+export interface Service extends CatalogoItem {
   categoria: 'Servizio';
-  stato: string;
-  prezzo_base?: string;
-  prezzoBase?: string;
-  immagine?: string;
   preferito: boolean;
 }

@@ -1,14 +1,10 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
   IonButton,
-  IonButtons,
   IonIcon,
   IonItem,
   IonLabel,
@@ -37,6 +33,7 @@ import {
   InterventiService,
   InterventoRichiesta
 } from '../../services/interventi.service';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-interventi',
@@ -44,14 +41,10 @@ import {
   styleUrls: ['./interventi.page.scss'],
   standalone: true,
   imports: [
+    HeaderComponent,
     FormsModule,
-    RouterLink,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonButton,
-    IonButtons,
     IonIcon,
     IonItem,
     IonLabel,

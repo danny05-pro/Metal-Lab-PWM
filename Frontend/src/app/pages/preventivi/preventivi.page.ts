@@ -1,17 +1,13 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 // 1. Aggiungiamo l'AlertController per la gestione visiva degli errori
 import { AlertController } from '@ionic/angular';
 
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
   IonButton,
-  IonButtons,
   IonIcon,
   IonItem,
   IonLabel,
@@ -28,6 +24,7 @@ import { arrowBackOutline, documentAttachOutline, trashOutline } from 'ionicons/
 
 // 2. Importiamo il nostro nuovo Service
 import { PreventiviService, PreventivoRichiesta } from '../../services/preventivi.service';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-preventivi',
@@ -35,14 +32,10 @@ import { PreventiviService, PreventivoRichiesta } from '../../services/preventiv
   styleUrls: ['./preventivi.page.scss'],
   standalone: true,
   imports: [
+    HeaderComponent,
     FormsModule,
-    RouterLink,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonButton,
-    IonButtons,
     IonIcon,
     IonItem,
     IonLabel,
