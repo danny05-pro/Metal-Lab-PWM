@@ -30,7 +30,7 @@ export class HeaderComponent {
   @Input() title = 'Home';
   @Input() backLink = '/home';
   @Input() showBack = true;
-  @Input() variant: 'default' | 'home' = 'default';
+  @Input() showLogout = false;
 
   constructor() {
     addIcons({ arrowBackOutline });
@@ -71,6 +71,8 @@ export class HeaderComponent {
   logout() {
     sessionStorage.removeItem('utenteLoggato');
     sessionStorage.removeItem('ruoloUtente');
+    sessionStorage.removeItem('nomeUtente');
+    sessionStorage.removeItem('token');
   }
 
 }

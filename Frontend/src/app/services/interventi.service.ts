@@ -15,8 +15,8 @@ export type { InterventoRichiesta } from 'src/app/models/intervento.model';
   providedIn: 'root'
 })
 export class InterventiService {
-  private apiUrl = 'http://localhost:3000/api/interventi';
-  private adminApiUrl = 'http://localhost:3000/api/admin/interventi';
+  private apiUrl = '/interventi';
+  private adminApiUrl = '/admin/interventi';
 
   constructor(private http: HttpClient) {}
 
@@ -78,22 +78,22 @@ export class InterventiService {
   }
 
   getDipendentiDisponibili(): Observable<DipendenteAssegnato[]> {
-    return this.http.get<DipendenteAssegnato[]>('http://localhost:3000/api/gestione-dipendenti');
+    return this.http.get<DipendenteAssegnato[]>('/gestione-dipendenti');
   }
 
   getInterventiDipendente(): Observable<Intervento[]> {
-    return this.http.get<Intervento[]>('http://localhost:3000/api/dipendente/interventi');
+    return this.http.get<Intervento[]>('/dipendente/interventi');
   }
 
   getInterventoDipendenteById(id: number | string): Observable<Intervento> {
-    return this.http.get<Intervento>(`http://localhost:3000/api/dipendente/interventi/${id}`);
+    return this.http.get<Intervento>(`/dipendente/interventi/${id}`);
   }
 
   aggiornaStatoLavorazioneDipendente(
     interventoId: number | string,
     stato_lavorazione: Extract<InterventoStatoLavorazione, 'Programmato' | 'In lavorazione' | 'Terminato'>
   ): Observable<any> {
-    return this.http.patch(`http://localhost:3000/api/dipendente/interventi/${interventoId}/stato`, {
+    return this.http.patch(`/dipendente/interventi/${interventoId}/stato`, {
       stato_lavorazione
     });
   }

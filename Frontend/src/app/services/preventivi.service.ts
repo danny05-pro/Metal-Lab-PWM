@@ -14,9 +14,8 @@ export type { PreventivoRichiesta } from '../models/preventivo.model';
 })
 export class PreventiviService {
 
-  private apiUrl = 'http://localhost:3000/api/preventivi';
-  // 1. Aggiungiamo la base URL per l'admin per comodità
-  private adminApiUrl = 'http://localhost:3000/api/admin/preventivi'; 
+  private apiUrl = '/preventivi';
+  private adminApiUrl = '/admin/preventivi';
 
   constructor(private http: HttpClient) {}
 

@@ -10,8 +10,7 @@ export type { Dipendente } from '../models/user.model';
 })
 export class DipendentiService {
   
-  // Assicurati che l'indirizzo corrisponda alle tue rotte sul backend
-  private apiUrl = 'http://localhost:3000/api/gestione-dipendenti';
+  private apiUrl = '/gestione-dipendenti';
 
   constructor(private http: HttpClient) {}
 

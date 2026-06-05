@@ -15,8 +15,7 @@ export type {
   providedIn: 'root'
 })
 export class AuthService {
-  // L'indirizzo base del tuo backend
-  private apiUrl = 'http://localhost:3000/api/auth'; 
+  private apiUrl = '/auth';
 
   // Iniezione di HttpClient per poter fare le chiamate di rete
   constructor(private http: HttpClient) {}

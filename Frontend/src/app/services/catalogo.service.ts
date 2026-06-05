@@ -13,41 +13,39 @@ export type VoceCatalogo = CatalogoItem;
   providedIn: 'root'
 })
 export class CatalogoService {
-  private apiUrl = 'http://localhost:3000/api';
-
   constructor(private http: HttpClient) {}
 
   // --- LE CHIAMATE ---
 
   getCatalogo(): Observable<VoceCatalogo[]> {
     // Per la GET usiamo il formato standard
-    return this.http.get<VoceCatalogo[]>(`${this.apiUrl}/catalogo`);
+    return this.http.get<VoceCatalogo[]>('/catalogo');
   }
 
   creaVoce(formData: FormData): Observable<CatalogoCreateResponse> {
     // Per i file, NON passare Content-Type. HttpClient lo farà per te.
-    return this.http.post<CatalogoCreateResponse>(`${this.apiUrl}/admin/catalogo`, formData);
+    return this.http.post<CatalogoCreateResponse>('/admin/catalogo', formData);
   }
 
   modificaVoce(id: number, formData: FormData): Observable<CatalogoMessageResponse> {
     // Anche qui, inviamo FormData.
-    return this.http.put<CatalogoMessageResponse>(`${this.apiUrl}/admin/catalogo/${id}`, formData);
+    return this.http.put<CatalogoMessageResponse>(`/admin/catalogo/${id}`, formData);
   }
 
   eliminaVoce(id: number): Observable<CatalogoMessageResponse> {
-    return this.http.delete<CatalogoMessageResponse>(`${this.apiUrl}/admin/catalogo/${id}`);
+    return this.http.delete<CatalogoMessageResponse>(`/admin/catalogo/${id}`);
   }
 
   // --- PREFERITI ---
   getPreferiti(): Observable<number[]> {
-    return this.http.get<number[]>(`${this.apiUrl}/preferiti`);
+    return this.http.get<number[]>('/preferiti');
   }
 
   aggiungiPreferito(id: number): Observable<CatalogoMessageResponse> {
-    return this.http.post<CatalogoMessageResponse>(`${this.apiUrl}/preferiti/${id}`, {});
+    return this.http.post<CatalogoMessageResponse>(`/preferiti/${id}`, {});
   }
 
   rimuoviPreferito(id: number): Observable<CatalogoMessageResponse> {
-    return this.http.delete<CatalogoMessageResponse>(`${this.apiUrl}/preferiti/${id}`);
+    return this.http.delete<CatalogoMessageResponse>(`/preferiti/${id}`);
   }
 }

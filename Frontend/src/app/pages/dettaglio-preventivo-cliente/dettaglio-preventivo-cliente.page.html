@@ -1,4 +1,9 @@
-<app-header title="Dettaglio Preventivo" backLink="/dashboard-cliente"></app-header>
+<app-header
+  title="Dettaglio Preventivo"
+  backLink="/dashboard-cliente"
+  [showBack]="true"
+  [showLogout]="true">
+</app-header>
 
 <ion-content>
   @if (preventivo) {
