@@ -40,7 +40,7 @@ exports.findByEmail = (email) => {
       `
         SELECT *
         FROM users
-        WHERE email = ?
+        WHERE LOWER(email) = LOWER(?)
       `,
       [email],
       (err, row) => {

@@ -48,6 +48,7 @@ paths:
       tags:
         - Sistema
       summary: Recupera un file caricato
+      description: File statico servito da Express dalla cartella `Backend/uploads`.
       parameters:
         - $ref: '#/components/parameters/FilenameParam'
       responses:
@@ -99,6 +100,7 @@ paths:
       tags:
         - Auth
       summary: Autentica un utente
+      description: L'email viene cercata senza distinguere tra maiuscole e minuscole.
       requestBody:
         required: true
         content:
@@ -1211,6 +1213,7 @@ components:
         email:
           type: string
           format: email
+          description: L'accesso accetta la stessa email anche se scritta con maiuscole o minuscole diverse.
           example: admin@metallab.it
         password:
           type: string
