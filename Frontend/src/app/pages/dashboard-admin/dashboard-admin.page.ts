@@ -23,6 +23,10 @@ import { Preventivo } from 'src/app/models/preventivo.model';
 import { InterventiService } from 'src/app/services/interventi.service';
 import { PreventiviService } from 'src/app/services/preventivi.service';
 import { CatalogoService, VoceCatalogo } from 'src/app/services/catalogo.service';
+import { CatalogoRequest } from 'src/app/models/catalogo.model';
+import { HeaderComponent } from 'src/app/components/header/header.component';
+
+type CatalogoForm = Partial<VoceCatalogo> & Partial<CatalogoRequest>;
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -30,6 +34,7 @@ import { CatalogoService, VoceCatalogo } from 'src/app/services/catalogo.service
   styleUrls: ['./dashboard-admin.page.scss'],
   standalone: true,
   imports: [
+    HeaderComponent,
     CommonModule, RouterLink, FormsModule, IonContent, IonHeader, IonTitle,
     IonToolbar, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid,
     IonRow, IonCol, IonChip, IonButton, IonButtons, IonIcon, IonModal, IonItem,
@@ -42,13 +47,22 @@ export class DashboardAdminPage {
   interventiAperti = 0;
   vociCatalogo = 0; 
 
-  interventi: any[] = [];
-  preventivi: any[] = [];
+  interventi: Intervento[] = [];
+  preventivi: Preventivo[] = [];
   catalogo: VoceCatalogo[] = [];
 
   isModalOpen = false;
   modalMode: 'crea' | 'modifica' = 'crea';
-  formCatalogo: Partial<VoceCatalogo> = {};
+  formCatalogo: CatalogoForm = {};
+  
+  get prodottiCatalogo(): VoceCatalogo[] {
+    return this.catalogo.filter(v => v.categoria === 'Prodotto');
+  }
+
+  get serviziCatalogo(): VoceCatalogo[] {
+    return this.catalogo.filter(v => v.categoria === 'Servizio');
+  }
+
 
   constructor(
     private alertController: AlertController,
@@ -95,7 +109,7 @@ export class DashboardAdminPage {
     });
   }
 
-  calcolaPesoIntervento(intervento: any): number {
+  calcolaPesoIntervento(intervento: Intervento): number {
     // 4. In fondo: Pratiche chiuse
     if (
       intervento.stato_admin === 'Rifiutato' || 
@@ -117,7 +131,7 @@ export class DashboardAdminPage {
     return 3;
   }
 
-  getStatoInterventoUX(intervento: any): { label: string, color: string, icon: string } {
+  getStatoInterventoUX(intervento: Intervento): { label: string, color: string, icon: string } {
     if (intervento.stato_lavorazione === 'Terminato') return { label: 'Completato', color: 'success', icon: 'checkmark-done-outline' };
     if (intervento.stato_admin === 'Rifiutato') return { label: 'Rifiutato', color: 'danger', icon: 'close-circle-outline' };
     if (intervento.stato_risposta_cliente === 'Intervento annullato') return { label: 'Annullato dal Cliente', color: 'danger', icon: 'trash-outline' };
@@ -128,7 +142,7 @@ export class DashboardAdminPage {
     if (intervento.stato_admin === 'Data proposta') return { label: 'In attesa del Cliente', color: 'medium', icon: 'time-outline' };
 
     if (intervento.stato_lavorazione === 'Programmato') {
-      if (intervento.numero_dipendenti > 0) {
+      if ((intervento.numero_dipendenti ?? 0) > 0) {
         return { label: 'Assegnato al Tecnico', color: 'primary', icon: 'calendar-outline' };
       } else {
         return { label: 'Assegna Tecnico', color: 'warning', icon: 'person-add-outline' };
@@ -160,7 +174,7 @@ export class DashboardAdminPage {
     });
   }
 
-  calcolaPesoPreventivo(p: any): number {
+  calcolaPesoPreventivo(p: Preventivo): number {
     const statoAdmin = p.stato_admin;
     const statoCliente = p.stato_risposta_cliente;
 
@@ -176,7 +190,7 @@ export class DashboardAdminPage {
     return 2;
   }
 
-  getStatoPreventivoUX(preventivo: any): { label: string, color: string, icon: string } {
+  getStatoPreventivoUX(preventivo: Preventivo): { label: string, color: string, icon: string } {
     const statoAdmin = preventivo.stato_admin;
     const statoCliente = preventivo.stato_risposta_cliente;
 
@@ -193,11 +207,8 @@ export class DashboardAdminPage {
   // ==========================================
   caricaCatalogo() {
     this.catalogoService.getCatalogo().subscribe({
-      next: (dati: any) => {
-        this.catalogo = dati.map((v: any) => ({
-            ...v,
-            prezzoBase: v.prezzo_base || v.prezzoBase
-        }));
+      next: (dati) => {
+        this.catalogo = dati;
         this.vociCatalogo = this.catalogo.length;
       },
       error: (err: any) => console.error('Errore caricamento catalogo:', err)
@@ -215,7 +226,7 @@ export class DashboardAdminPage {
     const voce = this.catalogo.find(v => v.id === id);
     if (voce) {
       this.modalMode = 'modifica';
-      this.formCatalogo = { ...voce };
+      this.formCatalogo = { ...voce, prezzoBase: voce.prezzo_base };
       this.isModalOpen = true;
     }
   }
@@ -249,7 +260,7 @@ export class DashboardAdminPage {
     const formData = new FormData();
     formData.append('nome', this.formCatalogo.nome!);
     formData.append('categoria', this.formCatalogo.categoria!);
-    formData.append('prezzoBase', this.formCatalogo.prezzoBase || 'Su preventivo');
+    formData.append('prezzoBase', this.formCatalogo.prezzoBase || this.formCatalogo.prezzo_base || 'Su preventivo');
     
     if (this.fileDaCaricare) {
       formData.append('immagine', this.fileDaCaricare);
@@ -312,7 +323,7 @@ export class DashboardAdminPage {
     await alert.present();
   }
 
-  getImmagineUrl(immagine?: string): string {
+  getImmagineUrl(immagine?: string | null): string {
     const placeholder = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=200&auto=format&fit=crop';
     if (!immagine) return placeholder;
     if (immagine.startsWith('http') || immagine.startsWith('blob:')) return immagine;

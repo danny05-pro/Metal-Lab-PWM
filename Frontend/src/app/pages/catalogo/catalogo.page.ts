@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { AlertController } from '@ionic/angular'; // <--- Importante per gli avvisi
 
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonButton,
-  IonButtons, IonSegment, IonSegmentButton, IonLabel, IonIcon
+  IonContent, IonSegment, IonSegmentButton, IonLabel
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { heart, heartOutline, arrowBackOutline } from 'ionicons/icons';
 
 import { Product } from '../../models/product.model';
 import { Service } from '../../models/service.model';
+import { CatalogoItem } from '../../models/catalogo.model';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
 import { ServiceCardComponent } from '../../components/service-card/service-card.component';
 import { CatalogoService } from '../../services/catalogo.service';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-catalogo',
@@ -21,8 +21,8 @@ import { CatalogoService } from '../../services/catalogo.service';
   styleUrls: ['./catalogo.page.scss'],
   standalone: true,
   imports: [
-    RouterLink, IonHeader, IonToolbar, IonTitle, IonContent, IonButton,
-    IonButtons, IonSegment, IonSegmentButton, IonLabel, IonIcon,
+    HeaderComponent,
+    IonContent, IonSegment, IonSegmentButton, IonLabel,
     ProductCardComponent, ServiceCardComponent
   ]
 })
@@ -64,7 +64,7 @@ export class CatalogoPage implements OnInit {
   }
 
   // Helper per dividere i dati e assegnare lo stato "preferito"
-  smistaDati(datiDB: any[], preferitiIds: number[]) {
+  smistaDati(datiDB: CatalogoItem[], preferitiIds: number[]) {
     this.prodotti = [];
     this.servizi = [];
     const placeholder = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=1200&auto=format&fit=crop';
@@ -78,10 +78,7 @@ export class CatalogoPage implements OnInit {
           id: voce.id,
           nome: voce.nome,
           categoria: voce.categoria,
-          descrizione: 'Prodotto in catalogo.',
-          materiale: '-', 
-          prezzo: 0, 
-          prezzoBase: voce.prezzo_base || voce.prezzoBase, 
+          prezzo_base: voce.prezzo_base,
           immagine: immagineReale,
           preferito: isPreferito
         });
@@ -90,9 +87,7 @@ export class CatalogoPage implements OnInit {
           id: voce.id,
           nome: voce.nome,
           categoria: voce.categoria,
-          descrizione: 'Servizio professionale.',
-          stato: 'Disponibile',
-          prezzoBase: voce.prezzo_base || voce.prezzoBase,
+          prezzo_base: voce.prezzo_base,
           immagine: immagineReale,
           preferito: isPreferito
         });

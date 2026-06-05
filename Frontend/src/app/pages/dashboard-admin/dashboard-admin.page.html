@@ -1,13 +1,4 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark"> 
-    <ion-buttons slot="start">
-      <ion-button routerLink="/home">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Home</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header title="Home" backLink="/home"></app-header>
 
 <ion-content>
   <section class="dashboard-header">
@@ -107,29 +98,66 @@
               Nuovo
             </ion-button>
           </ion-card-header>
+          
           <ion-card-content class="scrollable-list">
-            @for (voce of catalogo; track voce.id) {
-              <div class="dashboard-item catalog-list-item">
-                <div class="catalog-thumbnail">
-                  <img [src]="getImmagineUrl(voce.immagine)" alt="Anteprima">
-                </div>
-                <div class="catalog-info">
-                  <div class="item-header">
-                    <h3>{{ voce.nome }}</h3>
-                    <ion-chip color="medium">{{ voce.categoria }}</ion-chip>
+            
+            @if (prodottiCatalogo.length > 0) {
+              <h4 style="color: #f5a623; margin: 4px 0 12px 4px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px;">Prodotti</h4>
+              <div class="catalog-grid">
+                @for (voce of prodottiCatalogo; track voce.id) {
+                  <div class="dashboard-item catalog-list-item">
+                    <div class="catalog-thumbnail">
+                      <img [src]="getImmagineUrl(voce.immagine)" alt="Anteprima">
+                    </div>
+                    <div class="catalog-info">
+                      <div class="item-header">
+                        <h3>{{ voce.nome }}</h3>
+                        <ion-chip color="medium">{{ voce.categoria }}</ion-chip>
+                      </div>
+                      <p class="catalog-price">Prezzo Base: {{ voce.prezzo_base }}</p>
+                      <div class="item-actions">
+                        <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
+                          <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
+                        </ion-button>
+                        <ion-button fill="clear" color="danger" size="small" (click)="eliminaVoceCatalogo(voce.id)">
+                          <ion-icon slot="start" name="trash-outline"></ion-icon> Elimina
+                        </ion-button>
+                      </div>
+                    </div>
                   </div>
-                  <p class="catalog-price">Prezzo Base: {{ voce.prezzoBase }}</p>
-                  <div class="item-actions">
-                    <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
-                      <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
-                    </ion-button>
-                    <ion-button fill="clear" color="danger" size="small" (click)="eliminaVoceCatalogo(voce.id)">
-                      <ion-icon slot="start" name="trash-outline"></ion-icon> Elimina
-                    </ion-button>
-                  </div>
-                </div>
+                }
               </div>
-            } @empty {
+            }
+
+            @if (serviziCatalogo.length > 0) {
+              <h4 style="color: #f5a623; margin: 24px 0 12px 4px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px;">Servizi</h4>
+              <div class="catalog-grid">
+                @for (voce of serviziCatalogo; track voce.id) {
+                  <div class="dashboard-item catalog-list-item">
+                    <div class="catalog-thumbnail">
+                      <img [src]="getImmagineUrl(voce.immagine)" alt="Anteprima">
+                    </div>
+                    <div class="catalog-info">
+                      <div class="item-header">
+                        <h3>{{ voce.nome }}</h3>
+                        <ion-chip color="medium">{{ voce.categoria }}</ion-chip>
+                      </div>
+                      <p class="catalog-price">Prezzo Base: {{ voce.prezzo_base }}</p>
+                      <div class="item-actions">
+                        <ion-button fill="clear" color="light" size="small" (click)="modificaVoceCatalogo(voce.id)">
+                          <ion-icon slot="start" name="create-outline"></ion-icon> Modifica
+                        </ion-button>
+                        <ion-button fill="clear" color="danger" size="small" (click)="eliminaVoceCatalogo(voce.id)">
+                          <ion-icon slot="start" name="trash-outline"></ion-icon> Elimina
+                        </ion-button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (catalogo.length === 0) {
               <div class="empty-section">Il catalogo è vuoto.</div>
             }
           </ion-card-content>

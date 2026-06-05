@@ -3,12 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
   IonButton,
-  IonButtons,
   IonIcon,
   IonCard,
   IonCardContent,
@@ -24,6 +20,7 @@ import { arrowBackOutline, alertCircleOutline } from 'ionicons/icons';
 
 // IMPORT CORRETTO E SICURO
 import { AuthService } from 'src/app/services/auth.service';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-login',
@@ -31,14 +28,11 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./login.page.scss'],
   standalone: true,
   imports: [
+    HeaderComponent,
     FormsModule,
     RouterLink,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonButton,
-    IonButtons,
     IonIcon,
     IonCard,
     IonCardContent,

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 
 import {
@@ -27,7 +26,6 @@ import {
 
 import { addIcons } from 'ionicons';
 import {
-  arrowBackOutline,
   addOutline,
   createOutline,
   trashOutline,
@@ -40,6 +38,11 @@ import {
 // 1. IMPORTIAMO IL SERVICE E L'INTERFACCIA
 // (Assicurati che il percorso relativo sia corretto)
 import { DipendentiService, Dipendente } from '../../services/dipendenti.service';
+import { DipendenteRequest } from '../../models/user.model';
+import { HeaderComponent } from '../../components/header/header.component';
+
+type DipendenteCard = Dipendente & { stato: 'Attivo' };
+type DipendenteForm = Partial<DipendenteRequest> & { id?: number; stato?: 'Attivo' };
 
 @Component({
   selector: 'app-gestione-dipendenti',
@@ -47,9 +50,9 @@ import { DipendentiService, Dipendente } from '../../services/dipendenti.service
   styleUrls: ['./gestione-dipendenti.page.scss'],
   standalone: true,
   imports: [
+    HeaderComponent,
     CommonModule,
     FormsModule,
-    RouterLink,
     IonContent,
     IonHeader,
     IonTitle,
@@ -72,10 +75,10 @@ import { DipendentiService, Dipendente } from '../../services/dipendenti.service
 })
 export class GestioneDipendentiPage implements OnInit {
   
-  dipendenti: Dipendente[] = [];
+  dipendenti: DipendenteCard[] = [];
   isModalOpen = false;
   modalMode: 'crea' | 'modifica' = 'crea';
-  formDipendente: Partial<Dipendente> & { password?: string } = {};
+  formDipendente: DipendenteForm = {};
 
   // 2. INIETTIAMO IL SERVICE AL POSTO DI HTTPCLIENT
   constructor(
@@ -83,7 +86,7 @@ export class GestioneDipendentiPage implements OnInit {
     private dipendentiService: DipendentiService 
   ) {
     addIcons({
-      arrowBackOutline, addOutline, createOutline, trashOutline,
+      addOutline, createOutline, trashOutline,
       personOutline, closeOutline, saveOutline, callOutline 
     });
   }
@@ -102,7 +105,7 @@ export class GestioneDipendentiPage implements OnInit {
     }
   }
 
-  async confermaEliminazioneDipendente(dipendente: Dipendente) {
+  async confermaEliminazioneDipendente(dipendente: DipendenteCard) {
     const alert = await this.alertController.create({
       cssClass: 'custom-dark-alert',
       header: 'Eliminare dipendente?',
@@ -142,9 +145,16 @@ export class GestioneDipendentiPage implements OnInit {
     this.isModalOpen = true;
   }
 
-  apriModaleModifica(dipendente: Dipendente) {
+  apriModaleModifica(dipendente: DipendenteCard) {
     this.modalMode = 'modifica';
-    this.formDipendente = { ...dipendente }; 
+    this.formDipendente = {
+      id: dipendente.id,
+      nome: dipendente.nome,
+      cognome: dipendente.cognome,
+      telefono: dipendente.telefono ?? '',
+      email: dipendente.email,
+      stato: dipendente.stato
+    };
     this.isModalOpen = true;
   }
 
@@ -157,7 +167,7 @@ export class GestioneDipendentiPage implements OnInit {
 
     if (this.modalMode === 'crea') {
       // CHIAMATA POST
-      this.dipendentiService.creaDipendente(this.formDipendente as Dipendente).subscribe({
+      this.dipendentiService.creaDipendente(this.formDipendente as DipendenteRequest).subscribe({
         next: () => {
           this.caricaDipendenti(); 
           this.chiudiModale();
@@ -179,7 +189,7 @@ export class GestioneDipendentiPage implements OnInit {
     } else {
       if (this.formDipendente.id) {
         // CHIAMATA PUT
-        this.dipendentiService.modificaDipendente(this.formDipendente.id, this.formDipendente as Dipendente).subscribe({
+        this.dipendentiService.modificaDipendente(this.formDipendente.id, this.formDipendente as DipendenteRequest).subscribe({
           next: () => {
             this.caricaDipendenti(); 
             this.chiudiModale();
@@ -205,7 +215,7 @@ export class GestioneDipendentiPage implements OnInit {
   eliminaDipendente(id: number) {
     this.dipendentiService.eliminaDipendente(id).subscribe({
       next: () => {
-        this.dipendenti = this.dipendenti.filter((dipendente: Dipendente) => dipendente.id !== id);
+        this.dipendenti = this.dipendenti.filter((dipendente: DipendenteCard) => dipendente.id !== id);
       },
       error: (err: any) => console.error('Errore durante l\'eliminazione', err)
     });

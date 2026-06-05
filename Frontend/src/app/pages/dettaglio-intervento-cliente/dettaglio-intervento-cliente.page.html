@@ -1,16 +1,4 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-cliente">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-
-    <ion-title>
-      Dashboard Cliente
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header title="Dashboard Cliente" backLink="/dashboard-cliente"></app-header>
 
 <ion-content>
 
@@ -86,25 +74,41 @@
 
         <div class="info-row">
           <span>Stato admin</span>
-        <ion-chip
-  [color]="intervento.stato_admin === 'Rifiutato' ? 'danger' : 'warning'">
-  {{ intervento.stato_admin }}
-</ion-chip>
+          <ion-chip
+            [color]="
+              intervento.stato_admin === 'Intervento concordato' ? 'success' :
+              intervento.stato_admin === 'Rifiutato' ? 'danger' :
+              intervento.stato_admin === 'Data proposta' ? 'medium' :
+              'warning'
+            ">
+            {{ intervento.stato_admin }}
+          </ion-chip>
         </div>
 
         <div class="info-row">
           <span>Risposta cliente</span>
-         <ion-chip
-  [color]="intervento.stato_risposta_cliente === 'Intervento annullato' ? 'danger' : 'warning'">
-  {{ intervento.stato_risposta_cliente }}
-</ion-chip>
+          <ion-chip
+            [color]="
+              intervento.stato_risposta_cliente === 'Data accettata' ? 'success' :
+              intervento.stato_risposta_cliente === 'Intervento annullato' ? 'danger' :
+              intervento.stato_risposta_cliente === 'Nuova data proposta' ? 'medium' :
+              'warning'
+            ">
+            {{ intervento.stato_risposta_cliente }}
+          </ion-chip>
         </div>
 
         <div class="info-row">
           <span>Stato lavorazione</span>
-          <ion-chip>
-  {{ intervento.stato_lavorazione }}
-</ion-chip>
+          <ion-chip
+            [color]="
+              intervento.stato_lavorazione === 'Terminato' ? 'success' :
+              intervento.stato_lavorazione === 'In lavorazione' ? 'tertiary' :
+              intervento.stato_lavorazione === 'Programmato' ? 'primary' :
+              'warning'
+            ">
+            {{ intervento.stato_lavorazione }}
+          </ion-chip>
         </div>
 
       </ion-card-content>

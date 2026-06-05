@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
-  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
+  IonContent, IonButton,
+  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
 } from '@ionic/angular/standalone';
 
-import { addIcons } from 'ionicons';
-import { arrowBackOutline } from 'ionicons/icons';
 import { Intervento } from 'src/app/models/intervento.model';
 import { InterventiService } from '../../services/interventi.service'; // Importa il tuo service
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-dettaglio-intervento-dipendente',
@@ -17,8 +16,9 @@ import { InterventiService } from '../../services/interventi.service'; // Import
   styleUrls: ['./dettaglio-intervento-dipendente.page.scss'],
   standalone: true,
   imports: [
-    RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, IonButtons,
-    IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
+    HeaderComponent,
+    IonContent,
+    IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
   ]
 })
 export class DettaglioInterventoDipendentePage {
@@ -32,7 +32,6 @@ export class DettaglioInterventoDipendentePage {
     private alertController: AlertController,
     private interventiService: InterventiService // Inietta il service
   ) {
-    addIcons({ arrowBackOutline });
     this.interventoId = this.route.snapshot.paramMap.get('id') || '';
   }
 

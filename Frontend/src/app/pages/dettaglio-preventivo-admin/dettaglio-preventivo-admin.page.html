@@ -1,18 +1,4 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-
-    <ion-buttons slot="start">
-      <ion-button routerLink="/dashboard-admin">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-
-    <ion-title>
-     Dashboard Admin
-    </ion-title>
-
-  </ion-toolbar>
-</ion-header>
+<app-header title="Dashboard Admin" backLink="/dashboard-admin"></app-header>
 
 <ion-content>
   
@@ -46,14 +32,25 @@
 
         <div class="info-row">
           <span>Stato Admin</span>
-          <ion-chip>
+          <ion-chip
+            [color]="
+              preventivo.stato_admin === 'Preventivo concordato' ? 'success' :
+              preventivo.stato_admin === 'Rifiutato' ? 'danger' :
+              preventivo.stato_admin === 'Prezzo proposto' ? 'tertiary' :
+              'warning'
+            ">
             {{ preventivo.stato_admin }}
           </ion-chip>
         </div>
         
         <div class="info-row">
           <span>Risposta Cliente</span>
-          <ion-chip>
+          <ion-chip
+            [color]="
+              preventivo.stato_risposta_cliente === 'Accettato' ? 'success' :
+              preventivo.stato_risposta_cliente === 'Rifiutato' ? 'danger' :
+              'warning'
+            ">
             {{ preventivo.stato_risposta_cliente }}
           </ion-chip>
         </div>

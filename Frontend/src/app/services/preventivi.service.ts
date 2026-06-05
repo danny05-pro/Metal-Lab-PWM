@@ -1,16 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Preventivo } from '../models/preventivo.model';
+import {
+  Preventivo,
+  PreventivoCreateResponse,
+  PreventivoRichiesta
+} from '../models/preventivo.model';
 
-export interface PreventivoRichiesta {
-  descrizione: string;
-  servizio: string;
-  materiale: string;
-  dimensioni: string;
-  finitura?: string;
-  allegato?: string;
-}
+export type { PreventivoRichiesta } from '../models/preventivo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,48 +20,40 @@ export class PreventiviService {
 
   constructor(private http: HttpClient) {}
 
-// 1. Sostituisci getHeaders togliendo il Content-Type
-  private getHeaders(): HttpHeaders {
-    const token = sessionStorage.getItem('token');
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-  }
-
   // 2. Modifica creaPreventivo per accettare FormData
-  creaPreventivo(dati: FormData): Observable<any> {
-    return this.http.post(this.apiUrl, dati, { headers: this.getHeaders() });
+  creaPreventivo(dati: FormData): Observable<PreventivoCreateResponse> {
+    return this.http.post<PreventivoCreateResponse>(this.apiUrl, dati);
   }
 
   getPreventivi(): Observable<Preventivo[]> {
-    return this.http.get<Preventivo[]>(this.apiUrl, { headers: this.getHeaders() });
+    return this.http.get<Preventivo[]>(this.apiUrl);
   }
   
   getPreventiviAdmin(): Observable<Preventivo[]> {
-    return this.http.get<Preventivo[]>(this.adminApiUrl, { headers: this.getHeaders() });
+    return this.http.get<Preventivo[]>(this.adminApiUrl);
   }
 
   // 2. NUOVA FUNZIONE: Recupera il dettaglio di un singolo preventivo per l'ADMIN
-  getPreventivoAdminById(id: number | string): Observable<any> {
-    return this.http.get<any>(`${this.adminApiUrl}/${id}`, { headers: this.getHeaders() });
+  getPreventivoAdminById(id: number | string): Observable<Preventivo> {
+    return this.http.get<Preventivo>(`${this.adminApiUrl}/${id}`);
   }
 
   adminProponePrezzo(id: number | string, prezzo: number): Observable<any> {
-    return this.http.put(`${this.adminApiUrl}/${id}/proponi-prezzo`, { prezzo }, { headers: this.getHeaders() });
+    return this.http.patch(`${this.adminApiUrl}/${id}/proponi-prezzo`, { prezzo });
   }
 
   // Admin rifiuta il preventivo
   adminRifiutaPreventivo(id: number | string): Observable<any> {
-    return this.http.put(`${this.adminApiUrl}/${id}/rifiuta`, {}, { headers: this.getHeaders() });
+    return this.http.patch(`${this.adminApiUrl}/${id}/rifiuta`, {});
   }
 
   // Recupera il dettaglio di un singolo preventivo per il CLIENTE
   getPreventivoClienteById(id: number | string): Observable<Preventivo> {
-    return this.http.get<Preventivo>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+    return this.http.get<Preventivo>(`${this.apiUrl}/${id}`);
   }
 
   // Invia al backend la scelta del cliente (accetta o rifiuta)
   rispondiPreventivo(id: number | string, azione: 'accetta' | 'rifiuta'): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}/risposta`, { azione }, { headers: this.getHeaders() });
+    return this.http.patch(`${this.apiUrl}/${id}/risposta`, { azione });
   }
 }

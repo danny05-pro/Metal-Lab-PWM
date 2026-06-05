@@ -1,17 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Dipendente, DipendenteRequest } from '../models/user.model';
 
-// Tipizziamo il dipendente per mantenere il codice rigoroso
-export interface Dipendente {
-  id?: number; 
-  nome: string;
-  cognome: string;
-  email: string;
-  telefono: string; 
-  stato?: string; 
-  password?: string;
-}
+export type { Dipendente } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,32 +15,23 @@ export class DipendentiService {
 
   constructor(private http: HttpClient) {}
 
-  // Funzione interna per generare gli header con il token
-  private getHeaders(): HttpHeaders {
-    const token = sessionStorage.getItem('token'); 
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-  }
-
   // ==========================================
   // CHIAMATE HTTP
   // ==========================================
 
   getDipendenti(): Observable<Dipendente[]> {
-    return this.http.get<Dipendente[]>(this.apiUrl, { headers: this.getHeaders() });
+    return this.http.get<Dipendente[]>(this.apiUrl);
   }
 
-  creaDipendente(dati: Dipendente): Observable<Dipendente> {
-    return this.http.post<Dipendente>(this.apiUrl, dati, { headers: this.getHeaders() });
+  creaDipendente(dati: DipendenteRequest): Observable<Dipendente> {
+    return this.http.post<Dipendente>(this.apiUrl, dati);
   }
 
-  modificaDipendente(id: number, dati: Dipendente): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, dati, { headers: this.getHeaders() });
+  modificaDipendente(id: number, dati: DipendenteRequest): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, dati);
   }
 
   eliminaDipendente(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

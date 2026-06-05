@@ -75,14 +75,14 @@ ion-card-title {
   line-height: 1.5;
 }
 
+/* RIMOSSI I COLORI FISSI */
 .info-row ion-chip {
   width: fit-content;
   justify-self: end;
   margin: 0;
-
-  background: rgba(245, 166, 35, 0.12);
-  color: #f5a623;
   font-weight: 800;
+  --border-radius: 30px;
+  border-radius: 30px;
 }
 
 .state-item {

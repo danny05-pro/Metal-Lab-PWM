@@ -1,11 +1,6 @@
-export interface Product {
-  id: number;
-  nome: string;
-  descrizione: string;
-  categoria: string;
-  materiale: string;
-  prezzo: number;
-  prezzoBase?: string; // <-- AGGIUNTO
-  immagine: string;
+import { CatalogoItem } from './catalogo.model';
+
+export interface Product extends CatalogoItem {
+  categoria: 'Prodotto';
   preferito: boolean;
 }

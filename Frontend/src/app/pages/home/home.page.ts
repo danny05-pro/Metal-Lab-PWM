@@ -2,12 +2,8 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
   IonButton,
-  IonButtons,
   IonIcon
 } from '@ionic/angular/standalone';
 
@@ -23,6 +19,7 @@ import {
   speedometerOutline,
   gitPullRequestOutline
 } from 'ionicons/icons';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-home',
@@ -30,12 +27,9 @@ import {
   styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [
-    IonHeader,
-    IonToolbar,
-    IonTitle,
+    HeaderComponent,
     IonContent,
     IonButton,
-    IonButtons,
     IonIcon,
     RouterLink
   ]
@@ -53,44 +47,5 @@ export class HomePage {
       speedometerOutline,
       gitPullRequestOutline
     });
-  }
-
-  utenteLoggato(): boolean {
-    return sessionStorage.getItem('utenteLoggato') === 'true';
-  }
-
-  get ruoloUtente(): string {
-    return sessionStorage.getItem('ruoloUtente') || '';
-  }
-
-  get dashboardLink(): string {
-    if (this.ruoloUtente === 'admin') {
-      return '/dashboard-admin';
-    }
-
-    if (this.ruoloUtente === 'dipendente') {
-      return '/dashboard-dipendente';
-    }
-
-    return '/dashboard-cliente';
-  }
-  
-get dashboardLabel(): string {
-
-  if (this.ruoloUtente === 'admin') {
-    return 'Dashboard Admin';
-  }
-
-  if (this.ruoloUtente === 'dipendente') {
-    return 'Dashboard Dipendente';
-  }
-
-  return 'Dashboard Cliente';
-
-}
-
-  logout() {
-    sessionStorage.removeItem('utenteLoggato');
-    sessionStorage.removeItem('ruoloUtente');
   }
 }

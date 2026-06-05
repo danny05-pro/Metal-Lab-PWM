@@ -54,12 +54,34 @@ ion-content::part(scroll)::-webkit-scrollbar-thumb:hover {
    HEADER SENZA LINEA BIANCA
    ============================================================ */
 
+html,
+body,
+ion-app {
+  color-scheme: dark;
+  background: #0b0f14 !important;
+}
+
 ion-header,
 ion-toolbar {
+  --background: #0b0f14 !important;
+  --color: #ffffff !important;
   --border-width: 0px !important;
   --border-style: none !important;
+  background: #0b0f14 !important;
   border: none !important;
+  color: #ffffff !important;
   box-shadow: none !important;
+}
+
+ion-header::after {
+  display: none !important;
+}
+
+ion-header ion-title,
+ion-header ion-button,
+ion-header ion-icon {
+  --color: #ffffff !important;
+  color: #ffffff !important;
 }
 
 

@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; 
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton,
+  IonContent, IonButton,
   IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip
 } from '@ionic/angular/standalone';
 
 import {AlertController } from '@ionic/angular';
 
 import { addIcons } from 'ionicons';
-import { arrowBackOutline, documentAttachOutline } from 'ionicons/icons';
+import { documentAttachOutline } from 'ionicons/icons';
 
 // Importiamo il service
 import { PreventiviService } from '../../services/preventivi.service';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-dettaglio-preventivo-cliente',
@@ -21,8 +22,9 @@ import { PreventiviService } from '../../services/preventivi.service';
   styleUrls: ['./dettaglio-preventivo-cliente.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, RouterLink, IonContent, IonHeader, IonTitle, IonToolbar,
-    IonButtons, IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle,
+    HeaderComponent,
+    CommonModule, IonContent,
+    IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle,
     IonCardContent, IonChip
   ]
 })
@@ -38,7 +40,7 @@ export class DettaglioPreventivoClientePage implements OnInit {
     private alertController: AlertController,
     private preventiviService: PreventiviService 
   ) {
-    addIcons({ arrowBackOutline, documentAttachOutline });
+    addIcons({ documentAttachOutline });
     this.preventivoId = this.route.snapshot.paramMap.get('id') || '';
   }
 
