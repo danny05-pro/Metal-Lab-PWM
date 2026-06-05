@@ -20,11 +20,13 @@
           Metal Lab digitalizza l’interazione con l’officina: catalogo dei servizi e dei prodotti, richieste di preventivo e gestione degli interventi in un’unica piattaforma.
         </p>
         
-        <div class="hero-actions">
-          <ion-button routerLink="/catalogo">
-            Esplora Catalogo
-          </ion-button>
-        </div>
+        @if (!isDipendente) {
+  <div class="hero-actions">
+    <ion-button routerLink="/catalogo">
+      Esplora Catalogo
+    </ion-button>
+  </div>
+}
       </div>
 
       <div class="hero-services">

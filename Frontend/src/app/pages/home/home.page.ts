@@ -19,6 +19,7 @@ import {
   speedometerOutline,
   gitPullRequestOutline
 } from 'ionicons/icons';
+
 import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
@@ -35,7 +36,7 @@ import { HeaderComponent } from '../../components/header/header.component';
   ]
 })
 export class HomePage {
-  
+
   constructor() {
     addIcons({
       hammerOutline,
@@ -48,4 +49,29 @@ export class HomePage {
       gitPullRequestOutline
     });
   }
+
+  get isDipendente(): boolean {
+    const token = sessionStorage.getItem('token');
+
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const payloadBase64 = token.split('.')[1];
+
+      const payloadJson = atob(
+        payloadBase64.replace(/-/g, '+').replace(/_/g, '/')
+      );
+
+      const payload = JSON.parse(payloadJson);
+
+      return payload.ruolo === 'dipendente';
+
+    } catch (error) {
+      console.error('Errore lettura ruolo utente:', error);
+      return false;
+    }
+  }
+
 }
