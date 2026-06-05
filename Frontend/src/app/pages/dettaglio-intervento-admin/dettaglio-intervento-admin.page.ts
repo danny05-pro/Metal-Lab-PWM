@@ -22,7 +22,7 @@ import {
 import { addIcons } from 'ionicons';
 import { calendarOutline } from 'ionicons/icons';
 
-import { Intervento } from 'src/app/models/intervento.model';
+import { DipendenteAssegnato, Intervento } from 'src/app/models/intervento.model';
 import { InterventiService } from 'src/app/services/interventi.service';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 
@@ -57,9 +57,9 @@ export class DettaglioInterventoAdminPage implements OnInit {
 
   caricamento = true;
 
-dipendentiDisponibili: any[] = [];
+dipendentiDisponibili: DipendenteAssegnato[] = [];
 
-dipendentiAssegnati: any[] = [];
+dipendentiAssegnati: DipendenteAssegnato[] = [];
 
   dataPropostaAdmin = '';
 

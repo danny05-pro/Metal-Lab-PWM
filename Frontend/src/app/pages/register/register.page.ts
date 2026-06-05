@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -21,6 +22,8 @@ import { arrowBackOutline, alertCircleOutline } from 'ionicons/icons';
 // 1. Importiamo il Service
 import { AuthService } from '../../services/auth.service';
 import { HeaderComponent } from '../../components/header/header.component';
+import { RegisterResponse } from '../../models/user.model';
+import { getHttpErrorMessage } from '../../utils/http-error.util';
 
 @Component({
   selector: 'app-register',
@@ -64,10 +67,11 @@ export class RegisterPage {
     });
   }
 
-  filtraNumeri(event: any) {
-    const valore = event.target.value;
+  filtraNumeri(event: CustomEvent<{ value?: string | null }>) {
+    const valore = event.detail.value ?? '';
+    const input = event.target as HTMLIonInputElement;
     this.telefono = valore.replace(/\D/g, '');
-    event.target.value = this.telefono;
+    input.value = this.telefono;
   }
 
   // 3. Regex aggiornata: l'indirizzo deve cominciare per forza con una lettera ([a-zA-Z])
@@ -119,16 +123,16 @@ export class RegisterPage {
 
     // 4. Deleghiamo il lavoro sporco al Service
     this.authService.register(payload).subscribe({
-      next: (response: any) => {
+      next: (response: RegisterResponse) => {
         console.log('Registrato con successo:', response);
         this.router.navigate(['/login']);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         console.error(err);
         if (err.status === 409) {
           this.erroreRegistrazione = 'Questa email è già registrata. Vai al login.';
-        } else if (err.error && err.error.message) {
-          this.erroreRegistrazione = err.error.message;
+        } else if (err.error) {
+          this.erroreRegistrazione = getHttpErrorMessage(err, 'Errore durante la registrazione.');
         } else {
           this.erroreRegistrazione = 'Errore di connessione al server.';
         }

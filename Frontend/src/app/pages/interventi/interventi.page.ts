@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -34,6 +35,7 @@ import {
   InterventoRichiesta
 } from '../../services/interventi.service';
 import { HeaderComponent } from '../../components/header/header.component';
+import { getHttpErrorMessage } from '../../utils/http-error.util';
 
 @Component({
   selector: 'app-interventi',
@@ -143,12 +145,13 @@ export class InterventiPage {
         }, 1500);
       },
 
-      error: async (err: any) => {
+      error: async (err: HttpErrorResponse) => {
         console.error('Errore invio richiesta', err);
 
-        const messaggio =
-          err.error?.message ||
-          'Errore di connessione al server.';
+        const messaggio = getHttpErrorMessage(
+          err,
+          'Errore di connessione al server.'
+        );
 
         const alert = await this.alertController.create({
           cssClass: 'custom-dark-alert',

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; 
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -15,6 +16,7 @@ import { documentAttachOutline } from 'ionicons/icons';
 // Importiamo il service
 import { PreventiviService } from '../../services/preventivi.service';
 import { HeaderComponent } from '../../components/header/header.component';
+import { Preventivo, PreventivoDettaglio } from '../../models/preventivo.model';
 
 @Component({
   selector: 'app-dettaglio-preventivo-cliente',
@@ -31,7 +33,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 export class DettaglioPreventivoClientePage implements OnInit {
 
   preventivoId = '';
-  preventivo: any = null; // <-- CORREZIONE 1: "any" sblocca l'errore di Angular!
+  preventivo: PreventivoDettaglio | null = null;
   caricamento = true;
 
   constructor(
@@ -53,12 +55,14 @@ export class DettaglioPreventivoClientePage implements OnInit {
   caricaPreventivo() {
     this.caricamento = true;
     this.preventiviService.getPreventivoClienteById(this.preventivoId).subscribe({
-      next: (dati: any) => {
-        this.preventivo = dati;
-        this.preventivo.allegatiArray = dati.allegato ? dati.allegato.split(',') : [];
+      next: (dati: Preventivo) => {
+        this.preventivo = {
+          ...dati,
+          allegatiArray: dati.allegato ? dati.allegato.split(',') : []
+        };
         this.caricamento = false;
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         console.error('Errore recupero preventivo', err);
         this.caricamento = false;
       }
@@ -67,6 +71,8 @@ export class DettaglioPreventivoClientePage implements OnInit {
 
   // <-- CORREZIONE 2: Ora i bottoni chiamano il VERO database
   async accettaPreventivo() {
+    if (!this.preventivo) return;
+
     const alert = await this.alertController.create({
       cssClass: 'custom-dark-alert',
       header: 'Conferma Accettazione',

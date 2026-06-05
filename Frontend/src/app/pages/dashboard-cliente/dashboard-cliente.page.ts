@@ -17,6 +17,7 @@ import {
 } from 'ionicons/icons';
 
 import { Preventivo } from 'src/app/models/preventivo.model';
+import { Intervento } from 'src/app/models/intervento.model';
 import { InterventiService } from '../../services/interventi.service';
 import { PreventiviService } from '../../services/preventivi.service';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -35,8 +36,8 @@ import { HeaderComponent } from '../../components/header/header.component';
 })
 export class DashboardClientePage { 
 
-  tuttiGliInterventi: any[] = [];
-  interventiFuturi: any[] = [];
+  tuttiGliInterventi: Intervento[] = [];
+  interventiFuturi: Intervento[] = [];
   preventivi: Preventivo[] = [];
   nomeCliente = '';
 
@@ -110,7 +111,7 @@ export class DashboardClientePage {
     });
   }
 
-  calcolaPesoIntervento(intervento: any): number {
+  calcolaPesoIntervento(intervento: Intervento): number {
     // 3. In fondo: Pratiche chiuse o rifiutate
     if (
       intervento.stato_admin === 'Rifiutato' || 
@@ -144,7 +145,7 @@ export class DashboardClientePage {
     });
   }
 
-  calcolaPesoPreventivo(p: any): number {
+  calcolaPesoPreventivo(p: Preventivo): number {
     const statoAdmin = p.stato_admin;
     const statoCliente = p.stato_risposta_cliente;
 
@@ -161,7 +162,7 @@ export class DashboardClientePage {
   // ==========================================
   // HELPER UX: TRADUZIONE STATI
   // ==========================================
-  getStatoPreventivoUX(preventivo: any): { label: string, color: string, icon: string } {
+  getStatoPreventivoUX(preventivo: Preventivo): { label: string, color: string, icon: string } {
     const statoAdmin = preventivo.stato_admin;
     const statoCliente = preventivo.stato_risposta_cliente;
 
@@ -173,7 +174,7 @@ export class DashboardClientePage {
     return { label: statoAdmin, color: 'medium', icon: 'help-circle-outline' };
   }
 
-  getStatoInterventoUX(intervento: any): { label: string, color: string, icon: string } {
+  getStatoInterventoUX(intervento: Intervento): { label: string, color: string, icon: string } {
     if (intervento.stato_lavorazione === 'Terminato') return { label: 'Completato', color: 'success', icon: 'checkmark-done-outline' };
     if (intervento.stato_admin === 'Rifiutato') return { label: 'Rifiutato', color: 'danger', icon: 'close-circle-outline' };
     if (intervento.stato_risposta_cliente === 'Intervento annullato') return { label: 'Annullato', color: 'danger', icon: 'trash-outline' };
@@ -183,7 +184,7 @@ export class DashboardClientePage {
     if (intervento.stato_admin === 'In attesa nuova valutazione') return { label: 'In attesa conferma', color: 'medium', icon: 'time-outline' };
     
     if (intervento.stato_lavorazione === 'Programmato') {
-      if (intervento.numero_dipendenti > 0) {
+      if ((intervento.numero_dipendenti ?? 0) > 0) {
         return { label: 'Assegnato al Tecnico', color: 'primary', icon: 'calendar-outline' };
       } else {
         return { label: 'Ricerca Tecnico in corso', color: 'medium', icon: 'time-outline' }; 

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
@@ -211,7 +212,7 @@ export class DashboardAdminPage {
         this.catalogo = dati;
         this.vociCatalogo = this.catalogo.length;
       },
-      error: (err: any) => console.error('Errore caricamento catalogo:', err)
+      error: (err: HttpErrorResponse) => console.error('Errore caricamento catalogo:', err)
     });
   }
 
@@ -245,8 +246,9 @@ export class DashboardAdminPage {
   nomeFileSelezionato: string = '';
   fileDaCaricare: File | null = null;
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
     if (file) {
       this.fileDaCaricare = file;
       this.nomeFileSelezionato = file.name;

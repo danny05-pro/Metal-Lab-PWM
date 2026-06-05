@@ -42,6 +42,15 @@ export interface Preventivo {
   cliente_telefono?: string;
 }
 
+export interface PreventivoDettaglio extends Preventivo {
+  allegatiArray: string[];
+}
+
+export interface PreventivoActionResponse {
+  message: string;
+  preventivo: Preventivo;
+}
+
 export interface PreventivoRichiesta {
   descrizione: string;
   servizio: string;

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -20,6 +21,8 @@ import { arrowBackOutline, alertCircleOutline } from 'ionicons/icons';
 
 // IMPORT CORRETTO E SICURO
 import { AuthService } from 'src/app/services/auth.service';
+import { LoginResponse } from 'src/app/models/user.model';
+import { getHttpErrorMessage } from 'src/app/utils/http-error.util';
 import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
@@ -74,7 +77,7 @@ export class LoginPage {
     };
 
     this.authService.login(body).subscribe({
-      next: (response: any) => {
+      next: (response: LoginResponse) => {
         console.log('Login riuscito:', response);
 
         if (response.token) {
@@ -84,18 +87,17 @@ export class LoginPage {
         sessionStorage.setItem('utenteLoggato', 'true');
         
         // Salviamo tutti i dati dell'utente nel SessionStorage
-        const user = response.utente || response.user || {};
-        sessionStorage.setItem('ruoloUtente', user.ruolo || '');
-        sessionStorage.setItem('nomeUtente', user.nome || '');
+        sessionStorage.setItem('ruoloUtente', response.user.ruolo);
+        sessionStorage.setItem('nomeUtente', response.user.nome);
 
         // Ora torniamo alla home, dove la logica dei bottoni farà il resto
         this.router.navigate(['/home']);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         console.error('Errore login:', err);
         
         if (err.status === 401 || err.status === 400) {
-          this.erroreLogin = err.error.message;
+          this.erroreLogin = getHttpErrorMessage(err, 'Credenziali non valide.');
         } else {
           this.erroreLogin = 'Errore di connessione al server.';
         }

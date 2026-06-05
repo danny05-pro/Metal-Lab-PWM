@@ -2,8 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
+  AdminPropostaDataRequest,
+  ClienteRispostaDataRequest,
   DipendenteAssegnato,
+  DipendentiAssignmentResponse,
   Intervento,
+  InterventoActionResponse,
   InterventoCreateResponse,
   InterventoRichiesta,
   InterventoStatoLavorazione
@@ -42,33 +46,27 @@ export class InterventiService {
 
   adminProponeData(
     interventoId: number | string,
-    dati: {
-      data_proposta_admin?: string;
-      usa_data_cliente?: boolean;
-    }
-  ): Observable<any> {
-    return this.http.patch(`${this.adminApiUrl}/${interventoId}/proponi-data`, dati);
+    dati: AdminPropostaDataRequest
+  ): Observable<InterventoActionResponse> {
+    return this.http.patch<InterventoActionResponse>(`${this.adminApiUrl}/${interventoId}/proponi-data`, dati);
   }
 
-  adminRifiutaIntervento(interventoId: number | string): Observable<any> {
-    return this.http.patch(`${this.adminApiUrl}/${interventoId}/rifiuta`, {});
+  adminRifiutaIntervento(interventoId: number | string): Observable<InterventoActionResponse> {
+    return this.http.patch<InterventoActionResponse>(`${this.adminApiUrl}/${interventoId}/rifiuta`, {});
   }
 
   clienteRispondeData(
     interventoId: number | string,
-    dati: {
-      azione: 'accetta_data' | 'proponi_nuova_data' | 'annulla_intervento';
-      nuova_data?: string;
-    }
-  ): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${interventoId}/risposta-cliente`, dati);
+    dati: ClienteRispostaDataRequest
+  ): Observable<InterventoActionResponse> {
+    return this.http.patch<InterventoActionResponse>(`${this.apiUrl}/${interventoId}/risposta-cliente`, dati);
   }
 
   assegnaDipendente(
     interventoId: number | string,
     dipendenteId: number | string
-  ): Observable<any> {
-    return this.http.post(`${this.adminApiUrl}/${interventoId}/dipendenti`, {
+  ): Observable<DipendentiAssignmentResponse> {
+    return this.http.post<DipendentiAssignmentResponse>(`${this.adminApiUrl}/${interventoId}/dipendenti`, {
       dipendente_id: dipendenteId
     });
   }
@@ -92,8 +90,8 @@ export class InterventiService {
   aggiornaStatoLavorazioneDipendente(
     interventoId: number | string,
     stato_lavorazione: Extract<InterventoStatoLavorazione, 'Programmato' | 'In lavorazione' | 'Terminato'>
-  ): Observable<any> {
-    return this.http.patch(`/dipendente/interventi/${interventoId}/stato`, {
+  ): Observable<InterventoActionResponse> {
+    return this.http.patch<InterventoActionResponse>(`/dipendente/interventi/${interventoId}/stato`, {
       stato_lavorazione
     });
   }
@@ -101,8 +99,8 @@ export class InterventiService {
   aggiornaDipendentiAssegnati(
     interventoId: number | string,
     dipendenteIds: number[]
-  ): Observable<any> {
-    return this.http.put(`${this.adminApiUrl}/${interventoId}/dipendenti`, {
+  ): Observable<DipendentiAssignmentResponse> {
+    return this.http.put<DipendentiAssignmentResponse>(`${this.adminApiUrl}/${interventoId}/dipendenti`, {
       dipendente_ids: dipendenteIds
     });
   }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -25,6 +26,7 @@ import { arrowBackOutline, documentAttachOutline, trashOutline } from 'ionicons/
 // 2. Importiamo il nostro nuovo Service
 import { PreventiviService, PreventivoRichiesta } from '../../services/preventivi.service';
 import { HeaderComponent } from '../../components/header/header.component';
+import { getHttpErrorMessage } from '../../utils/http-error.util';
 
 @Component({
   selector: 'app-preventivi',
@@ -126,9 +128,9 @@ inviaPreventivo() {
           this.router.navigate(['/dashboard-cliente']);
         }, 1500);
       },
-      error: async (err: any) => {
+      error: async (err: HttpErrorResponse) => {
         console.error('Errore invio preventivo:', err);
-        const messaggio = err.error?.message || 'Errore di connessione al server.';
+        const messaggio = getHttpErrorMessage(err, 'Errore di connessione al server.');
 
         const alert = await this.alertController.create({
           cssClass: 'custom-dark-alert',

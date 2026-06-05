@@ -3,9 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   Preventivo,
+  PreventivoActionResponse,
   PreventivoCreateResponse,
   PreventivoRichiesta
 } from '../models/preventivo.model';
+import { ApiMessageResponse } from '../models/api.model';
 
 export type { PreventivoRichiesta } from '../models/preventivo.model';
 
@@ -37,13 +39,13 @@ export class PreventiviService {
     return this.http.get<Preventivo>(`${this.adminApiUrl}/${id}`);
   }
 
-  adminProponePrezzo(id: number | string, prezzo: number): Observable<any> {
-    return this.http.patch(`${this.adminApiUrl}/${id}/proponi-prezzo`, { prezzo });
+  adminProponePrezzo(id: number | string, prezzo: number): Observable<PreventivoActionResponse> {
+    return this.http.patch<PreventivoActionResponse>(`${this.adminApiUrl}/${id}/proponi-prezzo`, { prezzo });
   }
 
   // Admin rifiuta il preventivo
-  adminRifiutaPreventivo(id: number | string): Observable<any> {
-    return this.http.patch(`${this.adminApiUrl}/${id}/rifiuta`, {});
+  adminRifiutaPreventivo(id: number | string): Observable<ApiMessageResponse> {
+    return this.http.patch<ApiMessageResponse>(`${this.adminApiUrl}/${id}/rifiuta`, {});
   }
 
   // Recupera il dettaglio di un singolo preventivo per il CLIENTE
@@ -52,7 +54,7 @@ export class PreventiviService {
   }
 
   // Invia al backend la scelta del cliente (accetta o rifiuta)
-  rispondiPreventivo(id: number | string, azione: 'accetta' | 'rifiuta'): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${id}/risposta`, { azione });
+  rispondiPreventivo(id: number | string, azione: 'accetta' | 'rifiuta'): Observable<PreventivoActionResponse> {
+    return this.http.patch<PreventivoActionResponse>(`${this.apiUrl}/${id}/risposta`, { azione });
   }
 }

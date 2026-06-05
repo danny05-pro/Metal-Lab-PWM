@@ -10,6 +10,7 @@ import { addIcons } from 'ionicons';
 import { documentAttachOutline } from 'ionicons/icons';
 
 import { PreventiviService } from 'src/app/services/preventivi.service';
+import { PreventivoDettaglio } from 'src/app/models/preventivo.model';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @Component({
@@ -26,7 +27,7 @@ import { HeaderComponent } from 'src/app/components/header/header.component';
 export class DettaglioPreventivoAdminPage implements OnInit {
 
   preventivoId = '';
-  preventivo: any = null;
+  preventivo: PreventivoDettaglio | null = null;
   caricamento = true;
 
   constructor(
@@ -49,8 +50,10 @@ export class DettaglioPreventivoAdminPage implements OnInit {
     this.caricamento = true;
     this.preventiviService.getPreventivoAdminById(this.preventivoId).subscribe({
       next: (dati) => {
-        this.preventivo = dati;
-        this.preventivo.allegatiArray = dati.allegato ? dati.allegato.split(',') : [];
+        this.preventivo = {
+          ...dati,
+          allegatiArray: dati.allegato ? dati.allegato.split(',') : []
+        };
         this.caricamento = false;
       },
       error: (err) => {
@@ -96,7 +99,7 @@ export class DettaglioPreventivoAdminPage implements OnInit {
         { text: 'Annulla', role: 'cancel', cssClass: 'dark-alert-btn-cancel' },
         {
           text: 'Conferma', cssClass: 'dark-alert-btn-confirm',
-          handler: (data: any) => {
+          handler: (data: { prezzo?: string | number }) => {
             const prezzo = Number(data.prezzo);
             if (isNaN(prezzo) || prezzo <= 0) return false;
 

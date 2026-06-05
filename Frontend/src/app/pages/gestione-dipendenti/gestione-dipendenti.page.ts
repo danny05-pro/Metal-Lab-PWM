@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
@@ -40,6 +41,7 @@ import {
 import { DipendentiService, Dipendente } from '../../services/dipendenti.service';
 import { DipendenteRequest } from '../../models/user.model';
 import { HeaderComponent } from '../../components/header/header.component';
+import { getHttpErrorMessage } from '../../utils/http-error.util';
 
 type DipendenteCard = Dipendente & { stato: 'Attivo' };
 type DipendenteForm = Partial<DipendenteRequest> & { id?: number; stato?: 'Attivo' };
@@ -135,7 +137,7 @@ export class GestioneDipendentiPage implements OnInit {
       next: (datiReali: Dipendente[]) => {
         this.dipendenti = datiReali.map((d: Dipendente) => ({ ...d, stato: 'Attivo' }));
       },
-      error: (err: any) => console.error('Errore nel recupero dipendenti', err)
+      error: (err: HttpErrorResponse) => console.error('Errore nel recupero dipendenti', err)
     });
   }
 
@@ -172,10 +174,10 @@ export class GestioneDipendentiPage implements OnInit {
           this.caricaDipendenti(); 
           this.chiudiModale();
         },
-        error: async (err: any) => {
+        error: async (err: HttpErrorResponse) => {
           console.error('Errore durante la creazione', err);
           // MOSTRIAMO L'ERRORE DEL BACKEND A SCHERMO
-          const messaggio = err.error?.message || 'Si è verificato un errore di connessione.';
+          const messaggio = getHttpErrorMessage(err, 'Si è verificato un errore di connessione.');
           const alert = await this.alertController.create({
             cssClass: 'custom-dark-alert',
             header: 'Errore di Creazione',
@@ -194,10 +196,10 @@ export class GestioneDipendentiPage implements OnInit {
             this.caricaDipendenti(); 
             this.chiudiModale();
           },
-          error: async (err: any) => {
+          error: async (err: HttpErrorResponse) => {
             console.error('Errore durante la modifica', err);
             // MOSTRIAMO L'ERRORE DEL BACKEND A SCHERMO
-            const messaggio = err.error?.message || 'Si è verificato un errore durante il salvataggio.';
+            const messaggio = getHttpErrorMessage(err, 'Si è verificato un errore durante il salvataggio.');
             const alert = await this.alertController.create({
               cssClass: 'custom-dark-alert',
               header: 'Errore di Modifica',
@@ -217,7 +219,7 @@ export class GestioneDipendentiPage implements OnInit {
       next: () => {
         this.dipendenti = this.dipendenti.filter((dipendente: DipendenteCard) => dipendente.id !== id);
       },
-      error: (err: any) => console.error('Errore durante l\'eliminazione', err)
+      error: (err: HttpErrorResponse) => console.error('Errore durante l\'eliminazione', err)
     });
   }
 }

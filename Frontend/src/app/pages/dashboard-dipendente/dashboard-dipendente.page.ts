@@ -19,15 +19,17 @@ import { Intervento } from 'src/app/models/intervento.model';
 import { InterventiService } from 'src/app/services/interventi.service';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 
-interface Storico {
-  id: number;
-  descrizione: string;
-  stato_lavorazione: string;
-  stato_admin: string;
-  stato_risposta_cliente: string;
+type StatoInterventoView = Pick<
+  Intervento,
+  'stato_lavorazione' | 'stato_admin' | 'stato_risposta_cliente'
+>;
+
+interface Storico extends StatoInterventoView {
+  id: Intervento['id'];
+  descrizione: Intervento['descrizione'];
   dataCompletamento: string;
-  cliente_nome?: string;
-  cliente_cognome?: string;
+  cliente_nome?: Intervento['cliente_nome'];
+  cliente_cognome?: Intervento['cliente_cognome'];
 }
 
 @Component({
@@ -97,7 +99,7 @@ export class DashboardDipendentePage {
     });
   }
 
-  getStatoInterventoUX(intervento: any): { label: string, color: string, icon: string } {
+  getStatoInterventoUX(intervento: StatoInterventoView): { label: string, color: string, icon: string } {
     if (intervento.stato_lavorazione === 'Terminato') return { label: 'Completato', color: 'success', icon: 'checkmark-done-outline' };
     if (intervento.stato_admin === 'Rifiutato') return { label: 'Rifiutato', color: 'danger', icon: 'close-circle-outline' };
     if (intervento.stato_risposta_cliente === 'Intervento annullato') return { label: 'Annullato dal Cliente', color: 'danger', icon: 'trash-outline' };

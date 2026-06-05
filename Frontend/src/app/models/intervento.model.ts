@@ -87,3 +87,23 @@ export interface InterventoCreateResponse {
   message: string;
   intervento: InterventoCreato;
 }
+
+export interface InterventoActionResponse {
+  message: string;
+  intervento: Intervento;
+}
+
+export interface DipendentiAssignmentResponse {
+  message: string;
+  dipendenti: DipendenteAssegnato[];
+}
+
+export interface AdminPropostaDataRequest {
+  data_proposta_admin?: string;
+  usa_data_cliente?: boolean;
+}
+
+export interface ClienteRispostaDataRequest {
+  azione: 'accetta_data' | 'proponi_nuova_data' | 'annulla_intervento';
+  nuova_data?: string;
+}
