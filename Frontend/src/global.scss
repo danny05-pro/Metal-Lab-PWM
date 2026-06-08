@@ -184,34 +184,56 @@ ion-header ion-icon {
   }
 
 
-  /* RADIO */
-
+/* RADIO - FIX GLITCH BLU */
   .alert-radio-group {
     border: none !important;
   }
 
   .alert-radio-button {
+    /* 1. Uccide il colore blu nativo di Ionic alla radice del bottone */
+    --ion-color-primary: #f5a623 !important;
+    --color-checked: #f5a623 !important;
+
     .alert-radio-label {
-      color: #ffffff !important;
-      font-weight: 700 !important;
+      color: #b7c0cc !important;
+      font-weight: 500 !important;
     }
 
+    /* Cerchio esterno quando NON è selezionato */
     .alert-radio-icon {
-      border-color: #f5a623 !important;
+      border-color: #6c7a89 !important;
+      border-radius: 50% !important;
     }
 
+    /* 2. NASCONDE il pallino interno quando non è selezionato (Niente più glitch blu!) */
     .alert-radio-inner {
-      background-color: #f5a623 !important;
+      display: none !important;
     }
 
+    /* STATO SELEZIONATO */
     &[aria-checked="true"] {
       .alert-radio-label {
         color: #ffffff !important;
         font-weight: 800 !important;
       }
 
+      /* Cerchio esterno Ambra */
       .alert-radio-icon {
         border-color: #f5a623 !important;
+      }
+
+      /* 3. Mostra il pallino Ambra solo quando è effettivamente cliccato */
+      .alert-radio-inner {
+        background-color: #f5a623 !important;
+        border: 0 !important;
+        border-radius: 50% !important;
+        width: 15px !important;
+        height: 15px !important;
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        display: block !important;
       }
     }
   }

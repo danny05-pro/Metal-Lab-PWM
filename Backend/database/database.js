@@ -140,7 +140,6 @@ db.serialize(() => {
 
 async function seedUtenti() {
   const adminPassword = await bcrypt.hash('Admin123!', 10);
-  const dipendentePassword = await bcrypt.hash('Dipendente123!', 10);
 
   db.run(
     `
@@ -160,28 +159,6 @@ async function seedUtenti() {
     (err) => {
       if (err) {
         console.error('Errore seed admin:', err.message);
-      }
-    }
-  );
-
-  db.run(
-    `
-      INSERT OR IGNORE INTO users
-      (id, nome, cognome, telefono, email, password, ruolo)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `,
-    [
-      2,
-      'Luigi',
-      'Ferri',
-      '3331234567',
-      'dipendente@metallab.it',
-      dipendentePassword,
-      'dipendente'
-    ],
-    (err) => {
-      if (err) {
-        console.error('Errore seed dipendente:', err.message);
       }
     }
   );
