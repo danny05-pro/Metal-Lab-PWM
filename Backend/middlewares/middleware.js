@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-
 const SECRET = 'metal-lab-secret-key';
 
 const verifyToken = (req, res, next) => {

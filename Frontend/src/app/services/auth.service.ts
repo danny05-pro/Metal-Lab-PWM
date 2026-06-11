@@ -17,12 +17,9 @@ export type {
 export class AuthService {
   private apiUrl = '/auth';
 
-  // Iniezione di HttpClient per poter fare le chiamate di rete
   constructor(private http: HttpClient) {}
 
-  // ==========================================
   // CHIAMATE HTTP
-  // ==========================================
 
   login(dati: LoginData): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, dati);
