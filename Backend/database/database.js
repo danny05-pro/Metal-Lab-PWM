@@ -134,12 +134,12 @@ db.serialize(() => {
     FOREIGN KEY (cliente_id) REFERENCES users(id) ON DELETE CASCADE
   )
 `);
-  seedUtenti();
+  seedUtenti(); //gatantisce che l'admin venga creato solo dopo la creazione della tabella users
 
 });
-
+// Funzione per inserire un utente admin di default
 async function seedUtenti() {
-  const adminPassword = await bcrypt.hash('Admin123!', 10);
+  const adminPassword = await bcrypt.hash('Admin123!', 10); //await per assicurarsi che la password sia hashata prima di inserire l'utente nel database
 
   db.run(
     `
@@ -185,4 +185,6 @@ async function seedUtenti() {
 
 }
 
-module.exports = db;
+module.exports = db; // Esportiamo l'oggetto database per poterla utilizzare in altri file del progetto
+                    //  Assegnando l'oggetto db a module.exports, indichi a Node.js di rendere pubblica quella specifica risorsa.
+                    //  In questo modo, quando un altro file richiede questo modulo (ad esempio, con require('./database')), riceverà l'oggetto db, che rappresenta la connessione al database SQLite.

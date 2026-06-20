@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ApiErrorResponse } from '../models/api.model';
 
 
-//funzione riutilizzabile che estrae il messaggio da une rrore http.
+//funzione riutilizzabile che estrae il messaggio da une errore http.
 
 export function getHttpErrorMessage(
   error: HttpErrorResponse,

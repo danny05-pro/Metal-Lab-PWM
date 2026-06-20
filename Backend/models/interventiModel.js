@@ -394,7 +394,7 @@ exports.updateStatoLavorazioneForDipendente = (
 exports.aggiornaDipendentiAssegnati = (intervento_id, dipendente_ids) => {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
-      db.run('BEGIN TRANSACTION');
+      db.run('BEGIN TRANSACTION'); //memoria temporanea 
 
       db.run(
         `
@@ -404,12 +404,12 @@ exports.aggiornaDipendentiAssegnati = (intervento_id, dipendente_ids) => {
         [intervento_id],
         (err) => {
           if (err) {
-            db.run('ROLLBACK');
+            db.run('ROLLBACK'); //in caso di errore annulla tutta la transizione
             return reject(err);
           }
 
           if (!dipendente_ids || dipendente_ids.length === 0) {
-            db.run('COMMIT', (commitErr) => {
+            db.run('COMMIT', (commitErr) => {   //la commit rende la transizione definitiva
               if (commitErr) {
                 reject(commitErr);
               } else {

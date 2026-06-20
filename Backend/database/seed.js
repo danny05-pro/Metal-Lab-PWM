@@ -168,7 +168,7 @@ async function seedDatabase() {
     console.log('Interventi e assegnazioni completati.');
     console.log('\n✅ SEEDING COMPLETATO CON SUCCESSO!');
     console.log('Credenziali generate per il test:');
-    console.log(' - Admin: admin@metallab.it | Password123!');
+    console.log(' - Admin: admin@metallab.it | Admin123!');
     console.log(' - Dipendente: luigi.ferri@metallab.it | Password123!');
     console.log(' - Cliente: andrea.bianchi@gmail.com | Password123!');
 

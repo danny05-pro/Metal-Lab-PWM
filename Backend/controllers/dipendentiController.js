@@ -14,7 +14,6 @@ exports.getAll = async (req, res) => {
 // 2. Crea un nuovo dipendente
 exports.create = async (req, res) => {
   try {
-    // Aggiunto "telefono" all'estrazione dei dati
     const { nome, cognome, email, telefono, password } = req.body;
     
     // Verifica email duplicata
@@ -29,7 +28,7 @@ exports.create = async (req, res) => {
       nome, 
       cognome, 
       email, 
-      telefono, // Ora passa il telefono reale invece di ''
+      telefono,
       password: passwordHash, 
       ruolo: 'dipendente'
     });
@@ -44,7 +43,6 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
-    // Aggiunto "telefono" all'estrazione dei dati
     const { nome, cognome, email, telefono, password } = req.body;
     
     // Inserito "telefono" nell'oggetto da aggiornare
