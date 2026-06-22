@@ -36,35 +36,34 @@
   <section class="catalog-grid">
 
 
-     @if (selectedSection === 'prodotti') {
+    @if (selectedSection === 'prodotti') {
 
-  @for (prodotto of prodotti; track prodotto.id) {
+      @for (prodotto of prodotti; track prodotto.id) {
 
-    <app-product-card
-      [prodotto]="prodotto"
-      [onTogglePreferito]="toggleProdottoPreferito.bind(this)">
-    </app-product-card>
+        <app-product-card
+         [prodotto]="prodotto"
+         [onTogglePreferito]="toggleProdottoPreferito.bind(this)">
+        </app-product-card>
 
-  }
-
-}
+      }
+    }
 
 
    @if (selectedSection === 'servizi') {
 
-  @for (servizio of servizi; track servizio.id) {
+    @for (servizio of servizi; track servizio.id) {
 
     <app-service-card
       [servizio]="servizio"
       [onTogglePreferito]="toggleServizioPreferito.bind(this)">
     </app-service-card>
 
-  }
+    }
 
-}
-@if (selectedSection === 'preferiti') {
+    }
+    @if (selectedSection === 'preferiti') {
 
-  @if (prodottiPreferiti.length === 0 && serviziPreferiti.length === 0) {
+    @if (prodottiPreferiti.length === 0 && serviziPreferiti.length === 0) {
 
     <div class="empty-state">
       <h2>Nessun preferito</h2>
@@ -73,24 +72,24 @@
       </p>
     </div>
 
-  }
+    }
 
-  @for (prodotto of prodottiPreferiti; track prodotto.id) {
+    @for (prodotto of prodottiPreferiti; track prodotto.id) {
 
     <app-product-card
       [prodotto]="prodotto"
       [onTogglePreferito]="toggleProdottoPreferito.bind(this)">
     </app-product-card>
 
-  }
+    }
 
-  @for (servizio of serviziPreferiti; track servizio.id) {
+   @for (servizio of serviziPreferiti; track servizio.id) {
 
     <app-service-card
       [servizio]="servizio"
       [onTogglePreferito]="toggleServizioPreferito.bind(this)">
     </app-service-card>
 
-  }
+    }
 
 }

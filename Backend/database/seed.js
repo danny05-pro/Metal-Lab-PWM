@@ -16,7 +16,7 @@ const runQuery = (query, params = []) => {
   return new Promise((resolve, reject) => {
     db.run(query, params, function (err) {
       if (err) reject(err);
-      else resolve(this);
+      else resolve(this); // Restituisce 'this' per poter leggere this.lastID
     });
   });
 };
@@ -34,8 +34,15 @@ async function seedDatabase() {
 
     console.log('Tabelle ripulite con successo.');
 
-    // 2. Creazione Utenti (Tutti con password "Password123!")
+    // 2. Creazione Utenti
     const defaultPassword = await bcrypt.hash('Password123!', 10);
+    const adminPassword = await bcrypt.hash('Admin123!', 10);
+
+    // ADMIN (Reinserito per evitare di perderlo con il reset)
+    await runQuery(
+      `INSERT INTO users (id, nome, cognome, telefono, email, password, ruolo) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [1, 'Admin', 'Metal Lab', '0000000000', 'admin@metallab.it', adminPassword, 'admin']
+    );
 
     // DIPENDENTI
     await runQuery(
@@ -77,100 +84,92 @@ async function seedDatabase() {
     }
     console.log('Catalogo popolato.');
 
-    // 4. Creazione Preventivi
-    await runQuery(
-      `INSERT INTO preventivi (cliente_id, descrizione, servizio, materiale, dimensioni, finitura, prezzo_proposto, stato_admin, stato_risposta_cliente) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        4, 
-        'Realizzazione ringhiera per balcone con decorazioni geometriche.', 
-        'carpenteria', 
-        'Ferro Battuto', 
-        '600x110x5', 
-        'Verniciatura a polvere nero micaceo', 
-        null, 
-        'Da valutare', 
-        'In attesa'
-      ]
-    );
+    // =========================================================================
+    // 4. CREAZIONE PREVENTIVI TEST PER ANDREA BIANCHI (TUTTI I CHIP POSSIBILI)
+    // =========================================================================
+    const preventiviTest = [
+      // Stato 1: Da valutare
+      [4, 'Preventivo inviato dal cliente(Da valutare)', 'carpenteria', 'Ferro', '100x100', 'Nessuna', null, 'Da valutare', 'In attesa'],
+      // Stato 2: Prezzo Proposto (Richiede azione del cliente)
+      [4, 'L\'Admin ha proposto un prezzo (Da accettare o rifiutare)', 'lavorazioni', 'Acciaio', '200x200', 'Satinatura', 500.00, 'Prezzo proposto', 'In attesa'],
+      // Stato 3: Preventivo Accettato
+      [4, 'Preventivo concordato e accettato', 'manutenzione', 'Alluminio', '50x50', 'Verniciato', 300.00, 'Preventivo concordato', 'Accettato'],
+      // Stato 4: Preventivo Rifiutato
+      [4, 'Preventivo rifiutato', 'carpenteria', 'Rame', '10x10', 'Grezzo', 1000.00, 'Rifiutato', 'Rifiutato']
+    ];
 
-    await runQuery(
-      `INSERT INTO preventivi (cliente_id, descrizione, servizio, materiale, dimensioni, finitura, prezzo_proposto, stato_admin, stato_risposta_cliente) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        5, 
-        'Struttura portante per nuovo nastro trasportatore magazzino.', 
-        'lavorazioni', 
-        'Acciaio INOX 304', 
-        '1200x80x150', 
-        'Satinatura', 
-        4250.00, 
-        'Prezzo proposto', 
-        'In attesa'
-      ]
-    );
+    for (const prev of preventiviTest) {
+      await runQuery(
+        `INSERT INTO preventivi (cliente_id, descrizione, servizio, materiale, dimensioni, finitura, prezzo_proposto, stato_admin, stato_risposta_cliente) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, prev
+      );
+    }
+    console.log('Preventivi di test inseriti.');
 
-    await runQuery(
-      `INSERT INTO preventivi (cliente_id, descrizione, servizio, materiale, dimensioni, finitura, prezzo_proposto, stato_admin, stato_risposta_cliente) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        5, 
-        'Sostituzione tubazioni impianto di raffreddamento e staffaggio.', 
-        'manutenzione', 
-        'Acciaio Zincato', 
-        'Variabile', 
-        'Grezza', 
-        1800.00, 
-        'Preventivo concordato', 
-        'Accettato'
-      ]
-    );
-    console.log('Preventivi inseriti.');
-
-    // 5. Creazione Interventi (Con logica temporale sensata)
+    // =========================================================================
+    // 5. CREAZIONE INTERVENTI TEST PER ANDREA BIANCHI (TUTTI I CHIP POSSIBILI)
+    // =========================================================================
     const oggi = new Date();
+    
+    const ieri = new Date(oggi); ieri.setDate(ieri.getDate() - 1);
     const domani = new Date(oggi); domani.setDate(domani.getDate() + 1);
     const dopodomani = new Date(oggi); dopodomani.setDate(dopodomani.getDate() + 2);
     
+    const fmtOggi = oggi.toISOString().split('T')[0];
+    const fmtIeri = ieri.toISOString().split('T')[0];
     const fmtDomani = domani.toISOString().split('T')[0];
     const fmtDopodomani = dopodomani.toISOString().split('T')[0];
 
-    // Intervento 1: Da valutare (Nuovo)
-    await runQuery(
-      `INSERT INTO interventi (id, cliente_id, descrizione, luogo, priorita, stato_admin, stato_risposta_cliente, stato_lavorazione, data_richiesta, data_proposta_cliente) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)`,
-      [1, 4, 'Cancello bloccato sui binari, probabile rottura cuscinetti.', 'Viale dell\'Olimpo 12, Palermo', 'Alta', 'Richiesto', 'In attesa', 'Da programmare', fmtDomani]
-    );
+    // Array di interventi [cliente_id, descrizione, luogo, priorita, stato_admin, stato_risposta_cliente, stato_lavorazione, data_proposta_cliente, data_proposta_admin, data_accettata]
+    const interventiTest = [
+      // 1. Richiesto
+      [4, 'Appena richiesto (In attesa dell\'Admin)', 'Sede 1', 'Bassa', 'Richiesto', 'In attesa', 'Da programmare', null, null, null],
+      // 2. Data proposta dall'Admin
+      [4, 'Data proposta dall\'Admin (Devi rispondere)', 'Sede 1', 'Media', 'Data proposta', 'In attesa', 'Da programmare', null, fmtDomani, null],
+      // 3. Nuova data proposta dal cliente
+      [4, 'Hai proposto una nuova data (In attesa dell\'Admin)', 'Sede 1', 'Alta', 'In attesa nuova valutazione', 'Nuova data proposta', 'Da programmare', fmtDopodomani, null, null],
+      // 4. Rifiutato
+      [4, 'Intervento Rifiutato dall\'Admin', 'Sede 1', 'Bassa', 'Rifiutato', 'In attesa', 'Da programmare', null, null, null],
+      // 5. Annullato
+      [4, 'Intervento Annullato dal cliente', 'Sede 1', 'Bassa', 'Richiesto', 'Intervento annullato', 'Da programmare', null, null, null],
+      // 6. Programmato (Data Accettata) - Assegnato a LUIGI FERRI
+      [4, 'Programmato (Tecnico assegnato)', 'Sede 1', 'Alta', 'Intervento concordato', 'Data accettata', 'Programmato', null, null, fmtDomani],
+      // 7. In lavorazione - Assegnato a LUIGI FERRI
+      [4, 'Lavori in corso (I tecnici sono sul posto)', 'Sede 1', 'Media', 'Intervento concordato', 'Data accettata', 'In lavorazione', null, null, fmtOggi],
+      // 8. Terminato - Assegnato a LUIGI FERRI
+      [4, 'Lavoro Terminato', 'Sede 1', 'Bassa', 'Intervento concordato', 'Data accettata', 'Terminato', null, null, fmtIeri]
+    ];
 
-    // Intervento 2: In attesa di risposta dal cliente
-    await runQuery(
-      `INSERT INTO interventi (id, cliente_id, descrizione, luogo, priorita, stato_admin, stato_risposta_cliente, stato_lavorazione, data_richiesta, data_proposta_admin) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)`,
-      [2, 5, 'Manutenzione semestrale silos di stoccaggio.', 'Via Enrico Mattei, Zona Industriale Brancaccio, Palermo', 'Media', 'Data proposta', 'In attesa', 'Da programmare', fmtDopodomani]
-    );
+    for (let i = 0; i < interventiTest.length; i++) {
+      const it = interventiTest[i];
+      const result = await runQuery(
+        `INSERT INTO interventi (cliente_id, descrizione, luogo, priorita, stato_admin, stato_risposta_cliente, stato_lavorazione, data_richiesta, data_proposta_cliente, data_proposta_admin, data_accettata) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)`,
+        it
+      );
 
-    // Intervento 3: Programmato e assegnato a Luigi
-    await runQuery(
-      `INSERT INTO interventi (id, cliente_id, descrizione, luogo, priorita, stato_admin, stato_risposta_cliente, stato_lavorazione, data_richiesta, data_accettata) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)`,
-      [3, 5, 'Saldatura tubazione di scarico forata.', 'Zona Industriale Brancaccio, Palermo', 'Alta', 'Intervento concordato', 'Data accettata', 'Programmato', fmtDomani]
-    );
-    await runQuery(`INSERT INTO dipendenti_interventi (intervento_id, dipendente_id) VALUES (?, ?)`, [3, 2]);
-
-    // Intervento 4: In lavorazione da Marco
-    await runQuery(
-      `INSERT INTO interventi (id, cliente_id, descrizione, luogo, priorita, stato_admin, stato_risposta_cliente, stato_lavorazione, data_richiesta, data_accettata) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)`,
-      [4, 4, 'Installazione nuova tettoia in ferro zincato e copertura in policarbonato.', 'Viale della Regione Siciliana 1500, Palermo', 'Media', 'Intervento concordato', 'Data accettata', 'In lavorazione', oggi.toISOString().split('T')[0]]
-    );
-    await runQuery(`INSERT INTO dipendenti_interventi (intervento_id, dipendente_id) VALUES (?, ?)`, [4, 3]);
+      // Assegniamo a Luigi Ferri (ID: 2) gli ultimi 3 interventi (Programmato, In lavorazione, Terminato)
+      // In modo che lui veda tutti i suoi 3 chip possibili.
+      if (i >= 5) {
+        await runQuery(`INSERT INTO dipendenti_interventi (intervento_id, dipendente_id) VALUES (?, ?)`, [result.lastID, 2]);
+      }
+    }
 
     console.log('Interventi e assegnazioni completati.');
     console.log('\n✅ SEEDING COMPLETATO CON SUCCESSO!');
-    console.log('Credenziali generate per il test:');
-    console.log(' - Admin: admin@metallab.it | Admin123!');
-    console.log(' - Dipendente: luigi.ferri@metallab.it | Password123!');
-    console.log(' - Cliente: andrea.bianchi@gmail.com | Password123!');
+    console.log('----------------------------------------------------');
+    console.log('PER VEDERE TUTTI I CHIP DEL CLIENTE, ACCEDI CON:');
+    console.log(' Email: andrea.bianchi@gmail.com');
+    console.log(' Pass:  Password123!');
+    console.log('----------------------------------------------------');
+    console.log('PER VEDERE I CHIP DEL DIPENDENTE, ACCEDI CON:');
+    console.log(' Email: luigi.ferri@metallab.it');
+    console.log(' Pass:  Password123!');
+    console.log('----------------------------------------------------');
+    console.log('PER L\'AMMINISTRAZIONE, ACCEDI CON:');
+    console.log(' Email: admin@metallab.it');
+    console.log(' Pass:  Admin123!');
+    console.log('----------------------------------------------------');
 
   } catch (error) {
     console.error('Errore durante il seeding:', error);
